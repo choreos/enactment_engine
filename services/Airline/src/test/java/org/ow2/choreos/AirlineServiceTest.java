@@ -21,7 +21,7 @@ public class AirlineServiceTest {
 
         String wsdl = AirlineStarter.SERVICE_ADDRESS + "?wsdl";
         AirlineClientFactory factory = new AirlineClientFactory(wsdl);
-        Airline client = factory.getCLient();
+        Airline client = factory.getClient();
         
         String flightTicketNumber = client.buyFlight();
 

@@ -6,15 +6,15 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
-public class AirlineClientFactory {
+public class TravelAgencyClientFactory {
 
     private static final String NAMESPACE = "http://choreos.ow2.org/";
-    private static final String SERVICE_NAME = "AirlineServiceService";
+    private static final String SERVICE_NAME = "TravelAgencyServiceService";
     
     private String wsdl;
-    private Airline client;
+    private TravelAgency client;
 
-    public AirlineClientFactory(String wsdl) {
+    public TravelAgencyClientFactory(String wsdl) {
         this.wsdl = wsdl;
     }
 
@@ -23,7 +23,7 @@ public class AirlineClientFactory {
      * @return a cached client since building the client is a heavy operation.
      * @throws MalformedURLException 
      */
-    public Airline getClient() throws MalformedURLException {
+    public TravelAgency getClient() throws MalformedURLException {
         if (client == null) {
             synchronized (this) {
                 if (client == null)
@@ -37,7 +37,7 @@ public class AirlineClientFactory {
         final QName qname = new QName(NAMESPACE, SERVICE_NAME);
         final URL url = new URL(wsdl);
         Service service = Service.create(url, qname);
-        client = service.getPort(Airline.class);
+        client = service.getPort(TravelAgency.class);
     }
 
 }

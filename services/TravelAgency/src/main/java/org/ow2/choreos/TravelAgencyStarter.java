@@ -8,14 +8,12 @@ public class TravelAgencyStarter {
 	private static Endpoint endpoint;
 
 	public static void start() {
-	
 		TravelAgency service = new TravelAgencyService();
 		endpoint = Endpoint.create(service);
-		endpoint.publish("http://0.0.0.0:1235/travelagency");
+		endpoint.publish(SERVICE_ADDRESS);
 	}
 	
 	public static void main(String[] args) {
-
 		start();
 	}
 	
