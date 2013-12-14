@@ -33,6 +33,7 @@
 			<groupId>org.ow2.choreos</groupId>
 			<artifactId>Airline</artifactId>
 			<version>1.1-SNAPSHOT</version>
+			<classifier>classes</classifier>
 		</dependency>
 	</dependencies>
 
