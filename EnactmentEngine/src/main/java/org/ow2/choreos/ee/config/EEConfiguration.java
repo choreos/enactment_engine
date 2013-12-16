@@ -11,15 +11,15 @@ import org.ow2.choreos.utils.Configuration;
  * @author leonardo, thiago, alessio
  * 
  */
-public class DeploymentManagerConfiguration {
+public class EEConfiguration {
 
-    private static final String FILE_PATH = "deployment.properties";
+    private static final String FILE_PATH = "ee.properties";
 
     private final Configuration configuration;
 
-    private static DeploymentManagerConfiguration INSTANCE = new DeploymentManagerConfiguration();
+    private static EEConfiguration INSTANCE = new EEConfiguration();
 
-    private DeploymentManagerConfiguration() {
+    private EEConfiguration() {
         this.configuration = new Configuration(FILE_PATH);
     }
 

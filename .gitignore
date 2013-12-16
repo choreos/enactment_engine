@@ -17,6 +17,3 @@ smartbuild.sh
 .project
 .settings/*
 chef-repo/cookbooks/harakiri*
-EnactmentEngine/src/main/resources/clouds.properties
-EnactmentEngine/src/main/resources/qos_mgmt.properties
-EnactmentEngine/src/main/resources/deployment.properties

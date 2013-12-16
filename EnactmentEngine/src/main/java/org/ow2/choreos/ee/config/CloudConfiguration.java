@@ -20,7 +20,7 @@ public class CloudConfiguration {
 
     private static Logger logger = Logger.getLogger(CloudConfiguration.class);
 
-    public static final String DEFAULT = DeploymentManagerConfiguration.get("DEFAULT_CLOUD_ACCOUNT");
+    public static final String DEFAULT = EEConfiguration.get("DEFAULT_CLOUD_ACCOUNT");
 
     private final String owner;
 

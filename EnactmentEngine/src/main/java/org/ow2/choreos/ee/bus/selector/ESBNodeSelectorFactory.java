@@ -1,7 +1,7 @@
 package org.ow2.choreos.ee.bus.selector;
 
 import org.apache.log4j.Logger;
-import org.ow2.choreos.ee.config.ChoreographyDeployerConfiguration;
+import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.utils.Configuration;
 import org.ow2.choreos.utils.SingletonsFactory;
 
@@ -34,7 +34,7 @@ public class ESBNodeSelectorFactory extends SingletonsFactory<ESBNodeSelector> {
     }
 
     public ESBNodeSelector getNodeSelectorInstance() {
-        String selectorType = ChoreographyDeployerConfiguration.get(BUS_POLICY_PROPERTY);
+        String selectorType = EEConfiguration.get(BUS_POLICY_PROPERTY);
         if (selectorType == null) {
             logger.error(BUS_POLICY_PROPERTY + " property not set on properties file!");
             throw new IllegalArgumentException();

@@ -20,7 +20,7 @@ import org.ow2.choreos.chors.ChoreographyDeployer;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 import org.ow2.choreos.ee.ChoreographyDeployerImpl;
-import org.ow2.choreos.ee.config.ChoreographyDeployerConfiguration;
+import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.invoker.Invoker;
 import org.ow2.choreos.invoker.InvokerBuilder;
 import org.ow2.choreos.services.datamodel.DeployableService;
@@ -59,8 +59,8 @@ public class DecreaseNumberOfInstancesTest {
 
     @Before
     public void setUp() {
-	ChoreographyDeployerConfiguration.set("BUS", "false");
-	ChoreographyDeployerConfiguration.set("IDLE_POOL", "false");
+        EEConfiguration.set("BUS", "false");
+        EEConfiguration.set("IDLE_POOL", "false");
 	ModelsForTest models = new ModelsForTest(ServiceType.SOAP, PackageType.TOMCAT, 3);
 	spec = models.getChorSpec();
 	ModelsForTest newModels = new ModelsForTest(ServiceType.SOAP, PackageType.TOMCAT, 2);

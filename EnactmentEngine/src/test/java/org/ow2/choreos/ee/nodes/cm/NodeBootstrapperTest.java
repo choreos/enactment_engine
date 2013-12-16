@@ -10,7 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.ow2.choreos.ee.config.DeploymentManagerConfiguration;
+import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.ee.nodes.cm.NodeBootstrapper;
 import org.ow2.choreos.ee.nodes.cm.NodeSetup;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
@@ -26,8 +26,8 @@ public class NodeBootstrapperTest {
 
     @BeforeClass
     public static void setConfiguration() {
-	DeploymentManagerConfiguration.set("HARAKIRI", "false");
-	DeploymentManagerConfiguration.set("MONITORING", "false");
+	EEConfiguration.set("HARAKIRI", "false");
+	EEConfiguration.set("MONITORING", "false");
     }
 
     @Before

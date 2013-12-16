@@ -5,7 +5,7 @@ import org.ow2.choreos.ee.bus.ESBRegister;
 import org.ow2.choreos.ee.bus.EasyESBException;
 import org.ow2.choreos.ee.bus.EasyESBNode;
 import org.ow2.choreos.ee.bus.EasyESBNodeImpl;
-import org.ow2.choreos.ee.config.ChoreographyDeployerConfiguration;
+import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.nodes.NodeNotCreatedException;
 import org.ow2.choreos.nodes.NodeNotFoundException;
 import org.ow2.choreos.nodes.NodeNotUpdatedException;
@@ -73,7 +73,7 @@ public class ESBNodeFactory implements ObjectFactory<EasyESBNode, ResourceImpact
     }
     
     private void notifyBSM() {
-        String bsmAdminEndpoint = ChoreographyDeployerConfiguration.get(EASIER_BSM_ADMIN_ENDPOINT_PROPERTY);
+        String bsmAdminEndpoint = EEConfiguration.get(EASIER_BSM_ADMIN_ENDPOINT_PROPERTY);
         if (bsmAdminEndpoint != null && !bsmAdminEndpoint.isEmpty()) {
             try {
                 this.esbNode.notifyEasierBSM(bsmAdminEndpoint);

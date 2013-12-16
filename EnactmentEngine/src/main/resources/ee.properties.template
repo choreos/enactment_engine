@@ -1,0 +1,35 @@
+
+EE_PORT=9102
+
+# Value must be a <clustername> in clouds.properties
+DEFAULT_CLOUD_ACCOUNT=MY_AWS_ACCOUNT
+
+# Values in node_selector.properties
+NODE_SELECTOR=ALWAYS_CREATE
+
+# Maximum number of VMs that can be created; set if using NODE_SELECTOR=LIMITED_ROUND_ROBIN 
+VM_LIMIT=0 
+
+# Creates a pool of extra VMs to make the deployment faster and more scalable.
+# The trade-off is the cost of some more VMs.
+# If the pool size reaches the threshold, the pool size is increased by one.
+# To not increase your pool size, set threshold as negative or greater than the initial pool size.
+IDLE_POOL=false
+IDLE_POOL_INITIAL_SIZE=0
+IDLE_POOL_THRESHOLD=-1
+
+### BUS CONFIGURATION ###
+
+# Binds and exposes services using EasyESB. Values: True or False
+BUS=False 
+
+# Values in bus_policies 
+BUS_POLICY=SINGLE_NODE
+
+# used if BUS_POLICY=LIMITED_ROUND_ROBIN 
+ESB_NODES_LIMIT=0 
+
+# optional, in case you want to monitor EasyESB nodes with EasierBSM
+EASIER_BSM_ADMIN_ENDPOINT=http://host:8180/services/bsmadminExternalEndpoint
+
+### ###

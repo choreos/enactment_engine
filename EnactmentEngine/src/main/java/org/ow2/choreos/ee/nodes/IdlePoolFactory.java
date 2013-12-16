@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.ow2.choreos.ee.config.CloudConfiguration;
-import org.ow2.choreos.ee.config.DeploymentManagerConfiguration;
+import org.ow2.choreos.ee.config.EEConfiguration;
 
 public class IdlePoolFactory {
 
@@ -63,7 +63,7 @@ public class IdlePoolFactory {
     private int getValue(String property, int defaultValue) {
 	int value = defaultValue;
 	try {
-	    value = Integer.parseInt(DeploymentManagerConfiguration.get(property));
+	    value = Integer.parseInt(EEConfiguration.get(property));
 	} catch (NumberFormatException e) {
 	    logger.warn(property + " not integer. Going to use default " + defaultValue);
 	} catch (IllegalArgumentException e) {

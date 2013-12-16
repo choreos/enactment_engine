@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.ow2.choreos.ee.config.DeploymentManagerConfiguration;
+import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.ee.nodes.NPMFactory;
 import org.ow2.choreos.nodes.NodePoolManager;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
@@ -46,7 +46,7 @@ public class LimitedRoundRobinNodeSelector implements NodeSelector {
     private int getNodeLimit() {
 	int nodeLimit;
 	try {
-	    nodeLimit = Integer.parseInt(DeploymentManagerConfiguration.get(VM_LIMIT_PROPERTY));
+	    nodeLimit = Integer.parseInt(EEConfiguration.get(VM_LIMIT_PROPERTY));
 	} catch (NumberFormatException e) {
 	    final int INFINITE_NODES = 100000000;
 	    nodeLimit = INFINITE_NODES;

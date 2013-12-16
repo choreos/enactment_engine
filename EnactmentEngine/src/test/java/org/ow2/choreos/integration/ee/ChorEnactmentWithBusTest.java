@@ -15,7 +15,7 @@ import org.ow2.choreos.chors.ChoreographyDeployer;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 import org.ow2.choreos.ee.ChoreographyDeployerImpl;
-import org.ow2.choreos.ee.config.ChoreographyDeployerConfiguration;
+import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.PackageType;
 import org.ow2.choreos.services.datamodel.ServiceInstance;
@@ -50,8 +50,8 @@ public class ChorEnactmentWithBusTest {
 
     @Before
     public void setUp() {
-        ChoreographyDeployerConfiguration.set("BUS", "true");
-        ChoreographyDeployerConfiguration.set("IDLE_POOL", "false");
+        EEConfiguration.set("BUS", "true");
+        EEConfiguration.set("IDLE_POOL", "false");
         ModelsForTest models = new ModelsForTest(ServiceType.SOAP, PackageType.TOMCAT);
         chorSpec = models.getChorSpec();
     }

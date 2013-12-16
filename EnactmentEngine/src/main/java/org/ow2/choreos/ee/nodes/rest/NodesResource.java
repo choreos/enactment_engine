@@ -22,7 +22,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
-import org.ow2.choreos.ee.config.DeploymentManagerConfiguration;
+import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.ee.nodes.NPMFactory;
 import org.ow2.choreos.nodes.NodeNotCreatedException;
 import org.ow2.choreos.nodes.NodeNotDestroyed;
@@ -80,7 +80,7 @@ public class NodesResource {
     public Response setVMLimit(@PathParam("cloud_accout") String cloudAccount, String vmLimit, @Context UriInfo uriInfo)
 	    throws URISyntaxException {
 	logger.debug("Changing VM Limit to " + vmLimit);
-	DeploymentManagerConfiguration.set("VM_LIMIT", vmLimit);
+	EEConfiguration.set("VM_LIMIT", vmLimit);
 	return Response.ok().build();
     }
 

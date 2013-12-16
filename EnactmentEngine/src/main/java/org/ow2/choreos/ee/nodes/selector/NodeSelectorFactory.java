@@ -5,7 +5,7 @@
 package org.ow2.choreos.ee.nodes.selector;
 
 import org.apache.log4j.Logger;
-import org.ow2.choreos.ee.config.DeploymentManagerConfiguration;
+import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.utils.Configuration;
 import org.ow2.choreos.utils.SingletonsFactory;
 
@@ -38,7 +38,7 @@ public class NodeSelectorFactory extends SingletonsFactory<NodeSelector> {
     }
 
     public NodeSelector getNodeSelectorInstance() {
-        String nodeSelectorType = DeploymentManagerConfiguration.get(NODE_SELECTOR_PROPERTY);
+        String nodeSelectorType = EEConfiguration.get(NODE_SELECTOR_PROPERTY);
         if (nodeSelectorType == null) {
             logger.error(NODE_SELECTOR_PROPERTY + " property not set on properties file!");
             throw new IllegalArgumentException();

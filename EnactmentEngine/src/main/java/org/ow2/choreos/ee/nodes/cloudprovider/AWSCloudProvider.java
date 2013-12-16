@@ -12,7 +12,7 @@ import org.jclouds.compute.domain.NodeMetadata;
 import org.jclouds.compute.options.TemplateOptions;
 import org.jclouds.ec2.domain.InstanceType;
 import org.ow2.choreos.ee.config.CloudConfiguration;
-import org.ow2.choreos.ee.config.DeploymentManagerConfiguration;
+import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.nodes.NodeNotCreatedException;
 import org.ow2.choreos.nodes.NodeNotDestroyed;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
@@ -51,7 +51,7 @@ public class AWSCloudProvider extends JCloudsCloudProvider {
 
     @Override
     protected String getDefaultImageId() {
-	String imageId = DeploymentManagerConfiguration.get("AMAZON_IMAGE_ID");
+	String imageId = EEConfiguration.get("AMAZON_IMAGE_ID");
 	;
 	if (imageId == null || imageId.trim().isEmpty())
 	    imageId = DEFAULT_IMAGE;
@@ -60,7 +60,7 @@ public class AWSCloudProvider extends JCloudsCloudProvider {
 
     @Override
     protected String getHardwareId() {
-	String instanceType = DeploymentManagerConfiguration.get("AMAZON_INSTANCE_TYPE");
+	String instanceType = EEConfiguration.get("AMAZON_INSTANCE_TYPE");
 	if (instanceType == null || instanceType.isEmpty())
 	    instanceType = DEFAULT_INSTANCE_TYPE;
 	return instanceType;

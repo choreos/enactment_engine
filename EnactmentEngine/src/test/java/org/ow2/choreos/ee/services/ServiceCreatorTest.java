@@ -11,7 +11,7 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.ow2.choreos.ee.config.DeploymentManagerConfiguration;
+import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.ee.services.preparer.PrepareDeploymentFailedException;
 import org.ow2.choreos.ee.services.preparer.ServiceDeploymentPreparer;
 import org.ow2.choreos.ee.services.preparer.ServiceDeploymentPreparerFactory;
@@ -33,7 +33,7 @@ public class ServiceCreatorTest {
     @Before
     public void setUp() throws PrepareDeploymentFailedException {
 	LogConfigurator.configLog();
-	DeploymentManagerConfiguration.set("TESTING", "true");
+	EEConfiguration.set("TESTING", "true");
 	setNode();
 	setUpServiceDeployer();
     }

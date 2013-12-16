@@ -1,2 +1,5 @@
-chordeployer.properties
+ee.properties
 owners.properties
+clouds.properties
+qos_mgmt.properties
+

@@ -16,7 +16,7 @@ import org.ow2.choreos.chors.ChoreographyDeployer;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 import org.ow2.choreos.ee.ChoreographyDeployerImpl;
-import org.ow2.choreos.ee.config.ChoreographyDeployerConfiguration;
+import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.services.datamodel.PackageType;
 import org.ow2.choreos.services.datamodel.Service;
 import org.ow2.choreos.services.datamodel.ServiceType;
@@ -49,8 +49,8 @@ public class ChorEnactmentWithReplicasTest {
 
     @Before
     public void setUp() {
-        ChoreographyDeployerConfiguration.set("BUS", "false");
-        ChoreographyDeployerConfiguration.set("IDLE_POOL", "false");
+        EEConfiguration.set("BUS", "false");
+        EEConfiguration.set("IDLE_POOL", "false");
         ModelsForTest models = new ModelsForTest(ServiceType.SOAP, PackageType.COMMAND_LINE, 2);
         spec = models.getChorSpec();
     }

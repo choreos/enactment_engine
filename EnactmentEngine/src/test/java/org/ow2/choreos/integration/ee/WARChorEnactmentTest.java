@@ -7,7 +7,7 @@ package org.ow2.choreos.integration.ee;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.experimental.categories.Category;
-import org.ow2.choreos.ee.config.ChoreographyDeployerConfiguration;
+import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.services.datamodel.PackageType;
 import org.ow2.choreos.services.datamodel.ServiceType;
 import org.ow2.choreos.tests.IntegrationTest;
@@ -34,8 +34,8 @@ public class WARChorEnactmentTest extends SimpleChorEnactmentTest {
     @Before
     @Override
     public void setUp() {
-	ChoreographyDeployerConfiguration.set("BUS", "false");
-	ChoreographyDeployerConfiguration.set("IDLE_POOL", "false");
+        EEConfiguration.set("BUS", "false");
+	EEConfiguration.set("IDLE_POOL", "false");
 	// QoSManagementConfiguration.set(QoSManagementConfiguration.QOS_MGMT,
 	// "False");
 	ModelsForTest models = new ModelsForTest(ServiceType.SOAP, PackageType.TOMCAT);

@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.ow2.choreos.ee.config.CloudConfiguration;
-import org.ow2.choreos.ee.config.DeploymentManagerConfiguration;
+import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.ee.nodes.cloudprovider.CloudProvider;
 import org.ow2.choreos.ee.nodes.cloudprovider.CloudProviderFactory;
 import org.ow2.choreos.ee.nodes.cloudprovider.FixedCloudProvider;
@@ -45,7 +45,7 @@ public class NPMImpl implements NodePoolManager {
     }
 
     private void loadPool() {
-	useThePool = Boolean.parseBoolean(DeploymentManagerConfiguration.get("IDLE_POOL"));
+	useThePool = Boolean.parseBoolean(EEConfiguration.get("IDLE_POOL"));
 	if (useThePool) {
 	    IdlePoolFactory factory = new IdlePoolFactory();
 	    idlePool = factory.getIdlePool(cloudConfiguration);

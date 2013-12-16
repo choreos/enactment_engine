@@ -16,7 +16,7 @@ import org.ow2.choreos.chors.ChoreographyDeployer;
 import org.ow2.choreos.chors.client.ChorDeployerClient;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
-import org.ow2.choreos.ee.config.ChoreographyDeployerConfiguration;
+import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.ee.rest.EnactmentEngineServer;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.PackageType;
@@ -65,8 +65,8 @@ public class RestEnactmentTest {
 
     @Before
     public void setUp() {
-        ChoreographyDeployerConfiguration.set("BUS", "false");
-        ChoreographyDeployerConfiguration.set("IDLE_POOL", "false");
+        EEConfiguration.set("BUS", "false");
+        EEConfiguration.set("IDLE_POOL", "false");
         models = new ModelsForTest(ServiceType.SOAP, PackageType.COMMAND_LINE);
         chorSpec = models.getChorSpec();
     }

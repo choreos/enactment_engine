@@ -10,7 +10,7 @@ import org.ow2.choreos.chors.datamodel.LegacyService;
 import org.ow2.choreos.ee.bus.ServicesProxifier;
 import org.ow2.choreos.ee.bus.TopologyConfigurator;
 import org.ow2.choreos.ee.bus.TopologyNotConfigureException;
-import org.ow2.choreos.ee.config.ChoreographyDeployerConfiguration;
+import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.ee.context.ContextCaster;
 import org.ow2.choreos.services.datamodel.DeployableService;
 
@@ -64,7 +64,7 @@ public class ChoreographyEnacter {
     }
 
     private boolean useTheBus() {
-	return Boolean.parseBoolean(ChoreographyDeployerConfiguration.get(BUS_PROPERTY));
+	return Boolean.parseBoolean(EEConfiguration.get(BUS_PROPERTY));
     }
 
     private void proxifyServices() {
