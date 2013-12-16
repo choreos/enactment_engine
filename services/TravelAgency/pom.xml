@@ -7,7 +7,7 @@
 	<groupId>org.ow2.choreos</groupId>
 	<artifactId>TravelAgency</artifactId>
 	<version>3.0.0</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<dependencies>
 		<dependency>

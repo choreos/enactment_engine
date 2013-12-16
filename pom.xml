@@ -74,6 +74,8 @@
 	<module>EnactmentEngine</module>
     <module>EnactmentEngineAPI</module>
     <module>PlatformMonitoring</module>
+    <module>services/Airline</module>
+    <module>services/TravelAgency</module>
   </modules>
   <repositories>
     <repository>

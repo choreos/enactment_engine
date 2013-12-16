@@ -9,3 +9,5 @@
 *~
 **/.project
 *.log
+Airline/dependency-reduced-pom.xml
+TravelAgency/dependency-reduced-pom.xml
