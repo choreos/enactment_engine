@@ -20,8 +20,11 @@ Building JARs for Airline and Travel Agency services
 ----------------------------------------------------
 
 Edit the pom file to change the "packaging" from "war" to "jar".
-After this, it is enough to run ==mvn clean package==. 
-Do not run ==mvn install== to avoid messing up EE dependencies.
+
+After this, it is enough to run `mvn clean package`. 
+
+Do not run `mvn install` to avoid messing up EE dependencies.
+
 The JAR file will be generated on the target folder.
 
 
