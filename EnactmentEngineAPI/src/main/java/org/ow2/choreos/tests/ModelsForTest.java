@@ -26,10 +26,10 @@ public class ModelsForTest {
     public static final String AIRLINE = "airline";
     public static final String TRAVEL_AGENCY = "travelagency";
 
-    public static String AIRLINE_JAR = "http://valinhos.ime.usp.br:54080/enact_test/v2-2/airline-service.jar";
-    public static String TRAVEL_AGENCY_JAR = "http://valinhos.ime.usp.br:54080/enact_test/v2-2/travel-agency-service.jar";
-    public static String AIRLINE_WAR = "http://valinhos.ime.usp.br:54080/enact_test/v2-2/airline.war";
-    public static String TRAVEL_AGENCY_WAR = "http://valinhos.ime.usp.br:54080/enact_test/v2-2/travelagency.war";
+    public static String AIRLINE_JAR = "http://valinhos.ime.usp.br:54080/enact_test/v3/Airline-3.0.0.jar";
+    public static String TRAVEL_AGENCY_JAR = "http://valinhos.ime.usp.br:54080/enact_test/v3/TravelAgency-3.0.0.jar";
+    public static String AIRLINE_WAR = "http://valinhos.ime.usp.br:54080/enact_test/v3/Airline-3.0.0.war";
+    public static String TRAVEL_AGENCY_WAR = "http://valinhos.ime.usp.br:54080/enact_test/v3/TravelAgency-3.0.0.war";
 
     public static final String AIRLINE_IP = "192.168.56.101";
     public static final String TRAVEL_AGENCY_IP = "192.168.56.102";
