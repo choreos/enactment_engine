@@ -12,6 +12,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.ow2.choreos.TravelAgency;
+import org.ow2.choreos.TravelAgencyClientFactory;
 import org.ow2.choreos.chors.ChoreographyDeployer;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
@@ -24,9 +26,6 @@ import org.ow2.choreos.tests.IntegrationTest;
 import org.ow2.choreos.tests.ModelsForTest;
 import org.ow2.choreos.utils.Alarm;
 import org.ow2.choreos.utils.LogConfigurator;
-
-import eu.choreos.vv.clientgenerator.Item;
-import eu.choreos.vv.clientgenerator.WSClient;
 
 /**
  * This test will enact a choreography with two services. One of them will serve
@@ -69,14 +68,14 @@ public class IncreaseNumberOfInstancesTest {
 	Service airline = chor.getDeployableServiceBySpecName(ModelsForTest.AIRLINE);
 
 	Service travel = chor.getDeployableServiceBySpecName(ModelsForTest.TRAVEL_AGENCY);
-	WSClient client = new WSClient(travel.getUris().get(0) + "?wsdl");
+        String wsdl = travel.getUris().get(0) + "?wsdl";
+        TravelAgencyClientFactory factory = new TravelAgencyClientFactory(wsdl);
+        TravelAgency client = factory.getClient();
 
 	String codes, codes2, codes3 = "";
 
-	Item response = client.request("buyTrip");
-	codes = response.getChild("return").getContent();
-	response = client.request("buyTrip");
-	codes2 = response.getChild("return").getContent();
+	codes = client.buyTrip();
+	codes2 = client.buyTrip();
 
 	assertEquals(2, airline.getUris().size());
 	assertTrue(codes.startsWith("33") && codes.endsWith("--22"));
@@ -90,14 +89,13 @@ public class IncreaseNumberOfInstancesTest {
 
 	airline = chor.getDeployableServiceBySpecName(ModelsForTest.AIRLINE);
 	travel = chor.getDeployableServiceBySpecName(ModelsForTest.TRAVEL_AGENCY);
-	client = new WSClient(travel.getUris().get(0) + "?wsdl");
-
-	response = client.request("buyTrip");
-	codes = response.getChild("return").getContent();
-	response = client.request("buyTrip");
-	codes2 = response.getChild("return").getContent();
-	response = client.request("buyTrip");
-	codes3 = response.getChild("return").getContent();
+	wsdl = travel.getUris().get(0) + "?wsdl";
+        factory = new TravelAgencyClientFactory(wsdl);
+        client = factory.getClient();
+	
+	codes = client.buyTrip();
+	codes2 = client.buyTrip();
+	codes3 = client.buyTrip();
 
 	assertEquals(3, airline.getUris().size());
 	assertTrue(codes.startsWith("33") && codes.endsWith("--22"));

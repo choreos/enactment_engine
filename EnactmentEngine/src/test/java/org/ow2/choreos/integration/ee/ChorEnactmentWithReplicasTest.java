@@ -12,6 +12,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.ow2.choreos.TravelAgency;
+import org.ow2.choreos.TravelAgencyClientFactory;
 import org.ow2.choreos.chors.ChoreographyDeployer;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
@@ -23,9 +25,6 @@ import org.ow2.choreos.services.datamodel.ServiceType;
 import org.ow2.choreos.tests.IntegrationTest;
 import org.ow2.choreos.tests.ModelsForTest;
 import org.ow2.choreos.utils.LogConfigurator;
-
-import eu.choreos.vv.clientgenerator.Item;
-import eu.choreos.vv.clientgenerator.WSClient;
 
 /**
  * This test will enact a choreography with two services. The Airline service
@@ -67,14 +66,15 @@ public class ChorEnactmentWithReplicasTest {
         assertEquals(2, airline.getUris().size());
 
         Service travel = chor.getDeployableServiceBySpecName(ModelsForTest.TRAVEL_AGENCY);
-        WSClient client = new WSClient(travel.getUris().get(0) + "?wsdl");
-        Item response = client.request("buyTrip");
-        String codes = response.getChild("return").getContent();
+        String wsdl = travel.getUris().get(0) + "?wsdl";
+        TravelAgencyClientFactory factory = new TravelAgencyClientFactory(wsdl);
+        TravelAgency client = factory.getClient();
+        String codes = client.buyTrip();
         assertTrue(codes.startsWith("33") && codes.endsWith("--22"));
 
-        WSClient client2 = new WSClient(travel.getUris().get(0) + "?wsdl");
-        Item response2 = client2.request("buyTrip");
-        String codes2 = response2.getChild("return").getContent();
+        TravelAgencyClientFactory factory2 = new TravelAgencyClientFactory(wsdl);
+        TravelAgency client2 = factory2.getClient();
+        String codes2 = client2.buyTrip();
         assertTrue(codes2.startsWith("33") && codes2.endsWith("--22"));
 
         assertFalse(codes.equals(codes2));

@@ -8,16 +8,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
+import java.net.MalformedURLException;
 
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.client.WebClient;
-import org.apache.xmlbeans.XmlException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.ow2.choreos.Airline;
+import org.ow2.choreos.AirlineClientFactory;
 import org.ow2.choreos.ee.bus.EasyESBException;
 import org.ow2.choreos.ee.bus.EasyESBNode;
 import org.ow2.choreos.ee.bus.ProxificationTask;
@@ -44,15 +45,11 @@ import org.ow2.choreos.tests.IntegrationTest;
 import org.ow2.choreos.tests.ModelsForTest;
 import org.ow2.choreos.utils.LogConfigurator;
 
-import eu.choreos.vv.clientgenerator.Item;
-import eu.choreos.vv.clientgenerator.WSClient;
-import eu.choreos.vv.exceptions.FrameworkException;
-import eu.choreos.vv.exceptions.InvalidOperationNameException;
-import eu.choreos.vv.exceptions.WSDLException;
-
 /**
  * Deploys a service and a EasyESB node and proxify the service. Before run the
  * test, start the deployment manager.
+ * 
+ * IT DOES NOT PASS, see issue #1
  * 
  * @author leonardo
  * 
@@ -126,14 +123,12 @@ public class ProxifyServiceTest {
 	assertEquals(200, response.getStatus());
     }
 
-    private void invokeService() throws XmlException, IOException, FrameworkException, WSDLException,
-	    InvalidOperationNameException, NoSuchFieldException {
+    private void invokeService() throws MalformedURLException {
 	String wsdl = proxifiedUrl + "?wsdl";
-	WSClient wsClient = new WSClient(wsdl);
-	wsClient.setEndpoint(proxifiedUrl);
+	AirlineClientFactory factory = new AirlineClientFactory(wsdl);
+	Airline wsClient = factory.getClient();
 	System.out.println("Accessing buyFlight of " + wsdl);
-	Item responseItem = wsClient.request("buyFlight");
-	String ticketNumber = responseItem.getChild("return").getContent();
+	String ticketNumber = wsClient.buyFlight();
 	assertTrue(ticketNumber.startsWith("33"));
     }
 

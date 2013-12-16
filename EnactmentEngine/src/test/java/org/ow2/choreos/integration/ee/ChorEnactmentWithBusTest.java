@@ -11,6 +11,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.ow2.choreos.TravelAgency;
+import org.ow2.choreos.TravelAgencyClientFactory;
 import org.ow2.choreos.chors.ChoreographyDeployer;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
@@ -23,9 +25,6 @@ import org.ow2.choreos.services.datamodel.ServiceType;
 import org.ow2.choreos.tests.IntegrationTest;
 import org.ow2.choreos.tests.ModelsForTest;
 import org.ow2.choreos.utils.LogConfigurator;
-
-import eu.choreos.vv.clientgenerator.Item;
-import eu.choreos.vv.clientgenerator.WSClient;
 
 /**
  * This test will enact a choreography with two services, with a service
@@ -77,10 +76,9 @@ public class ChorEnactmentWithBusTest {
         assertTrue(airlineProxifiedUri.contains(":8180/services/AirlineServicePortClientProxyEndpoint"));
         assertTrue(travelProxifiedUri.contains(":8180/services/TravelAgencyServicePortClientProxyEndpoint"));
 
-        WSClient client = new WSClient(travelProxifiedUri + "?wsdl");
-        client.setEndpoint(travelProxifiedUri);
-        Item response = client.request("buyTrip");
-        String codes = response.getChild("return").getContent();
+        TravelAgencyClientFactory factory = new TravelAgencyClientFactory(travelProxifiedUri + "?wsdl");
+        TravelAgency client = factory.getClient();
+        String codes = client.buyTrip();
         assertTrue(codes.startsWith("33") && codes.endsWith("--22"));
     }
 }

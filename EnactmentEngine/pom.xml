@@ -106,23 +106,6 @@
 			<classifier>classes</classifier>
 		</dependency>			
 		<dependency>
-			<groupId>eu.choreos</groupId>
-			<artifactId>rehearsal</artifactId>
-			<version>0.13</version>
-			<!-- The Jetty version used by Rehearsal conflicts with the Jetty version 
-				used by Apache CXF  -->
-			<exclusions>
-				<exclusion>
-					<artifactId>jetty</artifactId>
-					<groupId>jetty</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>jetty-util</artifactId>
-					<groupId>jetty</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
 			<groupId>glimpse</groupId>
 			<artifactId>ComplexEventRule</artifactId>
 			<version>3.3.1</version>
