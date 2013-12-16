@@ -6,8 +6,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.ow2.choreos</groupId>
 	<artifactId>TravelAgency</artifactId>
-	<version>1.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<version>3.0.0</version>
+	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
@@ -32,9 +32,43 @@
 		<dependency>
 			<groupId>org.ow2.choreos</groupId>
 			<artifactId>Airline</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>3.0.0</version>
 			<classifier>classes</classifier>
 		</dependency>
 	</dependencies>
 
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<configuration>
+					<attachClasses>true</attachClasses>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>org.ow2.choreos.TravelAgencyStarter</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>			
+		</plugins>
+	</build>
+	
 </project>
