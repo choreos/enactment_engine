@@ -9,18 +9,6 @@ public interface EasyESBNode {
 
     public String getAdminEndpoint();
 
-    /**
-     * Binds and exposes a service into the EasyESB node.
-     * 
-     * @param serviceUrl
-     * @param serviceWsdl
-     * @return the URI to access the service exposed by the bus
-     * @throws EasyESBException
-     */
-    public String proxifyService(String serviceUrl, String serviceWsdl) throws EasyESBException;
-
     public void addNeighbour(EasyESBNode neighbour) throws EasyESBException;
-    
-    public void notifyEasierBSM(String bsmAdminEndpoint) throws EasyESBException;
 
 }

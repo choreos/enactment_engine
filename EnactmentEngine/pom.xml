@@ -69,28 +69,8 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<artifactId>management-client</artifactId>
-			<groupId>com.ebmwebsourcing.esstar.esmanagement</groupId>
-			<version>v2013-01-10</version>
-		</dependency>
-		<dependency>
 			<artifactId>ws-binding-admin-client</artifactId>
 			<groupId>com.ebmwebsourcing.easyesb</groupId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<artifactId>ws-binding-bsmadmin-client</artifactId>
-			<groupId>com.ebmwebsourcing.easierbsm</groupId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<artifactId>esb-distribution</artifactId>
-			<groupId>com.ebmwebsourcing.easyesb</groupId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<artifactId>bsm-distribution</artifactId>
-			<groupId>com.ebmwebsourcing.easierbsm</groupId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -152,11 +132,6 @@
 			<groupId>org.jclouds.driver</groupId>
 			<artifactId>jclouds-slf4j</artifactId>
 			<version>1.6.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.choreos</groupId>
-			<artifactId>Commons</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-configuration</groupId>
