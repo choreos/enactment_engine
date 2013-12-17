@@ -1,0 +1,11 @@
+#!/bin/bash
+
+touch /var/run/gmetric-disk-io-collector
+while true; do
+
+/usr/bin/gmetric -n disk_bytes_read -v "`iostat -d | sed -ne 4p | awk '{print $3}'`" -t double -u KB/sec
+/usr/bin/gmetric -n disk_bytes_written -v "`iostat -d | sed -ne 4p | awk '{print $4}'`" -t double -u KB/sec
+
+sleep 5;
+done
+

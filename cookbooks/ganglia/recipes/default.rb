@@ -90,3 +90,17 @@ execute "gmetric-free-ram" do
 	creates "/var/run/gmetric-memory-collector"
 	action :run
 end
+
+template "#{ENV['HOME']}/gmetric-disk-io.sh" do
+        source "gmetric-disk-io.sh.erb"
+        owner "ubuntu"
+        group "ubuntu"
+        mode 0755
+end
+
+execute "gmetric-disk-io" do
+        command ". #{ENV['HOME']}/gmetric-disk-io.sh &"
+        creates "/var/run/gmetric-disk-io-collector"
+        action :run
+end
+

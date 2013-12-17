@@ -1,0 +1,33 @@
+{
+  "name": "sysstat",
+  "description": "Installs/Configures sysstat",
+  "long_description": "Description\n===========\n\nInstalls/Configures sysstat\n\nRequirements\n============\n\n* Chef 0.8+\n\nAttributes\n==========\n\n* default['sysstat']['settings'] - Path to default settings file.\n* default['sysstat']['enabled'] - Run sysstat on boot.\n\nUsage\n=====\n\n    \"run_list\": [\n      \"recipe[sysstat]\"\n    ]\n\ndefault\n----\n\nInstalls/Configures sysstat\n\nTODO\n====\n\n* Correct tests once 10.14.0 Chef released.\n\nLicense and Author\n==================\n\nAuthor:: John Dewey (<john@dewey.ws>)\n\nCopyright 2012, John Dewey\n\nLicensed under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.\n",
+  "maintainer": "John Dewey",
+  "maintainer_email": "john@dewey.ws",
+  "license": "Apache 2.0",
+  "platforms": {
+    "centos": ">= 0.0.0",
+    "debian": ">= 0.0.0",
+    "ubuntu": ">= 0.0.0"
+  },
+  "dependencies": {
+  },
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
+  "attributes": {
+  },
+  "groupings": {
+  },
+  "recipes": {
+    "sysstat": "Installs/Configures sysstat"
+  },
+  "version": "1.2.0"
+}
