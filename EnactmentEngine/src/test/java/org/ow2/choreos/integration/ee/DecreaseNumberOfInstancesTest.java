@@ -17,10 +17,10 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.ow2.choreos.TravelAgency;
 import org.ow2.choreos.TravelAgencyClientFactory;
-import org.ow2.choreos.chors.ChoreographyDeployer;
+import org.ow2.choreos.chors.EnactmentEngine;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
-import org.ow2.choreos.ee.ChoreographyDeployerImpl;
+import org.ow2.choreos.ee.EEImpl;
 import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.invoker.Invoker;
 import org.ow2.choreos.invoker.InvokerBuilder;
@@ -66,7 +66,7 @@ public class DecreaseNumberOfInstancesTest {
     @Test
     public void shouldEnactChoreographyWithTwoAirlineServicesAndChangeToThree() throws Exception {
 
-        ChoreographyDeployer ee = new ChoreographyDeployerImpl();
+        EnactmentEngine ee = new EEImpl();
 
         String chorId = ee.createChoreography(spec);
         Choreography chor = ee.enactChoreography(chorId);

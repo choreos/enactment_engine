@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.ow2.choreos.chors.ChoreographyDeployer;
+import org.ow2.choreos.chors.EnactmentEngine;
 import org.ow2.choreos.chors.ChoreographyNotFoundException;
-import org.ow2.choreos.chors.client.ChorDeployerClient;
+import org.ow2.choreos.chors.client.EEClient;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.ee.ChorRegistry;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
@@ -19,14 +19,14 @@ public class ChoreographyRegistryHelper {
 
     private ChorRegistry registry = ChorRegistry.getInstance();
 
-    private ChoreographyDeployer chorClient;
+    private EnactmentEngine chorClient;
 
     public ChoreographyRegistryHelper() {
 	setClients();
     }
 
     private void setClients() {
-	this.chorClient = new ChorDeployerClient(CHOR_DEPLOYER_URI);
+	this.chorClient = new EEClient(CHOR_DEPLOYER_URI);
     }
 
     public List<DeployableService> getServicesHostedOn(String ipAddress) {
@@ -70,7 +70,7 @@ public class ChoreographyRegistryHelper {
 	return chor;
     }
 
-    public ChoreographyDeployer getChorClient() {
+    public EnactmentEngine getChorClient() {
 	return chorClient;
     }
 

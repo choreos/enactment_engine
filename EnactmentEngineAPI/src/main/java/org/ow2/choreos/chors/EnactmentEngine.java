@@ -7,7 +7,7 @@ package org.ow2.choreos.chors;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 
-public interface ChoreographyDeployer {
+public interface EnactmentEngine {
 
     /**
      * Creates a new choreography that still have to be enacted.

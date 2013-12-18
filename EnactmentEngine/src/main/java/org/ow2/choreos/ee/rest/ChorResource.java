@@ -20,12 +20,12 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import org.ow2.choreos.chors.ChoreographyDeployer;
+import org.ow2.choreos.chors.EnactmentEngine;
 import org.ow2.choreos.chors.ChoreographyNotFoundException;
 import org.ow2.choreos.chors.EnactmentException;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
-import org.ow2.choreos.ee.ChoreographyDeployerImpl;
+import org.ow2.choreos.ee.EEImpl;
 
 /**
  * Enactment Engine REST API. Resource: chors (choreographies).
@@ -36,7 +36,7 @@ import org.ow2.choreos.ee.ChoreographyDeployerImpl;
 @Path("chors")
 public class ChorResource {
 
-    private ChoreographyDeployer chorDeployer = new ChoreographyDeployerImpl();
+    private EnactmentEngine chorDeployer = new EEImpl();
 
     /**
      * POST /chors

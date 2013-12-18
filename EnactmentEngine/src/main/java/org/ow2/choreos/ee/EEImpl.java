@@ -5,17 +5,17 @@
 package org.ow2.choreos.ee;
 
 import org.apache.log4j.Logger;
-import org.ow2.choreos.chors.ChoreographyDeployer;
+import org.ow2.choreos.chors.EnactmentEngine;
 import org.ow2.choreos.chors.ChoreographyNotFoundException;
 import org.ow2.choreos.chors.EnactmentException;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 
-public class ChoreographyDeployerImpl implements ChoreographyDeployer {
+public class EEImpl implements EnactmentEngine {
 
     private ChorRegistry reg = ChorRegistry.getInstance();
 
-    private Logger logger = Logger.getLogger(ChoreographyDeployerImpl.class);
+    private Logger logger = Logger.getLogger(EEImpl.class);
 
     @Override
     public String createChoreography(ChoreographySpec chor) {

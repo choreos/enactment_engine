@@ -14,8 +14,8 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.ow2.choreos.TravelAgency;
 import org.ow2.choreos.TravelAgencyClientFactory;
-import org.ow2.choreos.chors.ChoreographyDeployer;
-import org.ow2.choreos.chors.client.ChorDeployerClient;
+import org.ow2.choreos.chors.EnactmentEngine;
+import org.ow2.choreos.chors.client.EEClient;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 import org.ow2.choreos.ee.config.EEConfiguration;
@@ -74,7 +74,7 @@ public class RestEnactmentTest {
     public void shouldConfigureAChoreography() throws Exception {
 
         String host = EnactmentEngineServer.URL;
-        ChoreographyDeployer ee = new ChorDeployerClient(host);
+        EnactmentEngine ee = new EEClient(host);
         String chorId = ee.createChoreography(chorSpec);
 
         assertEquals("1", chorId);
@@ -84,7 +84,7 @@ public class RestEnactmentTest {
     public void shouldRetrieveChoreographySpec() throws Exception {
 
         String host = EnactmentEngineServer.URL;
-        ChoreographyDeployer ee = new ChorDeployerClient(host);
+        EnactmentEngine ee = new EEClient(host);
         String chorId = ee.createChoreography(chorSpec);
         Choreography chor = ee.getChoreography(chorId);
 
@@ -99,7 +99,7 @@ public class RestEnactmentTest {
     public void shouldEnactChoreography() throws Exception {
 
         String host = EnactmentEngineServer.URL;
-        ChoreographyDeployer ee = new ChorDeployerClient(host);
+        EnactmentEngine ee = new EEClient(host);
         String chorId = ee.createChoreography(chorSpec);
         Choreography chor = ee.enactChoreography(chorId);
         System.out.println("A chor: " + chor);
