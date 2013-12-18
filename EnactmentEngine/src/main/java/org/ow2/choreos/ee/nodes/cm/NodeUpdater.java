@@ -50,7 +50,6 @@ public class NodeUpdater {
     }
 
     public void update() throws NodeNotUpdatedException {
-        System.out.println("*** updating node in NodeUpdater " + this);
         UpdateInvokerTask updateTask = new UpdateInvokerTask();
         Future<Void> future = singleThreadExecutor.submit(updateTask);
         checkFuture(node, future);
@@ -75,6 +74,8 @@ public class NodeUpdater {
         throw e;
     }
 
+    // this task is necessary to guarantee that only one update
+    // is run on node per time. This task is run by the singleThreadExecutor.
     private class UpdateInvokerTask implements Callable<Void> {
 
         @Override
@@ -87,6 +88,7 @@ public class NodeUpdater {
         }
     }
 
+    // and this task is just the invoker task
     private class ChefSoloTask implements Callable<Void> {
 
         @Override
@@ -108,7 +110,6 @@ public class NodeUpdater {
 
         private void processHandlers() {
             for (UpdateHandler h : handlers.getHandlersForProcessing()) {
-                System.out.println("Running handler for node " + node);
                 h.handle();
             }
         }

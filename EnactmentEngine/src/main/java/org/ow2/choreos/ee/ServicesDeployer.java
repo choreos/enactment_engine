@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.ow2.choreos.chors.EnactmentException;
 import org.ow2.choreos.chors.datamodel.Choreography;
+import org.ow2.choreos.ee.nodes.cm.NodesUpdater;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
 

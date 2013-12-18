@@ -1,4 +1,4 @@
-package org.ow2.choreos.ee;
+package org.ow2.choreos.ee.nodes.cm;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.ee.nodes.cm.NodeUpdater;
 import org.ow2.choreos.ee.nodes.cm.NodeUpdaters;
+import org.ow2.choreos.ee.nodes.cm.NodesUpdater;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.PackageType;
 import org.ow2.choreos.services.datamodel.ServiceType;
