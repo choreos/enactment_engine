@@ -41,7 +41,7 @@ public class NodeUpdater {
 
     private Logger logger = Logger.getLogger(NodeUpdater.class);
 
-    public NodeUpdater(CloudNode node) {
+    NodeUpdater(CloudNode node) {
         this.node = node;
     }
 
@@ -50,6 +50,7 @@ public class NodeUpdater {
     }
 
     public void update() throws NodeNotUpdatedException {
+        System.out.println("*** updating node in NodeUpdater " + this);
         UpdateInvokerTask updateTask = new UpdateInvokerTask();
         Future<Void> future = singleThreadExecutor.submit(updateTask);
         checkFuture(node, future);
@@ -90,12 +91,13 @@ public class NodeUpdater {
 
         @Override
         public Void call() throws Exception {
-            logger.debug("updating node " + node.getId());
+            logger.debug("Updating node " + node.getId());
             handlers.fetchHandlers();
             SshUtil ssh = getSsh();
             ssh.runCommand(CHEF_SOLO_COMMAND);
             // if ssh did not throw an exception, then:
             processHandlers();
+            logger.info("Node " + node + " updated");
             return null;
         }
 
@@ -105,8 +107,10 @@ public class NodeUpdater {
         }
 
         private void processHandlers() {
-            for (UpdateHandler h : handlers.getHandlersForProcessing())
+            for (UpdateHandler h : handlers.getHandlersForProcessing()) {
+                System.out.println("Running handler for node " + node);
                 h.handle();
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package org.ow2.choreos.ee;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
@@ -8,9 +9,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.ow2.choreos.chors.datamodel.Choreography;
-import org.ow2.choreos.ee.NodesUpdater;
-import org.ow2.choreos.ee.rest.RESTClientsRetriever;
-import org.ow2.choreos.nodes.NodePoolManager;
+import org.ow2.choreos.ee.nodes.cm.NodeUpdater;
+import org.ow2.choreos.ee.nodes.cm.NodeUpdaters;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.PackageType;
 import org.ow2.choreos.services.datamodel.ServiceType;
@@ -31,20 +31,21 @@ public class NodesUpdaterTest {
     @Test
     public void shouldUpdateAllNodes() throws Exception {
 
-        NodePoolManager npmMock = mock(NodePoolManager.class);
-        RESTClientsRetriever.npmForTest = npmMock;
-        RESTClientsRetriever.testing = true;
+        NodeUpdater updaterMock = mock(NodeUpdater.class);
+        NodeUpdaters.updaterForTest = updaterMock;
+        NodeUpdaters.testing = true;
 
         List<DeployableService> services = chor.getDeployableServices();
         NodesUpdater updater = new NodesUpdater(services, chor.getId());
         updater.updateNodes();
 
+        int nodesAmount = 0;
         for (DeployableService svc: services) {
-            String nodeId = svc.getSelectedNodes().iterator().next().getId();
-            verify(npmMock).updateNode(nodeId);
+            nodesAmount += svc.getSelectedNodes().size();
         }
+        verify(updaterMock, times(nodesAmount)).update();
         
-        RESTClientsRetriever.testing = false;
+        NodeUpdaters.testing = false;
     }
 
 }

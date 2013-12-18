@@ -63,9 +63,4 @@ public class NPMStub implements NodePoolManager {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void updateNode(String nodeId) throws NodeNotUpdatedException, NodeNotFoundException {
-        throw new UnsupportedOperationException();
-    }
-
 }

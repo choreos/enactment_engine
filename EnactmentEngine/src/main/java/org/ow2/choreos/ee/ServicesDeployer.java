@@ -33,7 +33,6 @@ public class ServicesDeployer {
     public List<DeployableService> deployServices() throws EnactmentException {
 	prepare();
 	updateNodes();
-
 	List<DeployableService> deployedServices = getDeployedServices();
 	return deployedServices;
     }

@@ -16,7 +16,6 @@ import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.ow2.choreos.nodes.NodeNotCreatedException;
 import org.ow2.choreos.nodes.NodeNotDestroyed;
 import org.ow2.choreos.nodes.NodeNotFoundException;
-import org.ow2.choreos.nodes.NodeNotUpdatedException;
 import org.ow2.choreos.nodes.NodePoolManager;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.nodes.datamodel.NodeSpec;
@@ -89,18 +88,6 @@ public class NodesClient implements NodePoolManager {
         }
 
         return node;
-    }
-
-    @Override
-    public void updateNode(String nodeId) throws NodeNotUpdatedException {
-        WebClient client = setupClient();
-        client.path("nodes");
-        client.path(nodeId);
-        client.path("update");
-        Response response = client.post(null);
-        if (response.getStatus() != 200) {
-            throw new NodeNotUpdatedException(nodeId);
-        }
     }
 
     @Override

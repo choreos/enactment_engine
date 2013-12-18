@@ -14,11 +14,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.ow2.choreos.ee.LocationsTest;
-import org.ow2.choreos.ee.config.CloudConfiguration;
-import org.ow2.choreos.ee.nodes.NPMFactory;
+import org.ow2.choreos.ee.nodes.cm.NodeUpdater;
+import org.ow2.choreos.ee.nodes.cm.NodeUpdaters;
 import org.ow2.choreos.ee.services.ServiceCreator;
 import org.ow2.choreos.ee.services.ServiceCreatorFactory;
-import org.ow2.choreos.nodes.NodePoolManager;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
@@ -34,12 +33,6 @@ public class CDDeployTest {
     // a known CD configuration file
     public static String CD_LOCATION = LocationsTest.get("CD_LOCATION");
 
-    /*
-     * You may edit this attr to the actual cloud account you want to use
-     */
-    private static final String CLOUD_ACCOUNT = CloudConfiguration.DEFAULT;
-
-    private final NodePoolManager npm = NPMFactory.getNewNPMInstance(CLOUD_ACCOUNT);
     private ServiceCreator serviceCreator = ServiceCreatorFactory.getNewInstance();
 
     private WebClient client;
@@ -66,7 +59,8 @@ public class CDDeployTest {
 
 	DeployableService service = serviceCreator.createService(spec);
 	CloudNode node = service.getSelectedNodes().iterator().next();
-	npm.updateNode(node.getId());
+	NodeUpdater nodeUpdater = NodeUpdaters.getUpdaterFor(node);
+	nodeUpdater.update();
 	Thread.sleep(5000);
 
 	ServiceInstance instance = service.getInstances().get(0);

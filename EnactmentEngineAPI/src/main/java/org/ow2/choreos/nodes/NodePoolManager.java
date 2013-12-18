@@ -59,19 +59,4 @@ public interface NodePoolManager {
      */
     public void destroyNodes() throws NodeNotDestroyed;
 
-    /**
-     * Apply configurations on selected node.
-     * 
-     * Such configurations are the ones requested through the
-     * <code>applyConfig</code> operation
-     * 
-     * @param nodeId
-     *            the id of the node to be upgraded
-     * @throws NodeNotUpdatedException
-     *             if could not upgrade the node
-     * @throws NodeNotFoundException
-     *             if the node does not exist
-     */
-    public void updateNode(String nodeId) throws NodeNotUpdatedException, NodeNotFoundException;
-
 }

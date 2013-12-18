@@ -152,7 +152,6 @@ public class SoapContextSender implements ContextSender {
         } catch (TransformerException e) {
             e.printStackTrace();
         }
-        System.out.println();
     }
 
 }

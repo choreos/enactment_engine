@@ -27,7 +27,6 @@ import org.ow2.choreos.ee.nodes.NPMFactory;
 import org.ow2.choreos.nodes.NodeNotCreatedException;
 import org.ow2.choreos.nodes.NodeNotDestroyed;
 import org.ow2.choreos.nodes.NodeNotFoundException;
-import org.ow2.choreos.nodes.NodeNotUpdatedException;
 import org.ow2.choreos.nodes.NodePoolManager;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.nodes.datamodel.NodeSpec;
@@ -109,40 +108,6 @@ public class NodesResource {
 	    logger.error("Node " + nodeId + " not found");
 	    response = Response.status(Status.NOT_FOUND).build();
 	}
-	return response;
-    }
-
-    /**
-     * POST /nodes/{nodeId}/update
-     * 
-     * Updates and installs new software installed in the selected node.
-     * 
-     * @param nodeId
-     *            the node id, provided in the URI
-     * @return HTTP code 200 (OK). HTTP code 404 (NOT_FOUND) if nodeId is not
-     *         properly provided. HTTP code 500 (INTERNAL_SERVER_ERROR) if node
-     *         is not destroyed.
-     */
-    @POST
-    @Path("{node_id:.+}/update")
-    public Response updateNode(@PathParam("cloud_accout") String cloudAccount, @PathParam("node_id") String nodeId) {
-
-	logger.debug("Request to update node " + nodeId);
-
-	Response response;
-	try {
-	    NodePoolManager npm = NPMFactory.getNewNPMInstance(cloudAccount);
-	    npm.updateNode(nodeId);
-	    logger.info("Node " + nodeId + " updated");
-	    response = Response.status(Status.OK).build();
-	} catch (NodeNotUpdatedException e) {
-	    logger.error("Node " + nodeId + " not updated", e);
-	    response = Response.status(Status.NOT_FOUND).build();
-	} catch (NodeNotFoundException e) {
-	    logger.error("Node " + nodeId + " not updated", e);
-	    response = Response.status(Status.INTERNAL_SERVER_ERROR).build();
-	}
-
 	return response;
     }
 
