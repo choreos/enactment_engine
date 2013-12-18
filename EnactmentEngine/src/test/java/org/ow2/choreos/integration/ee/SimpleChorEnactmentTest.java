@@ -22,6 +22,7 @@ import org.ow2.choreos.services.datamodel.Service;
 import org.ow2.choreos.services.datamodel.ServiceType;
 import org.ow2.choreos.tests.IntegrationTest;
 import org.ow2.choreos.tests.ModelsForTest;
+import org.ow2.choreos.utils.Alarm;
 import org.ow2.choreos.utils.LogConfigurator;
 
 /**
@@ -67,5 +68,8 @@ public class SimpleChorEnactmentTest {
         String codes = client.buyTrip();
 
         assertTrue(codes.startsWith("33") && codes.endsWith("--22"));
+        
+        Alarm alarm = new Alarm();
+        alarm.play();
     }
 }
