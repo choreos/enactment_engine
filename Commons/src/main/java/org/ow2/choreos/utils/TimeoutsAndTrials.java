@@ -13,6 +13,9 @@ public class TimeoutsAndTrials {
 
     private static final String FILE_PATH = "timeouts_and_trials.properties";
 
+    private static final int TRIALS_DEFAULT = 1;
+    private static final int PAUSE_DEFAULT = 0;
+
     private final Configuration configuration;
 
     private static TimeoutsAndTrials INSTANCE = new TimeoutsAndTrials();
@@ -44,15 +47,23 @@ public class TimeoutsAndTrials {
      * @return
      */
     public static int getTimeout(String taskName) {
-        return get(taskName = "_TIMEOUT");
+        return get(taskName + "_TIMEOUT");
     }
 
     public static int getTrials(String taskName) {
-        return get(taskName = "_TRIALS");
+        try {
+            return get(taskName + "_TRIALS");
+        } catch (IllegalArgumentException e) {
+            return TRIALS_DEFAULT;
+        }
     }
 
     public static int getPauseBetweenTrials(String taskName) {
-        return get(taskName = "_PAUSE");
+        try {
+            return get(taskName + "_PAUSE");
+        } catch (IllegalArgumentException e) {
+            return PAUSE_DEFAULT;
+        }
     }
 
     /**
