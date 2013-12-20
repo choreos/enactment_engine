@@ -15,8 +15,6 @@ import org.apache.log4j.Logger;
 import org.ow2.choreos.chors.EnactmentException;
 import org.ow2.choreos.ee.services.ServiceCreator;
 import org.ow2.choreos.ee.services.ServiceCreatorFactory;
-import org.ow2.choreos.invoker.Invoker;
-import org.ow2.choreos.invoker.InvokerFactory;
 import org.ow2.choreos.services.ServiceNotCreatedException;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
@@ -24,8 +22,6 @@ import org.ow2.choreos.utils.Concurrency;
 import org.ow2.choreos.utils.TimeoutsAndTrials;
 
 public class NewDeploymentPreparing {
-
-    private static final String TASK_NAME = "CREATE_SERVICE";
 
     private String chorId;
     private List<DeployableServiceSpec> specs;
@@ -64,7 +60,7 @@ public class NewDeploymentPreparing {
 	executor = Executors.newFixedThreadPool(N);
 	futures = new HashMap<DeployableServiceSpec, Future<DeployableService>>();
 	for (DeployableServiceSpec choreographyServiceSpec : specs) {
-	    CreateServiceInvoker invoker = new CreateServiceInvoker(choreographyServiceSpec);
+	    CreateServiceTask invoker = new CreateServiceTask(choreographyServiceSpec);
 	    Future<DeployableService> future = executor.submit(invoker);
 	    futures.put(choreographyServiceSpec, future);
 	}
@@ -96,23 +92,6 @@ public class NewDeploymentPreparing {
 	if (configuredServices == null || configuredServices.isEmpty()) {
 	    logger.error("No services configured in chor " + chorId + "!");
 	    throw new EnactmentException();
-	}
-    }
-
-    private class CreateServiceInvoker implements Callable<DeployableService> {
-
-	DeployableServiceSpec spec;
-
-	public CreateServiceInvoker(DeployableServiceSpec serviceSpec) {
-	    this.spec = serviceSpec;
-	}
-
-	@Override
-	public DeployableService call() throws Exception {
-	    CreateServiceTask task = new CreateServiceTask(spec);
-	    InvokerFactory<DeployableService> factory = new InvokerFactory<DeployableService>();
-	    Invoker<DeployableService> invoker = factory.geNewInvokerInstance(TASK_NAME, task);
-	    return invoker.invoke();
 	}
     }
 

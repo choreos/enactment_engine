@@ -26,31 +26,31 @@ public class ServiceCreator {
 
     public DeployableService createService(DeployableServiceSpec serviceSpec) throws ServiceNotCreatedException {
 
-	try {
-	    service = new DeployableService(serviceSpec);
-	    service.generateUUID();
-	} catch (IllegalArgumentException e1) {
-	    logger.error("Could not create service " + serviceSpec.getName());
-	    throw new ServiceNotCreatedException(serviceSpec.getName());
-	}
+        try {
+            service = new DeployableService(serviceSpec);
+            service.generateUUID();
+        } catch (IllegalArgumentException e1) {
+            logger.error("Could not create service " + serviceSpec.getName());
+            throw new ServiceNotCreatedException(serviceSpec.getName());
+        }
 
-	Set<CloudNode> selectedNodes = prepareDeployment();
-	service.setSelectedNodes(selectedNodes);
+        Set<CloudNode> selectedNodes = prepareDeployment();
+        service.setSelectedNodes(selectedNodes);
 
-	logger.info("Created service " + service);
-	return service;
+        logger.info("Created service " + service);
+        return service;
 
     }
 
     private Set<CloudNode> prepareDeployment() throws ServiceNotCreatedException {
-	ServiceDeploymentPreparer deploymentPreparer = ServiceDeploymentPreparerFactory.getNewInstance(
-		service.getSpec(), service);
-	try {
-	    return deploymentPreparer.prepareDeployment();
-	} catch (PrepareDeploymentFailedException e1) {
-	    logger.error("Could not prepare the deployment of the service " + service.getUUID() + " ("
-		    + service.getSpec().getName() + ")");
-	    throw new ServiceNotCreatedException(service.getSpec().getName());
-	}
+        ServiceDeploymentPreparer deploymentPreparer = ServiceDeploymentPreparerFactory.getNewInstance(
+                service.getSpec(), service);
+        try {
+            return deploymentPreparer.prepareDeployment();
+        } catch (PrepareDeploymentFailedException e1) {
+            logger.error("Could not prepare the deployment of the service " + service.getUUID() + " ("
+                    + service.getSpec().getName() + ")");
+            throw new ServiceNotCreatedException(service.getSpec().getName());
+        }
     }
 }
