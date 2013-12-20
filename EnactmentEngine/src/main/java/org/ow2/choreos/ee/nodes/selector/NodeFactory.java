@@ -30,11 +30,11 @@ class NodeFactory implements ObjectFactory<CloudNode, DeployableServiceSpec> {
 
     @Override
     public int getTimeoutInSeconds() {
-        int nodeCreationTimeout = TimeoutsAndTrials.get("NODE_CREATION_TIMEOUT");
-        int nodeCreationTrials = TimeoutsAndTrials.get("NODE_CREATION_TRIALS");
-        int firstSshTimeout = TimeoutsAndTrials.get("FIRST_CONNECT_SSH_TIMEOUT");
-        int bootstrapTimeout = TimeoutsAndTrials.get("BOOTSTRAP_TIMEOUT");
-        int bootstrapTrials = TimeoutsAndTrials.get("BOOTSTRAP_TRIALS");
+        int nodeCreationTimeout = TimeoutsAndTrials.getTimeout("NODE_CREATION");
+        int nodeCreationTrials = TimeoutsAndTrials.getTrials("NODE_CREATION");
+        int firstSshTimeout = TimeoutsAndTrials.getTimeout("FIRST_CONNECT_SSH");
+        int bootstrapTimeout = TimeoutsAndTrials.getTimeout("BOOTSTRAP");
+        int bootstrapTrials = TimeoutsAndTrials.getTrials("BOOTSTRAP");
         int oneReqPerSec = 2 * 100;
         int timeout = nodeCreationTimeout * nodeCreationTrials + firstSshTimeout + bootstrapTimeout * bootstrapTrials
                 + oneReqPerSec;

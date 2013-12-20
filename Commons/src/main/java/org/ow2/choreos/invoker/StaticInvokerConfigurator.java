@@ -28,13 +28,13 @@ public class StaticInvokerConfigurator<T> implements InvokerConfigurator<T> {
     }
 
     private void initBuilder() {
-        int timeout = TimeoutsAndTrials.get(taskName + "_TIMEOUT");
+        int timeout = TimeoutsAndTrials.getTimeout(taskName);
         builder = new InvokerBuilder<T>(taskName, task, timeout);
     }
 
     private void setTrials() {
         try {
-            int trials = TimeoutsAndTrials.get(taskName + "_TRIALS");
+            int trials = TimeoutsAndTrials.getTrials(taskName);
             builder.trials(trials);
         } catch (IllegalArgumentException e) {
             // pas du problem: InvokerBuilder will use default value
@@ -43,7 +43,7 @@ public class StaticInvokerConfigurator<T> implements InvokerConfigurator<T> {
     
     private void setPause() {
         try {
-            int pause = TimeoutsAndTrials.get(taskName + "_PAUSE");
+            int pause = TimeoutsAndTrials.getPauseBetweenTrials(taskName);
             builder.pauseBetweenTrials(pause);
         } catch (IllegalArgumentException e) {
             // pas du problem: InvokerBuilder will use default value

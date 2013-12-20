@@ -36,10 +36,7 @@ public class NewDeploymentPreparing {
     public NewDeploymentPreparing(String chorId, List<DeployableServiceSpec> specs) {
 	this.chorId = chorId;
 	this.specs = specs;
-	int timeout = TimeoutsAndTrials.get("CREATE_SERVICE_TIMEOUT");
-	int trials = TimeoutsAndTrials.get("CREATE_SERVICE_TRIALS");
-	int pause = TimeoutsAndTrials.get("CREATE_SERVICE_PAUSE");
-	this.totalTimeout = (timeout + pause) * trials;
+	this.totalTimeout = TimeoutsAndTrials.getTotalTimeout("CREATE_SERVICE");
 	this.totalTimeout += totalTimeout * 0.2;
     }
 

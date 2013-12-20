@@ -27,7 +27,7 @@ public class BootstrapChecker {
 
     public boolean isBootstrapped(CloudNode node) {
 
-        int timeout = TimeoutsAndTrials.get("CONNECT_SSH_TIMEOUT");
+        int timeout = TimeoutsAndTrials.getTimeout("CONNECT_SSH");
         try {
             ssh = sshWaiter.waitSsh(node.getIp(), node.getUser(), node.getPrivateKeyFile(), timeout);
         } catch (SshNotConnected e) {

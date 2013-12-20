@@ -34,7 +34,6 @@ public class NodeCreator {
     private static final String TASK_NAME = "BOOTSTRAP";
 
     private CloudProvider cp;
-    private CloudConfiguration cloudConfiguration;
 
     public NodeCreator(CloudConfiguration cloudConfiguration) {
 	this.cp = CloudProviderFactory.getFactoryInstance().getCloudProviderInstance(cloudConfiguration);
@@ -48,7 +47,7 @@ public class NodeCreator {
     }
 
     private void waitFirstSsh(CloudNode node) throws NodeNotCreatedException {
-	int timeout = TimeoutsAndTrials.get("FIRST_CONNECT_SSH_TIMEOUT");
+	int timeout = TimeoutsAndTrials.getTimeout("FIRST_CONNECT_SSH");
 	SshWaiter sshWaiter = new SshWaiter();
 	try {
 	    SshUtil ssh = sshWaiter.waitSsh(node.getIp(), node.getUser(), node.getPrivateKeyFile(), timeout);

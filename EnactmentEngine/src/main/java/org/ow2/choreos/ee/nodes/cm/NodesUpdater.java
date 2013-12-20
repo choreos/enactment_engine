@@ -19,6 +19,8 @@ import org.ow2.choreos.utils.Concurrency;
 import org.ow2.choreos.utils.TimeoutsAndTrials;
 
 public class NodesUpdater {
+    
+    private static final String TASK_NAME = "NODE_UPDATE";
 
     private List<DeployableService> services;
     private String chorId;
@@ -32,10 +34,7 @@ public class NodesUpdater {
     public NodesUpdater(List<DeployableService> services, String chorId) {
         this.services = services;
         this.chorId = chorId;
-        int timeout = TimeoutsAndTrials.get("NODE_UPDATE_TIMEOUT");
-        int trials = TimeoutsAndTrials.get("NODE_UPDATE_TRIALS");
-        int pause = TimeoutsAndTrials.get("NODE_UPDATE_PAUSE");
-        this.totalTimeout = (timeout + pause) * trials;
+        this.totalTimeout = TimeoutsAndTrials.getTotalTimeout(TASK_NAME);
         this.totalTimeout += totalTimeout * 0.1;
     }
 

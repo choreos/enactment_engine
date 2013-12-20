@@ -20,6 +20,8 @@ import org.ow2.choreos.utils.TimeoutsAndTrials;
 
 public class NodesDestroyer {
 
+    private static final String TASK_NAME = "NODE_DELETION";
+
     private static Logger logger = Logger.getLogger(NodesDestroyer.class);
 
     private final Collection<CloudNode> nodesToDestroy;
@@ -27,17 +29,15 @@ public class NodesDestroyer {
     private CloudProvider cp;
     private List<DestroyTask> tasks = new ArrayList<DestroyTask>();
     private ExecutorService executor;
-    private CloudConfiguration cloudConfiguration;
 
-    private final int timeout;
-    private final int trials;
+    private int totalTimeout;
 
     private List<CloudNode> destroyedNodes = new ArrayList<CloudNode>();
 
     public NodesDestroyer(CloudConfiguration cloudConfiguration, Collection<CloudNode> nodesToDestroy) {
 	this.nodesToDestroy = nodesToDestroy;
-	this.timeout = TimeoutsAndTrials.get("NODE_DELETION_TIMEOUT");
-	this.trials = TimeoutsAndTrials.get("NODE_DELETION_TRIALS");
+	this.totalTimeout = TimeoutsAndTrials.getTotalTimeout(TASK_NAME);
+	totalTimeout += totalTimeout * 0.2;
 	this.cp = CloudProviderFactory.getFactoryInstance().getCloudProviderInstance(cloudConfiguration);
     }
 
@@ -75,10 +75,8 @@ public class NodesDestroyer {
 
     private void waitDestroy() {
 	String erMsg = "Could not wait for nodes destroyment";
-	int totalTimeout = timeout * trials;
-	totalTimeout += totalTimeout * 0.2;
 	int n = nodesToDestroy.size();
-	totalTimeout += 2 * n; // one req/sec rule
+	int totalTimeout = this.totalTimeout + 2 * n; // one req/sec rule
 	Concurrency.waitExecutor(executor, totalTimeout, TimeUnit.SECONDS, logger, erMsg);
     }
 

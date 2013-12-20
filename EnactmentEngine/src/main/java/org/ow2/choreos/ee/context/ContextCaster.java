@@ -22,6 +22,7 @@ import org.ow2.choreos.utils.TimeoutsAndTrials;
  */
 public class ContextCaster {
 
+    private static final String TASK_NAME = "SET_INVOCATION_ADDRESS";
     private final int MAX_THREADS = 200;
 
     private final int timeout;
@@ -34,9 +35,9 @@ public class ContextCaster {
     private Logger logger = Logger.getLogger(ContextCaster.class);
 
     public ContextCaster(Choreography chor) {
-        this.timeout = TimeoutsAndTrials.get("SET_INVOCATION_ADDRESS_TIMEOUT");
-        this.trials = TimeoutsAndTrials.get("SET_INVOCATION_ADDRESS_TRIALS");
-        this.pauseBetweenTrials = TimeoutsAndTrials.get("SET_INVOCATION_ADDRESS_PAUSE");
+        this.timeout = TimeoutsAndTrials.getTimeout(TASK_NAME);
+        this.trials = TimeoutsAndTrials.getTrials(TASK_NAME);
+        this.pauseBetweenTrials = TimeoutsAndTrials.getPauseBetweenTrials(TASK_NAME);
         this.chor = chor;
     }
 

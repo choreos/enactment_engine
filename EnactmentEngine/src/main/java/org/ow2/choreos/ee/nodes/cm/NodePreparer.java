@@ -129,7 +129,7 @@ public class NodePreparer {
 
     private abstract class AbstractPreparerInvokerTask {
 	protected SshUtil getSsh() throws SshNotConnected {
-	    int timeout = TimeoutsAndTrials.get("CONNECT_SSH_TIMEOUT");
+	    int timeout = TimeoutsAndTrials.getTimeout("CONNECT_SSH");
 	    return sshWaiter.waitSsh(node.getIp(), node.getUser(), node.getPrivateKeyFile(), timeout);
 	}
     }
