@@ -43,7 +43,7 @@ public class NewDeploymentPreparing {
         int nodeCreationTotalTimeout = TimeoutsAndTrials.getTotalTimeout("NODE_CREATION");
         int firstSshTimeout = TimeoutsAndTrials.getTimeout("FIRST_CONNECT_SSH");
         int bootstrapTotalTimeout = TimeoutsAndTrials.getTotalTimeout("BOOTSTRAP");
-        int prepareTotalTimeout = TimeoutsAndTrials.getTotalTimeout("PREPARE_DEPLOYMENT_TIMEOUT");
+        int prepareTotalTimeout = TimeoutsAndTrials.getTotalTimeout("PREPARE_DEPLOYMENT");
         int oneReqPerSec = 2 * 100;
         this.totalTimeout = nodeCreationTotalTimeout + firstSshTimeout + bootstrapTotalTimeout + prepareTotalTimeout
                 + oneReqPerSec;
