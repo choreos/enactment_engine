@@ -34,83 +34,93 @@ public class NewDeploymentPreparing {
     private Logger logger = Logger.getLogger(NewDeploymentPreparing.class);
 
     public NewDeploymentPreparing(String chorId, List<DeployableServiceSpec> specs) {
-	this.chorId = chorId;
-	this.specs = specs;
-	this.totalTimeout = TimeoutsAndTrials.getTotalTimeout("CREATE_SERVICE");
-	this.totalTimeout += totalTimeout * 0.2;
+        this.chorId = chorId;
+        this.specs = specs;
+        getTotalTimeout();
+    }
+
+    private void getTotalTimeout() {
+        int nodeCreationTotalTimeout = TimeoutsAndTrials.getTotalTimeout("NODE_CREATION");
+        int firstSshTimeout = TimeoutsAndTrials.getTimeout("FIRST_CONNECT_SSH");
+        int bootstrapTotalTimeout = TimeoutsAndTrials.getTotalTimeout("BOOTSTRAP");
+        int prepareTotalTimeout = TimeoutsAndTrials.getTotalTimeout("PREPARE_DEPLOYMENT_TIMEOUT");
+        int oneReqPerSec = 2 * 100;
+        this.totalTimeout = nodeCreationTotalTimeout + firstSshTimeout + bootstrapTotalTimeout + prepareTotalTimeout
+                + oneReqPerSec;
+        this.totalTimeout += totalTimeout * 0.2;
     }
 
     public List<DeployableService> prepare() throws EnactmentException {
-	if (specs.size() == 0)
-	    return new ArrayList<DeployableService>();
-	logger.info("Request to configure nodes; creating services; setting up Chef; for chor " + chorId);
-	submitConfigureTasks();
-	waitConfigureTasks();
-	retrieveConfiguredServices();
-	checkStatus();
-	logger.info("Nodes are configured to run chef-client on chor " + chorId);
-	return configuredServices;
+        if (specs.size() == 0)
+            return new ArrayList<DeployableService>();
+        logger.info("Request to configure nodes; creating services; setting up Chef; for chor " + chorId);
+        submitConfigureTasks();
+        waitConfigureTasks();
+        retrieveConfiguredServices();
+        checkStatus();
+        logger.info("Nodes are configured to run chef-client on chor " + chorId);
+        return configuredServices;
     }
 
     private void submitConfigureTasks() {
-	final int N = specs.size();
-	executor = Executors.newFixedThreadPool(N);
-	futures = new HashMap<DeployableServiceSpec, Future<DeployableService>>();
-	for (DeployableServiceSpec choreographyServiceSpec : specs) {
-	    CreateServiceTask invoker = new CreateServiceTask(choreographyServiceSpec);
-	    Future<DeployableService> future = executor.submit(invoker);
-	    futures.put(choreographyServiceSpec, future);
-	}
+        final int N = specs.size();
+        executor = Executors.newFixedThreadPool(N);
+        futures = new HashMap<DeployableServiceSpec, Future<DeployableService>>();
+        for (DeployableServiceSpec choreographyServiceSpec : specs) {
+            CreateServiceTask invoker = new CreateServiceTask(choreographyServiceSpec);
+            Future<DeployableService> future = executor.submit(invoker);
+            futures.put(choreographyServiceSpec, future);
+        }
     }
 
     private void waitConfigureTasks() {
-	Concurrency.waitExecutor(executor, totalTimeout, "Could not properly configure all the services of chor "
-		+ chorId);
+        Concurrency.waitExecutor(executor, totalTimeout, "Could not properly configure all the services of chor "
+                + chorId);
     }
 
     private void retrieveConfiguredServices() {
-	configuredServices = new ArrayList<DeployableService>();
-	for (Entry<DeployableServiceSpec, Future<DeployableService>> entry : futures.entrySet()) {
-	    try {
-		DeployableService service = Concurrency.checkAndGetFromFuture(entry.getValue());
-		if (service != null) {
-		    configuredServices.add(service);
-		} else {
-		    logger.error("Future returned a null service for service " + entry.getKey().getName());
-		}
-	    } catch (ExecutionException e) {
-		logger.error("Could not get service from future for service " + entry.getKey().getName() + " because "
-			+ e.getMessage());
-	    }
-	}
+        configuredServices = new ArrayList<DeployableService>();
+        for (Entry<DeployableServiceSpec, Future<DeployableService>> entry : futures.entrySet()) {
+            try {
+                DeployableService service = Concurrency.checkAndGetFromFuture(entry.getValue());
+                if (service != null) {
+                    configuredServices.add(service);
+                } else {
+                    logger.error("Future returned a null service for service " + entry.getKey().getName());
+                }
+            } catch (ExecutionException e) {
+                logger.error("Could not get service from future for service " + entry.getKey().getName() + " because "
+                        + e.getMessage());
+            }
+        }
     }
 
     private void checkStatus() throws EnactmentException {
-	if (configuredServices == null || configuredServices.isEmpty()) {
-	    logger.error("No services configured in chor " + chorId + "!");
-	    throw new EnactmentException();
-	}
+        if (configuredServices == null || configuredServices.isEmpty()) {
+            logger.error("No services configured in chor " + chorId + "!");
+            throw new EnactmentException();
+        }
     }
 
     private class CreateServiceTask implements Callable<DeployableService> {
 
-	DeployableServiceSpec spec;
+        DeployableServiceSpec spec;
 
-	public CreateServiceTask(DeployableServiceSpec serviceSpec) {
-	    this.spec = serviceSpec;
-	}
+        public CreateServiceTask(DeployableServiceSpec serviceSpec) {
+            this.spec = serviceSpec;
+        }
 
-	@Override
-	public DeployableService call() throws Exception {
-	    ServiceCreator serviceCreator = ServiceCreatorFactory.getNewInstance();
-	    try {
-		DeployableService deployedService = serviceCreator.createService(spec);
-		return deployedService;
-	    } catch (ServiceNotCreatedException e) {
-		logger.error("Service " + spec.getName() + " not created!");
-		throw e;
-	    }
-	}
+        @Override
+        public DeployableService call() throws Exception {
+            ServiceCreator serviceCreator = ServiceCreatorFactory.getNewInstance();
+            try {
+                DeployableService deployedService = serviceCreator.createService(spec);
+                return deployedService;
+            } catch (ServiceNotCreatedException e) {
+                logger.error("Service " + spec.getName() + " not created!");
+                throw e;
+            }
+        }
     }
 
 }
