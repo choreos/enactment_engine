@@ -50,7 +50,7 @@ public class ChorEnactmentWithBusTest {
     @Before
     public void setUp() {
         EEConfiguration.set("BUS", "true");
-        EEConfiguration.set("IDLE_POOL", "false");
+        EEConfiguration.set("RESERVOIR", "false");
         ModelsForTest models = new ModelsForTest(ServiceType.SOAP, PackageType.TOMCAT);
         chorSpec = models.getChorSpec();
     }

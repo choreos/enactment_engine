@@ -50,7 +50,7 @@ public class IncreaseNumberOfInstancesTest {
     @Before
     public void setUp() {
         EEConfiguration.set("BUS", "false");
-        EEConfiguration.set("IDLE_POOL", "false");
+        EEConfiguration.set("RESERVOIR", "false");
 	ModelsForTest models = new ModelsForTest(ServiceType.SOAP, PackageType.TOMCAT, 2);
 	spec = models.getChorSpec();
 	ModelsForTest newModels = new ModelsForTest(ServiceType.SOAP, PackageType.TOMCAT, 3);

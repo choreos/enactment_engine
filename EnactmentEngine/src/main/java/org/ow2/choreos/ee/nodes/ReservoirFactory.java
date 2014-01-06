@@ -7,16 +7,16 @@ import org.apache.log4j.Logger;
 import org.ow2.choreos.ee.config.CloudConfiguration;
 import org.ow2.choreos.ee.config.EEConfiguration;
 
-public class IdlePoolFactory {
+public class ReservoirFactory {
 
     private static final int DEFAULT_POOL_SIZE = 0;
     private static final int DEFAULT_POOL_THRESHOLD = -1;
 
-    public static IdlePool idlePoolForTesting;
+    public static Reservoir reservoirForTesting;
     public static boolean testing;
 
-    private static Map<String, IdlePool> INSTANCES = new HashMap<String, IdlePool>();
-    private static Logger logger = Logger.getLogger(IdlePoolFactory.class);
+    private static Map<String, Reservoir> INSTANCES = new HashMap<String, Reservoir>();
+    private static Logger logger = Logger.getLogger(ReservoirFactory.class);
 
     /**
      * Thread safe
@@ -25,11 +25,11 @@ public class IdlePoolFactory {
      * @param nodeCreator
      * @return
      */
-    public static IdlePool getInstance(CloudConfiguration cloudConfiguration, int poolSize, int threshold) {
+    public static Reservoir getInstance(CloudConfiguration cloudConfiguration, int poolSize, int threshold) {
 	String cloudAccount = cloudConfiguration.getOwner();
-	synchronized (IdlePoolFactory.class) {
+	synchronized (ReservoirFactory.class) {
 	    if (!INSTANCES.containsKey(cloudAccount)) {
-		INSTANCES.put(cloudAccount, new IdlePool(cloudConfiguration, poolSize, threshold));
+		INSTANCES.put(cloudAccount, new Reservoir(cloudConfiguration, poolSize, threshold));
 	    }
 	}
 	return INSTANCES.get(cloudAccount);
@@ -42,22 +42,22 @@ public class IdlePoolFactory {
      * @param nodeCreator
      * @return
      */
-    public static IdlePool getCleanInstance(CloudConfiguration cloudConfiguration, int poolSize, int threshold) {
-	return new IdlePool(cloudConfiguration, poolSize, threshold);
+    public static Reservoir getCleanInstance(CloudConfiguration cloudConfiguration, int poolSize, int threshold) {
+	return new Reservoir(cloudConfiguration, poolSize, threshold);
     }
 
-    public IdlePool getIdlePool(CloudConfiguration cloudConfiguration) {
+    public Reservoir getReservoir(CloudConfiguration cloudConfiguration) {
 	if (testing) {
-	    return idlePoolForTesting;
+	    return reservoirForTesting;
 	} else {
-	    return loadPool(cloudConfiguration);
+	    return loadReservoir(cloudConfiguration);
 	}
     }
 
-    private IdlePool loadPool(CloudConfiguration cloudConfiguration) {
-	int poolSize = getValue("IDLE_POOL_INITIAL_SIZE", DEFAULT_POOL_SIZE);
-	int threshold = getValue("IDLE_POOL_THRESHOLD", DEFAULT_POOL_THRESHOLD);
-	return getInstance(cloudConfiguration, poolSize, threshold);
+    private Reservoir loadReservoir(CloudConfiguration cloudConfiguration) {
+	int reservoirSize = getValue("RESERVOIR_INITIAL_SIZE", DEFAULT_POOL_SIZE);
+	int threshold = getValue("RESERVOIR_THRESHOLD", DEFAULT_POOL_THRESHOLD);
+	return getInstance(cloudConfiguration, reservoirSize, threshold);
     }
 
     private int getValue(String property, int defaultValue) {

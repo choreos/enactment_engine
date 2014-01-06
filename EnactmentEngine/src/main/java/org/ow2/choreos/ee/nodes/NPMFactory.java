@@ -27,7 +27,7 @@ public class NPMFactory {
 	return cloudConfiguration;
     }
 
-    public static NodePoolManager getNewNPMInstance(String owner, IdlePool idlePool) {
+    public static NodePoolManager getNewNPMInstance(String owner, Reservoir idlePool) {
 	if (testing) {
 	    return npmForTest;
 	} else {

@@ -49,7 +49,7 @@ public class ChorEnactmentWithReplicasTest {
     @Before
     public void setUp() {
         EEConfiguration.set("BUS", "false");
-        EEConfiguration.set("IDLE_POOL", "false");
+        EEConfiguration.set("RESERVOIR", "false");
         ModelsForTest models = new ModelsForTest(ServiceType.SOAP, PackageType.COMMAND_LINE, 2);
         spec = models.getChorSpec();
     }

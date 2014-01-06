@@ -11,8 +11,8 @@ import static org.mockito.Mockito.mock;
 import org.junit.After;
 import org.junit.Test;
 import org.ow2.choreos.ee.config.CloudConfiguration;
-import org.ow2.choreos.ee.nodes.IdlePool;
-import org.ow2.choreos.ee.nodes.IdlePoolFactory;
+import org.ow2.choreos.ee.nodes.Reservoir;
+import org.ow2.choreos.ee.nodes.ReservoirFactory;
 import org.ow2.choreos.ee.nodes.NPMFactory;
 import org.ow2.choreos.ee.nodes.NodeCreator;
 import org.ow2.choreos.ee.nodes.NodeCreatorFactory;
@@ -42,7 +42,7 @@ public class NPMImplTest {
 	NodeCreator creator = NodeCreatorMocks.getGoodMock();
 	NodeCreatorFactory.nodeCreatorForTesting = creator;
 	NodeCreatorFactory.testing = true;
-	IdlePool pool = IdlePoolFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(),
+	Reservoir pool = ReservoirFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(),
 		POOL_INITIAL_SIZE, POOL_THRESHOLD);
 
 	NodePoolManager npm = NPMFactory.getNewNPMInstance(CloudConfiguration.DEFAULT, pool);
@@ -68,7 +68,7 @@ public class NPMImplTest {
 	NodeCreatorFactory.nodeCreatorForTesting = creator;
 	NodeCreatorFactory.testing = true;
 
-	IdlePool pool = IdlePoolFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(),
+	Reservoir pool = ReservoirFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(),
 		POOL_INITIAL_SIZE, POOL_THRESHOLD);
 
 	NodePoolManager npm = NPMFactory.getNewNPMInstance(CloudConfiguration.DEFAULT, pool);
@@ -96,7 +96,7 @@ public class NPMImplTest {
 	NodeCreator creator1 = NodeCreatorMocks.getGoodMock();
 	NodeCreatorFactory.nodeCreatorForTesting = creator1;
 	NodeCreatorFactory.testing = true;
-	IdlePool pool1 = IdlePoolFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(),
+	Reservoir pool1 = ReservoirFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(),
 		POOL_INITIAL_SIZE, POOL_THRESHOLD);
 	NodePoolManager npm1 = NPMFactory.getNewNPMInstance(CloudConfiguration.DEFAULT, pool1);
 
@@ -107,7 +107,7 @@ public class NPMImplTest {
 	NodeCreatorFactory.nodeCreatorForTesting = creator2;
 	NodeCreatorFactory.testing = true;
 
-	IdlePool pool2 = IdlePoolFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(),
+	Reservoir pool2 = ReservoirFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(),
 		POOL_INITIAL_SIZE, POOL_THRESHOLD);
 	NodePoolManager npm2 = NPMFactory.getNewNPMInstance(CloudConfiguration.DEFAULT, pool2);
 

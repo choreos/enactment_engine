@@ -31,7 +31,7 @@ public class NPMImpl implements NodePoolManager {
     private CloudProvider cloudProvider;
     private NodeRegistry nodeRegistry;
     private boolean useThePool;
-    private IdlePool idlePool;
+    private Reservoir idlePool;
     private CloudConfiguration cloudConfiguration;
 
     public NPMImpl(CloudConfiguration cloudConfiguration) {
@@ -42,14 +42,14 @@ public class NPMImpl implements NodePoolManager {
     }
 
     private void loadPool() {
-	useThePool = Boolean.parseBoolean(EEConfiguration.get("IDLE_POOL"));
+	useThePool = Boolean.parseBoolean(EEConfiguration.get("RESERVOIR"));
 	if (useThePool) {
-	    IdlePoolFactory factory = new IdlePoolFactory();
-	    idlePool = factory.getIdlePool(cloudConfiguration);
+	    ReservoirFactory factory = new ReservoirFactory();
+	    idlePool = factory.getReservoir(cloudConfiguration);
 	}
     }
 
-    public NPMImpl(CloudConfiguration cloudConfiguration, IdlePool pool) {
+    public NPMImpl(CloudConfiguration cloudConfiguration, Reservoir pool) {
 	cloudProvider = CloudProviderFactory.getFactoryInstance().getCloudProviderInstance(cloudConfiguration);
 	nodeRegistry = NodeRegistry.getInstance();
 	idlePool = pool;

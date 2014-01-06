@@ -47,7 +47,7 @@ public class SimpleChorEnactmentTest {
     @Before
     public void setUp() {
         EEConfiguration.set("BUS", "false");
-        EEConfiguration.set("IDLE_POOL", "false");
+        EEConfiguration.set("RESERVOIR", "false");
         ModelsForTest models = new ModelsForTest(ServiceType.SOAP, PackageType.COMMAND_LINE);
         chorSpec = models.getChorSpec();
     }

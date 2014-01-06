@@ -57,7 +57,7 @@ public class VerticalScalingTest {
     public void setUp() {
 
         EEConfiguration.set("BUS", "false");
-        EEConfiguration.set("IDLE_POOL", "false");
+        EEConfiguration.set("RESERVOIR", "false");
 
         ResourceImpact smallImpact = new ResourceImpact();
         smallImpact.setMemory(MemoryType.SMALL);

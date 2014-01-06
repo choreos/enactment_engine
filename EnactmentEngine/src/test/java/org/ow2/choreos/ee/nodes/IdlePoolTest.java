@@ -24,8 +24,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.stubbing.OngoingStubbing;
 import org.ow2.choreos.ee.config.CloudConfiguration;
-import org.ow2.choreos.ee.nodes.IdlePool;
-import org.ow2.choreos.ee.nodes.IdlePoolFactory;
+import org.ow2.choreos.ee.nodes.Reservoir;
+import org.ow2.choreos.ee.nodes.ReservoirFactory;
 import org.ow2.choreos.ee.nodes.NodeCreator;
 import org.ow2.choreos.ee.nodes.NodeCreatorFactory;
 import org.ow2.choreos.nodes.NodeNotCreatedException;
@@ -62,7 +62,7 @@ public class IdlePoolTest {
     public void shouldCreateExtraVMs() throws InterruptedException {
 
 	int N = 3;
-	IdlePool pool = IdlePoolFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
+	Reservoir pool = ReservoirFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
 		POOL_THRESHOLD);
 	int howManyVMs = N;
 	pool.createExtraVMs(howManyVMs);
@@ -77,7 +77,7 @@ public class IdlePoolTest {
     public void shouldFillThePool() throws InterruptedException {
 
 	int N = 3;
-	IdlePool pool = IdlePoolFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
+	Reservoir pool = ReservoirFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
 		POOL_THRESHOLD);
 	pool.createExtraVMs(1);
 	pool.fillPool();
@@ -93,7 +93,7 @@ public class IdlePoolTest {
     public void shouldFillThePoolConcurrently() throws InterruptedException {
 
 	int N = 5;
-	IdlePool pool = IdlePoolFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
+	Reservoir pool = ReservoirFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
 		POOL_THRESHOLD);
 	pool.createExtraVMs(1);
 	Thread.sleep(100);
@@ -114,7 +114,7 @@ public class IdlePoolTest {
     public void multipleClientsShouldNotRetrieveTheSameNode() throws InterruptedException {
 
 	int N = 5;
-	IdlePool pool = IdlePoolFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
+	Reservoir pool = ReservoirFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
 		POOL_THRESHOLD);
 	pool.fillPool();
 	Thread.sleep(100);
@@ -143,7 +143,7 @@ public class IdlePoolTest {
     public void multipleRequestsShouldLeaveThePoolFull() throws InterruptedException {
 
 	int N = 5;
-	IdlePool pool = IdlePoolFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
+	Reservoir pool = ReservoirFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
 		POOL_THRESHOLD);
 	pool.fillPool();
 	Thread.sleep(100);
@@ -164,7 +164,7 @@ public class IdlePoolTest {
     public void shouldRetrieveANodeEvenWithAnEmptyPool() throws NodeNotCreatedException {
 
 	int N = 5;
-	IdlePool pool = IdlePoolFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
+	Reservoir pool = ReservoirFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
 		POOL_THRESHOLD);
 	CloudNode node = pool.retriveNode();
 	assertNotNull(node);
@@ -176,7 +176,7 @@ public class IdlePoolTest {
     public void shouldRetrieveANodeThatWasAlreadyInThePool() throws NodeNotCreatedException, InterruptedException {
 
 	int N = 5;
-	IdlePool pool = IdlePoolFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
+	Reservoir pool = ReservoirFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
 		POOL_THRESHOLD);
 	pool.fillPool();
 
@@ -198,7 +198,7 @@ public class IdlePoolTest {
     public void multipleClientsShouldRetrieveNodesEvenWithAnEmptyPool() throws InterruptedException {
 
 	int N = 5;
-	IdlePool pool = IdlePoolFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
+	Reservoir pool = ReservoirFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
 		POOL_THRESHOLD);
 	List<PoolClient> clients = new ArrayList<PoolClient>();
 	for (int i = 0; i < 3; i++) {
@@ -226,7 +226,7 @@ public class IdlePoolTest {
 
 	int N = 5;
 	int threshold = 2;
-	IdlePool pool = IdlePoolFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
+	Reservoir pool = ReservoirFactory.getCleanInstance(CloudConfiguration.getCloudConfigurationInstance(), N,
 		threshold);
 	int howManyVMs = N;
 	pool.createExtraVMs(howManyVMs);
@@ -244,9 +244,9 @@ public class IdlePoolTest {
 
     private class PoolFiller implements Runnable {
 
-	IdlePool pool;
+	Reservoir pool;
 
-	public PoolFiller(IdlePool pool) {
+	public PoolFiller(Reservoir pool) {
 	    this.pool = pool;
 	}
 
@@ -258,10 +258,10 @@ public class IdlePoolTest {
 
     private class PoolClient implements Runnable {
 
-	IdlePool pool;
+	Reservoir pool;
 	CloudNode retrievedNode;
 
-	public PoolClient(IdlePool pool) {
+	public PoolClient(Reservoir pool) {
 	    this.pool = pool;
 	}
 
@@ -277,9 +277,9 @@ public class IdlePoolTest {
 
     private class PoolConsumerAndFiller implements Runnable {
 
-	IdlePool pool;
+	Reservoir pool;
 
-	public PoolConsumerAndFiller(IdlePool pool) {
+	public PoolConsumerAndFiller(Reservoir pool) {
 	    this.pool = pool;
 	}
 

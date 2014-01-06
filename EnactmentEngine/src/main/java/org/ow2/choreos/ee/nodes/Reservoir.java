@@ -19,9 +19,9 @@ import org.ow2.choreos.nodes.datamodel.NodeSpec;
 import org.ow2.choreos.utils.Concurrency;
 
 /**
- * Maintains a pool of VMs.
+ * Maintains a reservoir of idle nodes.
  * 
- * The VMs in the pool are not knew by the NPM. The idea is to provide a fast VM
+ * The VMs in the reservoir are not knew by the NPM. The idea is to provide a fast VM
  * creation: when NPM requests a VM to the pool, the pool returns an already
  * created VM that was in the pool, but NPM will see it just like a new VM
  * created quickly.
@@ -29,13 +29,11 @@ import org.ow2.choreos.utils.Concurrency;
  * @author leonardo
  * 
  */
-public class IdlePool {
+public class Reservoir {
 
     private static final int FILLING_POOL_TIMEOUT_MINUTES = 10;
 
-    private static IdlePool INSTANCE;
-
-    private static Logger logger = Logger.getLogger(IdlePool.class);
+    private static Logger logger = Logger.getLogger(Reservoir.class);
 
     private int poolSize;
     private int threshold;
@@ -43,7 +41,7 @@ public class IdlePool {
     private ExecutorService fillerExecutor = Executors.newSingleThreadExecutor();
     private CloudConfiguration cloudConfiguration;
 
-    IdlePool(CloudConfiguration cloudConfiguration, int poolSize, int threshold) {
+    Reservoir(CloudConfiguration cloudConfiguration, int poolSize, int threshold) {
 	this.poolSize = poolSize;
 	this.threshold = threshold;
 	this.cloudConfiguration = cloudConfiguration;
@@ -143,7 +141,7 @@ public class IdlePool {
 		NodeCreator nodeCreator = factory.getNewNodeCreator(cloudConfiguration);
 		CloudNode node = nodeCreator.createBootstrappedNode(new NodeSpec());
 		ok = true;
-		synchronized (IdlePool.this) {
+		synchronized (Reservoir.this) {
 		    idleNodes.add(node);
 		}
 	    } catch (NodeNotCreatedException e) {
