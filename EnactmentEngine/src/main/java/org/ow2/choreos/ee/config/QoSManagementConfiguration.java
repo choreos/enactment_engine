@@ -13,31 +13,33 @@ import org.ow2.choreos.utils.Configuration;
  */
 public class QoSManagementConfiguration {
 
-    public static final String ENACTMENT_ENGINE_URL = "ENACTMENT_ENGINE_URL";
-    public static final String QOS_MGMT = "QOS_MGMT";
-    public static final String NODE_TYPES = "NODE_TYPES";
-    public static final String MAPPER_POLICY = "MAPPER_POLICY";
-    public static final String RESOURCE_METRIC_AGGREGATOR = "RESOURCE_METRIC_AGGREGATOR";
+	public static final String ENACTMENT_ENGINE_URL = "ENACTMENT_ENGINE_URL";
+	public static final String QOS_MGMT = "QOS_MGMT";
+	public static final String NODE_TYPES = "NODE_TYPES";
+	public static final String MAPPER_POLICY = "MAPPER_POLICY";
+	public static final String RESOURCE_METRIC_AGGREGATOR = "RESOURCE_METRIC_AGGREGATOR";
+	public static final String MAX_CPU_USAGE = "MAX_CPU_USAGE";
+	public static final String MIN_CPU_USAGE = "MIN_CPU_USAGE";
 
-    private static final String FILE_PATH = "qos_mgmt.properties";
+	private static final String FILE_PATH = "qos_mgmt.properties";
 
-    private final Configuration configuration;
+	private final Configuration configuration;
 
-    private static QoSManagementConfiguration INSTANCE = new QoSManagementConfiguration();
+	private static QoSManagementConfiguration INSTANCE = new QoSManagementConfiguration();
 
-    public static String get(String key) {
-	return INSTANCE.configuration.get(key);
-    }
+	public static String get(String key) {
+		return INSTANCE.configuration.get(key);
+	}
 
-    public static String[] getMultiple(String key) {
-	return INSTANCE.configuration.getMultiple(key);
-    }
+	public static String[] getMultiple(String key) {
+		return INSTANCE.configuration.getMultiple(key);
+	}
 
-    public static void set(String key, String value) {
-	INSTANCE.configuration.set(key, value);
-    }
+	public static void set(String key, String value) {
+		INSTANCE.configuration.set(key, value);
+	}
 
-    private QoSManagementConfiguration() {
-	this.configuration = new Configuration(FILE_PATH);
-    }
+	private QoSManagementConfiguration() {
+		this.configuration = new Configuration(FILE_PATH);
+	}
 }
