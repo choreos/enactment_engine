@@ -1,0 +1,59 @@
+rule "ResponseTime_Service_@{service_id}"
+no-loop true
+salience 20
+dialect "mvel"
+
+when
+	$aEvent : GlimpseBaseEventChoreos(
+		this.isConsumed == false,
+		this.getServiceSource == "@{service_id}",
+		this.isException == false,
+		this.getEventName == "response_time"
+	);
+then
+	$aEvent.setConsumed(true);
+	update($aEvent);
+	float meas = Float.parseFloat((String) $aEvent.getEventData());
+	insert (new ResponseTimeEvent(meas,
+		(String) $aEvent.getMachineIP(),
+		(String) $aEvent.getServiceSource(),
+		(String) $aEvent.getChoreographySource())
+	);
+	ResponseDispatcher.LogViolation(
+		"\nRule name: " + drools.getRule().getName(),
+		"\nFrom: Resource Metric Aggregator",
+		"\nSLA resource measurement: " + (String) $aEvent.getServiceSource() + " - " + (String) $aEvent.getEventData());
+	retract ($aEvent);
+end
+
+rule "HighResponseTime_Service_@{service_id}"
+no-loop true
+salience 30
+dialect "mvel"
+
+when
+	$ev : ResponseTimeEvent(service == "@{service_id}");
+	Number( $eventSum : doubleValue ) from accumulate(
+		$event : ResponseTimeEvent($ev.service == service, $ev.ip == ip),
+			count($event)
+	);
+	Number( intValue > $eventSum * @{acceptable_precentage} ) from accumulate(
+		$sEvent : ResponseTimeEvent(value > @{max_response_time}, $ev.service == service, $ev.ip == ip),
+			count($sEvent)
+	);
+	Number( doubleValue > @{max_cpu_usage} )
+		from accumulate( CpuUserEvent($ev.ip == ip, $val : value),
+			average($val)
+	);
+	not AddReplica(service == $ev.service);
+then
+	insert(new AddReplica($ev.service));
+	ResponseDispatcher.LogViolation(
+		"\nRule name: " + drools.getRule().getName(),
+		"\nFrom: QoS Drools Rules",
+		"\nSLA QoS violation detected on: " + $ev.service);
+	ResponseDispatcher.NotifyMeValue(drools.getRule().getName(),
+		"eeConsumer", (String) $ev.ip, (String) $ev.service);
+end
+
+

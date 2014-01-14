@@ -3,10 +3,12 @@
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://labse.isti.cnr.it/glimpse/xml/ComplexEventRule ./ComplexEventRule.xsd">
 
-
 <Insert RuleType="drools">
 
+<RuleName>Choreography_@{chor_id}</RuleName>
+<RuleBody>
 @{chor_rules}
+</RuleBody>
 
 </Insert>
 
