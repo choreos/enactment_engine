@@ -35,15 +35,26 @@ public interface CloudProvider {
 
     public CloudNode createOrUseExistingNode(NodeSpec nodeSpec) 
     	throws NodeNotCreatedException;
+
+    public void setCloudConfiguration(CloudConfiguration cloudConfiguration);
+
 }
 \end{lstlisting}
 }
 
+Implementations should use the \texttt{cloudConfiguration} object to retrieve 
+configuration properties supplied by EE administrators. Such properties usually encompass
+user credentials to access the infrastructure provider service, and options
+such as VM types or images. The \texttt{cloudConfiguration} object is injected
+into the cloud provider instance by the EE.
+
 \emph{Important note}: in the current implementation, \ee\ is tailored to work with nodes running \emph{Ubuntu 12.04}. Therefore, \textsf{CloudProvider} implementors should provide Ubuntu 12.04 nodes. 
 
-The next step is to edit the \texttt{cloud\_providers.properties} file, located on DeploymentManager resources folder. You must add a line in the format \verb!NAME=full.qualified.class.name!, where the key is just an alias that you can freely define (since it does not conflict with other existing keys on the same file), and the value is the full qualified name of the \textsf{CloudProvider} implementing class. It is also necessary to recompile the DeploymentManager project in such way it can access the implementing class.
+The next step is to edit the \texttt{extensible/cloud\_providers.properties} file, located on EnactmentEngine resources folder. You must add a line in the format \verb!NAME=full.qualified.class.name!, where the key is just an alias that you can freely define (since it does not conflict with other existing keys on the same file), and the value is the full qualified name of the \textsf{CloudProvider} implementing class. It is also necessary to recompile the EnactmentEngine project in such way it can access the implementing class. One suggestion is by adding your class in your local maven repository and edit the EnactmentEngine project's pom to make EnactmentEngine dependent on your project holding the new cloud provider
 
-Finally, to use your new cloud provider, it is enough to configure the \texttt{deployment.properties}: add the line \verb!CLOUD_PROVIDER=NAME!, where \verb!NAME! is the \verb!NAME! defined in the \texttt{cloud\_providers.properties} file (be sure there is no other line defining the \verb!CLOUD_PROVIDER! property).
+Finally, to use your new cloud provider, it is necessary to configure the \texttt{clouds.properties},
+adding a cloud account whose \verb!CLOUD_PROVIDER! property values the \verb!NAME! defined in the \texttt{cloud\_providers.properties} file.
+
 
 \section{Supporting new package types}
 
