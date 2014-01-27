@@ -12,7 +12,7 @@ import org.ow2.choreos.utils.SingletonsFactory;
 public class NodeSelectorFactory extends SingletonsFactory<NodeSelector> {
 
     private static final String NODE_SELECTOR_PROPERTY = "NODE_SELECTOR";
-    private static final String CLASS_MAP_FILE_PATH = "node_selector.properties";
+    private static final String CLASS_MAP_FILE_PATH = "extensible/node_selector.properties";
 
     private static NodeSelectorFactory INSTANCE;
 

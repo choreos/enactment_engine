@@ -13,7 +13,7 @@ public class ContextSenderFactory {
     public static boolean testing = false;
     public static ContextSender senderForTesting;
 
-    private static final String CLASS_MAP_FILE_PATH = "context_sender.properties";
+    private static final String CLASS_MAP_FILE_PATH = "extensible/context_sender.properties";
 
     private static Configuration classMap;
 

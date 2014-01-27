@@ -10,7 +10,7 @@ import org.ow2.choreos.utils.Configuration;
  */
 public class PackageTypeToCookbook {
 
-    private static final String FILE_PATH = "cookbooks.properties";
+    private static final String FILE_PATH = "extensible/cookbooks.properties";
     
     private final Configuration configuration;
 

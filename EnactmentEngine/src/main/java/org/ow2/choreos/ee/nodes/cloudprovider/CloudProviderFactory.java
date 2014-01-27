@@ -11,7 +11,7 @@ import org.ow2.choreos.utils.SingletonsFactory;
 
 public class CloudProviderFactory extends SingletonsFactory<CloudProvider> {
 
-    private static final String CLASS_MAP_FILE_PATH = "cloud_providers.properties";
+    private static final String CLASS_MAP_FILE_PATH = "extensible/cloud_providers.properties";
 
     private static final Logger logger = Logger.getLogger(CloudProviderFactory.class);
 
