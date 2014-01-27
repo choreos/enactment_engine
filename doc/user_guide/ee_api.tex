@@ -60,7 +60,7 @@ To request a choreography enactment, it is important to understand very well the
 		\item [port:] the TCP port used by the service. Note that multiple replicas of a single service will all use the same port. Mandatory if type is COMMAND\_LINE;
 		\item [owner:] must match a \emph{cloud account} name configured on EE. It will define under which cloud infrastructure the service will be deployed.
 		\item [numberOfInstances:] How many instances of the service should be deployed (onto different virtual machines) in order to allow the load to be distributed;
-		\item [version:] the service version, which is used by the \ee\ to define which services must be redeployed in a choreography update (not used currently); \todo{check if it is not used indeed}
+		\item [version:] the service version, which is used by the \ee\ to define which services must be redeployed in a choreography update (not used currently); 
 		\item [resourceImpact:] General information regarding the expected type of machine needed to run the service (see \emph{Resource impact specification});
 	\end{description}
 
