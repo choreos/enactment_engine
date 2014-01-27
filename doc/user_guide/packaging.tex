@@ -25,7 +25,7 @@ numbers=left
 }
 
 {\footnotesize
-\begin{lstlisting}[caption=Example of a class with the main method within a JAR file, label=lst:jar_main_class]
+\begin{lstlisting}[caption=Example of a class with the main method within a JAR file., label=lst:jar_main_class]
 package org.ow2.choreos;
 
 import javax.xml.ws.Endpoint;
@@ -55,7 +55,7 @@ language=XML
 }
 
 {\footnotesize
-\begin{lstlisting}[caption=Excerpt of pom file to generate a runnable JAR using Maven 3, label=lst:pom_runnable_jar]
+\begin{lstlisting}[caption=Excerpt of pom file to generate a runnable JAR using Maven 3., label=lst:pom_runnable_jar]
 <build>
   <finalName>airline-service</finalName> 
   <!-- <finalName>travel-agency-service</finalName> -->
@@ -132,7 +132,7 @@ Dependencies (JAR libraries) must be packaged within the WAR file. However, we p
 One way to be sure that you are using the required versions is making your project depending on JAX-WS by adding the fragment of Listing~\ref{lst:jaxws_pom} in your Maven's pom:
 
 {\footnotesize
-\begin{lstlisting}[caption=Making your project depending on JAX-WS using Maven, label=lst:jaxws_pom]
+\begin{lstlisting}[caption=Making your project depending on JAX-WS using Maven., label=lst:jaxws_pom]
   <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-rt</artifactId>
@@ -144,7 +144,7 @@ One way to be sure that you are using the required versions is making your proje
 If you write your web service using JAX-WS, your WAR file must also package a \texttt{sun-jaxws.xml} file, as Listing~\ref{lst:sun_jaxws_xml}. As any other WAR file, it must also contain a \texttt{web.xml} file. If your service was built with JAX-WS, your \texttt{web.xml} file must be similar to the one presented in the Listing~\ref{lst:web_xml}. Be aware that besides the usual definition of \texttt{servlet} and \texttt{servelet-mapping} elements, it is also necessary to declare the \texttt{listener} element exactly as in the example (lines 8, 9, and 10)\footnote{The instructions about the \texttt{sun-jaxws.xml} and \texttt{web.xml} files were retrieved from \url{http://www.mkyong.com/webservices/jax-ws/deploy-jax-ws-web-services-on-tomcat/}}.
 
 {\footnotesize
-\begin{lstlisting}[caption=Example of \texttt{sun-jaxws.xml} file, label=lst:sun_jaxws_xml]
+\begin{lstlisting}[caption=Example of \texttt{sun-jaxws.xml} file., label=lst:sun_jaxws_xml]
 <?xml version=``1.0'' encoding=``UTF-8''?>
 <endpoints
   xmlns=``http://java.sun.com/xml/ns/jax-ws/ri/runtime''
@@ -158,7 +158,7 @@ If you write your web service using JAX-WS, your WAR file must also package a \t
 }
 
 {\footnotesize
-\begin{lstlisting}[caption=Example of \texttt{web.xml} file, label=lst:web_xml]
+\begin{lstlisting}[caption=Example of \texttt{web.xml} file., label=lst:web_xml]
 <?xml version=``1.0'' encoding=``UTF-8''?>
 <!DOCTYPE web-app PUBLIC ``-//Sun Microsystems, 
 Inc.//DTD Web Application 2.3//EN''
@@ -202,7 +202,7 @@ The \texttt{config.xml} file must be built according to the schema in the Listin
 \end{description}
 
 {\footnotesize
-\begin{lstlisting}[caption=\texttt{config.xml} schema, label=lst:config_xml_schema]
+\begin{lstlisting}[caption=\texttt{config.xml} schema., label=lst:config_xml_schema]
 <?xml version="1.0" encoding="UTF-8"?>
 <schema targetNamespace="http://ebmwebsourcing.com/cli/schema"
  elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema"
@@ -276,7 +276,7 @@ The \texttt{config.xml} file must be built according to the schema in the Listin
 The Listing~\ref{lst:config_xml} shows an example of \texttt{config.xml} file that makes the deployment of a coordination delegate in a scenario where the correspondent business service is already running and available\footnote{Indeed, the main scenario envisioned by CHOReOS is that there are already a lot of the services running ``on the wild'', and choreographies are made just to compose these already-running services, situation in which only coordels are actually deployed.}. The \texttt{weatherforecastservice.lts} and \texttt{cdweatherforecastservice.wsdl} files, referenced in lines 8 and 9, are provided within the tar.gz package. The use of the ``../../'' in these lines is mandatory. The url \texttt{http://192.168.56.101:8192/weatherforecastservice} provided in line 15, as well as the correspondent WSDL indicated in line 15, are references to a service already running and accessible. The \texttt{ServiceNamespace} (line 20) is the \texttt{targetNamespace} defined in the service WSDL. The value of the \texttt{ServiceName} element (line 21) must correspond to the value of the \texttt{name} attribute of the \texttt{service} element in the service WSDL. The value of the \texttt{EndpointName} element (line 22) must correspond to the \texttt{name} of the \texttt{portType} element in the coordination delegate WSDL. The lts file pointed by the \texttt{config.xml} is provided in the Listing~\ref{lst:weather_lts}, and the value of its \texttt{endpoint} attribute must correspond to the \texttt{name} of the \texttt{portType} element in the already-running service WSDL.
 
 {\footnotesize
-\begin{lstlisting}[caption=Example of \texttt{config.xml} that deploys a coordination delegate, label=lst:config_xml]
+\begin{lstlisting}[caption=Example of \texttt{config.xml} that deploys a coordination delegate., label=lst:config_xml]
 <?xml version=``1.0'' enc\begin{lstlisting}oding=``UTF-8''?>
 <Configuration xmlns=``http://ebmwebsourcing.com/cli/schema'' 
                xmlns:xsi=``http://www.w3.org/2001/XMLSchema-instance''
@@ -307,7 +307,7 @@ The Listing~\ref{lst:config_xml} shows an example of \texttt{config.xml} file th
 }
 
 {\footnotesize
-\begin{lstlisting}[caption=LTS file of a simple coordination delegate that acts as a proxy, label=lst:weather_lts] 
+\begin{lstlisting}[caption=LTS file of a simple coordination delegate that acts as a proxy., label=lst:weather_lts] 
 endpoint=WeatherForecastServicePort
 \end{lstlisting}
 }
@@ -329,7 +329,7 @@ By convention, services of this type must provide an operation named ``\texttt{s
 The expected interface of the \texttt{setInvocationAddress} operation is formally expressed by the WSDL elements presented in the Listing~\ref{lst:set_invocation_address_wsdl}. 
 
 {\footnotesize
-\begin{lstlisting}[caption=Parts of the service WSDL that define the \texttt{setInvocationAddress} operation, label=lst:set_invocation_address_wsdl] 
+\begin{lstlisting}[caption=Parts of the service WSDL that define the \texttt{setInvocationAddress} operation., label=lst:set_invocation_address_wsdl] 
 <xs:schema version=``1.0'' targetNamespace=``http://services.choreos.org/''>
   ...
   <xs:complexType name=``setInvocationAddress''>
@@ -371,7 +371,7 @@ language=Java
 }
 
 {\footnotesize
-\begin{lstlisting}[caption=Implementing \texttt{setInvocationAddress} with JAX-WS, label=lst:set_invocation_address_jax_ws] 
+\begin{lstlisting}[caption=Implementing \texttt{setInvocationAddress} with JAX-WS., label=lst:set_invocation_address_jax_ws] 
 @WebService
 public class SomeWebServiceClass {
 
@@ -380,7 +380,7 @@ public class SomeWebServiceClass {
     @WebMethod
     public void setInvocationAddress(String role, String name, List<String> endpoints) {
 		...
-    }UPDATE_STATE(), WAIT(), NOTIFY()
+    }
 }
 \end{lstlisting}
 }
@@ -419,7 +419,7 @@ Here are just some few important reminders:
 \item Ensure that the service port address in the WSDL file (see Listing~\ref{lst:wsdl_address}), when seen from remote locations, do not use ``localhost'', ``0.0.0.0'', or other unsuitable addresses, as lan private IPs for example. Remember the client that sees the WSDL needs an accessible endpoint.
 
 {\footnotesize
-\begin{lstlisting}[caption=Good example of service port address on a WSDL file, 
+\begin{lstlisting}[caption=Good example of service port address on a WSDL file., 
 label=lst:wsdl_address] 
 <service name="AirlineServiceService">
   <port name="AirlineServicePort" binding="tns:AirlineServicePortBinding">
