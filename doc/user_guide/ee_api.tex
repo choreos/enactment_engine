@@ -4,11 +4,10 @@
 
 \section{Introduction}
 
-This document provides detailed information about the \ee\ REST API. 
-Understanding the API enables you to write your own code to enact a choreography.
-Although the CHOReOS Dynamic Development Process automates the \ee\ invocation at the end of the Synthesis Process, writing your own client may be a good idea when you already have designed the choreography at the service interaction level and have chosen the concrete services. 
+This chapter provides detailed information about the \ee\ REST API and its target mainly to choreography deployers\footnote{Deployer is the human operator responsible by the deployment process.}.
+Understanding the API enables you to write your own code to enact a choreography. 
 
-This document is organized as follows. Section \ref{sec:model} presents the data model that defines XML representations exchanged by API messages. Section \ref{sec:api} describes all the operations provided by the REST API, detailing parameters and return structures. Section \ref{sec:client} presents our client implementation that can be used within any Java program.
+This chapter is organized as follows. Section \ref{sec:model} presents the data model that defines XML representations exchanged by API messages. Section \ref{sec:api} describes all the operations provided by the REST API, detailing parameters and return structures. Section \ref{sec:client} presents our client implementation that can be used within any Java program.
 
 \section{Data model}
 \label{sec:model}
@@ -20,7 +19,7 @@ Although the REST API handles XML representations, we use here the UML notation,
 \begin{figure}
 \centering
 \includegraphics[scale=1.6]{img/data_model.pdf}
-\caption{\ee\ REST API data model}
+\caption{\ee\ REST API data model. \todo{delete proxification class}}
 \label{img:data_model}
 \end{figure}
 
@@ -39,7 +38,6 @@ We proceed with a brief explanation about each class:
 \item [ServiceInstance:] provides information about a specific instance, also called replica, of a deployed service (URI, node data etc.). 
 \item [LegacyServiceInstance:] provides information about a specific instance of a legacy service. 
 \item [Node:] information about the node, including IP address, where a service instance is running.
-\item [Proxification:] provides information about how an instance can be accessed through an EasyESB node. Provides also the address of the ESB node itself, so monitoring tasks may be performed.
 \end{description}
 
 To request a choreography enactment, it is important to understand very well the \verb!ServiceSpec!, \verb!DeployableServiceSpec!, and the \verb!LegacyServiceSpec! classes. Therefore, the description of them follows:
@@ -57,13 +55,12 @@ To request a choreography enactment, it is important to understand very well the
 \item \verb!DeployableServiceSpec!
 	\begin{description}
 		\item [packageUri:] the location of the binary file to be deployed;
-		\item [packageType:] the type of the deployable artifact, according to the \verb!PackageType! enumeration\footnote{When the package type i    s COMMAND\_LINE the service will be executed by the ``java -jar'' command.}.
+		\item [packageType:] the type of the deployable package, according to the \verb!PackageType! enumeration\footnote{When the package type i    s COMMAND\_LINE the service will be executed by the ``java -jar'' command.}.
 		\item [endpointName:] the endpoint suffix after deployment. For example, if the service will be deployed as \verb!http://<some_ip>/choreos/service!, the endpoint name is \verb!choreos/service!. Note that multiple replicas of a single service will all use the same endpoint;
 		\item [port:] the TCP port used by the service. Note that multiple replicas of a single service will all use the same port. Mandatory if type is COMMAND\_LINE;
-		\item [owner:] the organization that holds the infrastructure where the service must be deployed (a configuration file maps owners to Deployment Manager instances);
-		\item [group:] services in the same group will be deployed in the same cloud node (not implemented);
+		\item [owner:] must match a \emph{cloud account} name configured on EE. It will define under which cloud infrastructure the service will be deployed.
 		\item [numberOfInstances:] How many instances of the service should be deployed (onto different virtual machines) in order to allow the load to be distributed;
-		\item [version:] the service version, which is used by the \ee\ to define which services must be redeployed in a choreography update (not used currently);
+		\item [version:] the service version, which is used by the \ee\ to define which services must be redeployed in a choreography update (not used currently); \todo{check if it is not used indeed}
 		\item [resourceImpact:] General information regarding the expected type of machine needed to run the service (see \emph{Resource impact specification});
 	\end{description}
 
@@ -263,7 +260,7 @@ To properly build and read these XML representations, you can rely on the schema
 \section{REST API}
 \label{sec:api}
 
-The \ee\ clients access its features through a REST API exposed by the Choreography Deployer component. This API is described in this section.
+The \ee\ clients access its features through the REST API that is described in this section.
 
 \subsubsection*{Create a choreography}
 
@@ -366,7 +363,6 @@ representation \\
 With this invocation, services will be finally deployed.
 The response arrives only after the deployment of all services, if no deployment fails.
 It is possible to parse the output to find out failed deployments, which will be the services without associated nodes.
-We intend to redesign this operation to something more asynchronous, since waiting a long time for response is not good practice.
 
 \subsubsection*{Update a choreography (only partially implemented at this time)}
 
@@ -416,56 +412,29 @@ of the choreography are correlated by means of the \texttt{name} attribute of Se
 \section{Java client}
 \label{sec:client}
 
-In the \verb!EnactmentEngineAPI! project there is the \verb!ChorDeployerClient! class, which implements the \verb!ChoreographyDeployer! interface (Listing \ref{lst:java_interface}) and handles the REST communication with the Enactment Engine server. This means you can invoke the \ee\ by using a simple Java object, without worrying with XML details.
+In the \verb!EnactmentEngineAPI! project there is the \verb!EEClient! class, which implements the \verb!EnactmentEngine! interface (Listing \ref{lst:java_interface}) and handles the REST communication with the Enactment Engine server. This means you can invoke the \ee by using a simple Java object, without worrying with XML details.
 
 {\footnotesize
 \lstset{language=Java}
-\begin{lstlisting}[caption=\ee\ Java interface, label=lst:java_interface]
+\begin{lstlisting}[caption=\ee\ Java interface., label=lst:java_interface]
 package org.ow2.choreos.chors;
 
-import org.ow2.choreos.chors.datamodel.ChorSpec;
 import org.ow2.choreos.chors.datamodel.Choreography;
+import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 
-public interface ChoreographyDeployer {
-	
-	/**
-	 * Creates a new choreography that still have to be enacted.
-	 * @param services specification of choreography services
-	 * @return the id of the just created choreography
-	 */
-	public String createChoreography(ChoreographySpec chor);
-	
-	/**
-	 * Retrieve choreography information.
-	 * @param chorId the choreography id
-	 * @return the choreography representation
-	 * @throws ChoreographyNotFoundException if chorId does not exist 
-	 */
-	public Choreography getChoreography(String chorId) 
-		throws ChoreographyNotFoundException;
+public interface EnactmentEngine {
 
-	/**
-	 * Enacts a choreography
-	 * @param chorId the choreography id
-	 * @return choreography representation, 
-	   including information about deployed services 
-	 * @throws ChoreographyNotFoundException if chorId does not exist 
-	 * @throws EnactmentException if something goes wrong 
-	 */
-	public Choreography enactChoreography(String chorId) 
-		throws EnactmentException, ChoreographyNotFoundException;
+    public String createChoreography(ChoreographySpec chor);
 
-	/**
-	 * Updates a choreography
-	 * @param chorId the choreography id
-	 * @return choreography representation, 
-	   including information about deployed services 
-	 * @throws ChoreographyNotFoundException if chorId does not exist 
-	 * @throws EnactmentException if something goes wrong
-	 */
-	public void updateChoreography(String chorId, ChoreographySpec spec) 
-		throws EnactmentException, ChoreographyNotFoundException;
-	
+    public Choreography getChoreography(String chorId) 
+        throws ChoreographyNotFoundException;
+
+    public Choreography enactChoreography(String chorId) 
+        throws EnactmentException, ChoreographyNotFoundException;
+
+    public void updateChoreography(String chorId, ChoreographySpec spec) 
+        throws EnactmentException, ChoreographyNotFoundException;
+
 }
 \end{lstlisting}
 }
@@ -474,7 +443,7 @@ To use the \ee\ Java client in your code, it's enough to import the API project 
 
 {\footnotesize
 \lstset{language=XML}
-\begin{lstlisting}[caption=Adding EnactmentEngineAPI as a dependency of your project, label=lst:ee_api_maven]
+\begin{lstlisting}[caption=Adding EnactmentEngineAPI as a dependency of your project., label=lst:ee_api_maven]
 <dependency>
   <groupId>org.ow2.choreos</groupId>
   <artifactId>EnactmentEngineAPI</artifactId>
@@ -487,7 +456,7 @@ The Listing~\ref{lst:chor_spec_example_java} shows an example of how to use the 
 
 {\footnotesize
 \lstset{language=Java}
-\begin{lstlisting}[caption=Example of choreography specification using the Java API, label=lst:chor_spec_example_java]
+\begin{lstlisting}[caption=Example of choreography specification using the Java API., label=lst:chor_spec_example_java]
 public class ChorSpecExample {
 
     public static final String AIRLINE = "airline";
@@ -535,6 +504,28 @@ public class ChorSpecExample {
         dependency.setServiceSpecRole(AIRLINE);
         travelSpec.addDependency(dependency);
     }
+\end{lstlisting}
+}
+
+Finally, Listing~\ref{lst:java_chor_enactment} is an example of how to use the Java API to invoke the EE.
+
+{\footnotesize
+\begin{lstlisting}[breaklines, caption={Deploying a choreography using the Java API.}, label={lst:java_chor_enactment}]
+public class Enactment {
+
+    public static void main(String[] args) throws EnactmentException, ChoreographyNotFoundException {
+
+        final String EE_URI = "http://localhost:9102/enactmentengine";
+        EnactmentEngine ee = new EnactmentEngineClient(EE_URI);
+        ChorSpecExample example = new ChorSpecExample();
+        ChoreographySpec chorSpec = example.getChorSpec();
+
+        String chorId = ee.createChoreography(chorSpec);
+        Choreography chor = ee.enactChoreography(chorId);
+
+        System.out.println(chor); // checking output
+    }
+}
 \end{lstlisting}
 }
 
