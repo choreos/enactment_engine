@@ -63,33 +63,54 @@ Each package type has its own specific deployment procedures, as well its specif
 When using different technologies, such as Python, to write new services, you will need to define a new package type,
 as well the deployment procedure associated with it. Such procedure is specified in Chef recipe. 
 
-So, the first step is to create a new Chef recipe similar to the ``jar'' and ``war'' recipes already provided by \ee.
-This recipes are actually templates that \ee\ will use to create specific recipes to each service to be deployed.
-You may use the the constants \$PACKAGE\_URL and \$NAME within your recipe, they will be injected by \ee to each specific recipe.
-After writing the new recipe, you must associate this recipe to the new package type by editing the \texttt{cookbooks.properties} file.
+So, the first step is to create a new Chef cookbook similar to the ``jar'' and ``war'' recipes already provided by \ee.
+These cookbooks are actually templates that EE will use to create specific cookbooks to each service to be deployed.
+You can use the the constants \$PACKAGE\_URL and \$NAME within your cookbook recipe and attributes files. These constants will be injected by \ee to each specific recipe.
+You can have an idea about how to use them by looking to the WAR cookbook implementation, in Listing~\ref{lst:recipe_template} and Listing~\ref{lst:attributes_template}.
+After writing the new recipe, you must associate this recipe to the new package type by editing the \texttt{extending/cookbooks.properties} file.
 
-% TODO nativeUri! 
+\begin{lstlisting}[frame=trbl, label=lst:recipe_template, caption=Recipe template for WAR deployment.]
+include_recipe "apt" 
+include_recipe "tomcat::choreos"
 
-%criar receita, tipo a do jar
-%variáveis que serão susbtituídas:
-%\$NAME na receita
-%e \$PACKAGE\_URL e \$NAME nos atributos
-%(no futuro devemos passar todos os atributos do service spec)
+remote_file "war_file" do
+        source "#{node['CHOReOSData']['serviceData']['$NAME']['PackageURL']}"
+        path "#{node['tomcat']['webapp_dir']}/$NAME.war"
+        mode "0755"
+        action :create_if_missing
+end
+
+file "#{node['tomcat']['webapp_dir']}/$NAME.war" do
+        action :nothing
+end
+\end{lstlisting}
+
+\begin{lstlisting}[frame=trbl, label=lst:attributes_template, caption=Attributes template for WAR deployment.]
+default['CHOReOSData']['serviceData']['$NAME']['PackageURL'] = "$PACKAGE_URL"
+\end{lstlisting}
+
+\todo{NativeURI}
+
 %
-%editar cookbooks.properties
 %
 %nativeUri -> vai ter q criar mais uma classe pra ser extendida
 %e é preciso um arquivo mapeando o packageType pra classe que define as uris (uricontexts)
 %defaultPort -> criar arquivo de portas padrões (ports)
 %Tanto uricontexts quanto ports são arquivos que vão ser lidos pelas classes em EnactmentEngineAPI
 %Mas se os arquivos ficarem nesse projeto, aí eles não serão lidos corretamente quando 
-%essas classes forem chamadas no DeploymentManager.
+%essas classes forem chamadas no EnactmentEngine.
 %Que fazer? =T
 %
 %usando novo package type no service spec
 %
 %dica: pode ser interessante criar uma nova imagem
 %com o middleware do pacote correspondente já instalado
+
+\emph{Hint:} if your package type is based on some kind of container to run the services,
+such as Tomcat, it may be a good idea to prepare a new image with this container already
+installed and running. So, you can configure EE to create VMs with an already running
+instance of your chosen container (e.g. JBoss).
+This strategy helps in achieving a faster deployment.
 
 
 \section{Supporting new service types}
