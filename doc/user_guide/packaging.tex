@@ -4,15 +4,11 @@
 
 \section{Introduction}
 
-The \ee\ provides a Platform as a Service (PaaS) that automates the distributed deployment of service choreographies in cloud environments. The client of our middleware must build a declarative description of the choreography to be deployed. The description is passed to the \ee\ through a REST request. Such declarative description is a low level architectural description of the choreography, that must be written in XML format and structured according to the Enactment Engine API. Details about how to build this description and how to invoke the REST operations are provided in the document ``\ee\ REST API''\footnote{\url{http://ccsl.ime.usp.br/baile/files/ee\_rest\_api.pdf}}. 
+There are two main attributes in the \textsf{DeployableServiceSpec} class that define constraints on how a service must be coded and packaged. The \texttt{packageType} attribute defines which kind of deployable package is expected by the \ee\ and, therefore, the process of deploying and running the specified service. Examples of package types are COMMAND\_LINE and TOMCAT. The \texttt{serviceType} attribute defines the process of invoking the specified service, which is used by the \ee\ to properly invoke the \texttt{setInvocationAddress} operation during enactment. Examples of service types are SOAP and REST types, although only SOAP services are currently supported by the \ee.
 
-Each service that is going to be deployed has its specification defined by the \textsf{DeployableServiceSpec} class. Its \texttt{packageUri} attribute defines the URL from where the \ee\ retrieves the artifact that will be deployed to make the service accessible. Therefore, all the choreography artifacts need to be already Internet accessible at enactment time. This can be accomplished, for example, by hosting the artifacts on a web server.
-
-There are two main attributes in the \textsf{DeployableServiceSpec} class that define constraints on how a service must be coded and packaged. The \texttt{packageType} attribute defines which kind of deployable artifact is expected by the \ee\ and, therefore, the process of deploying and running the specified service. Examples of package types are COMMAND\_LINE and TOMCAT. The \texttt{serviceType} attribute defines the process of invoking the specified service, which is used by the \ee\ to properly invoke the \texttt{setInvocationAddress} operation during enactment. Examples of service types are SOAP and REST types, although only SOAP services are currently supported by the \ee.
-
-Although the amount of artifact and service types currently supported is quite limited, the \ee\ was designed with an extensible architecture that enables developers to easily provide support for new types by simply creating new implementations of already defined interfaces.
-
-In this document we will provide details about each package type and service type already supported by the \ee, as well as present some service coding guidelines. 
+This chapter is targeted to service \emph{developers} that intend to develop EE compatible services.
+Descriptions and hints encompass coding and packaging phases.
+This guide considers only the service and package types currently supported by EE.
 
 \section{COMMAND\_LINE package type}
 
@@ -94,7 +90,7 @@ implementation=``org.apache.maven.plugins.shade.resource.ManifestResourceTransfo
 
 An important issue about using JAR packages is that the \ee\ is not able to prevent TCP port conflicts. Therefore, try to avoid the use of the same port in multiple services. Also, be sure that the required ports are not blocked by the cloud infrastructure. However, a better way to prevent such port issues is not to use JAR packages, but use WAR packages instead.
 
-A good practice when generating JAR files is that a single JAR file must be able to run on top of different environments. This can be accomplished if configuration files are placed by the side of the JAR file, rather then packaged within it. Because of that, the \ee\ must also support the deployment of JAR files that are provided within another package (e.g. tar.gz), since this higher-level package can contain the JAR file and the necessary configuration files. However, this feature is not yet available.
+%A good practice when generating JAR files is that a single JAR file must be able to run on top of different environments. This can be accomplished if configuration files are placed by the side of the JAR file, rather then packaged within it. Because of that, the \ee\ must also support the deployment of JAR files that are provided within another package (e.g. tar.gz), since this higher-level package can contain the JAR file and the necessary configuration files. However, this feature is not yet available.
 
 \section{TOMCAT package type}
 
@@ -434,6 +430,8 @@ label=lst:wsdl_address]
 }
 
 \item If service A needs to invoke service B, there is no problem if service A is compiled with classes used to build service B. Actually, usually it is very useful to A having access to B interfaces. Nonetheless, this class dependency must be only static. There is no point in service A trying to access objects states of service B, or access resources, as configuration files, bundled in service B package.
+
+\item The \texttt{packageUri} attribute defines the URL from where the \ee\ retrieves the package to be deployed. Therefore, all the services packages need to be already Internet accessible at enactment time. This can be accomplished, for example, by hosting the packages on a web server.
 
 \item Packages cannot be downloaded from https URLs. This restricts using some services, such as Dropbox, to host the packages.
 
