@@ -22,7 +22,6 @@ public class DeployableServiceSpec extends ServiceSpec implements Serializable {
     private String endpointName;
     private int port;
     private String cloudAccount;
-    private String group;
     private int numberOfInstances = 1;
     private ResourceImpact resourceImpact;
     private String version;
@@ -98,14 +97,6 @@ public class DeployableServiceSpec extends ServiceSpec implements Serializable {
 	this.cloudAccount = cloudAccount;
     }
 
-    public String getGroup() {
-	return group;
-    }
-
-    public void setGroup(String group) {
-	this.group = group;
-    }
-
     public ResourceImpact getResourceImpact() {
 	return resourceImpact;
     }
@@ -148,7 +139,6 @@ public class DeployableServiceSpec extends ServiceSpec implements Serializable {
 	final int prime = 31;
 	int result = super.hashCode();
 	result = prime * result + ((endpointName == null) ? 0 : endpointName.hashCode());
-	result = prime * result + ((group == null) ? 0 : group.hashCode());
 	result = prime * result + numberOfInstances;
 	result = prime * result + ((cloudAccount == null) ? 0 : cloudAccount.hashCode());
 	result = prime * result + ((packageType == null) ? 0 : packageType.hashCode());
@@ -172,11 +162,6 @@ public class DeployableServiceSpec extends ServiceSpec implements Serializable {
 	    if (other.endpointName != null)
 		return false;
 	} else if (!endpointName.equals(other.endpointName))
-	    return false;
-	if (group == null) {
-	    if (other.group != null)
-		return false;
-	} else if (!group.equals(other.group))
 	    return false;
 	if (numberOfInstances != other.numberOfInstances)
 	    return false;
@@ -217,8 +202,8 @@ public class DeployableServiceSpec extends ServiceSpec implements Serializable {
     @Override
     public String toString() {
 	return "DeployableServiceSpec [name=" + super.name + ", packageUri=" + packageUri + ", packageType="
-		+ packageType + ", endpointName=" + endpointName + ", port=" + port + ", cloudAccount=" + cloudAccount + ", group="
-		+ group + ", numberOfInstances=" + numberOfInstances + ", version=" + version + ", roles= "
+		+ packageType + ", endpointName=" + endpointName + ", port=" + port + ", cloudAccount=" + cloudAccount 
+		+ ", numberOfInstances=" + numberOfInstances + ", version=" + version + ", roles= "
 		+ super.roles + "]";
     }
 
