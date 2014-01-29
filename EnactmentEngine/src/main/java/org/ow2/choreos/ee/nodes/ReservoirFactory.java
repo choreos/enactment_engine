@@ -26,7 +26,7 @@ public class ReservoirFactory {
      * @return
      */
     public static Reservoir getInstance(CloudConfiguration cloudConfiguration, int poolSize, int threshold) {
-	String cloudAccount = cloudConfiguration.getOwner();
+	String cloudAccount = cloudConfiguration.getCloudAccount();
 	synchronized (ReservoirFactory.class) {
 	    if (!INSTANCES.containsKey(cloudAccount)) {
 		INSTANCES.put(cloudAccount, new Reservoir(cloudConfiguration, poolSize, threshold));
