@@ -22,16 +22,6 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>ebmws-public.others</id>
-			<url>http://maven.petalslink.com/others</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
 			<id>ebmws-public.snapshot</id>
 			<url>http://maven.petalslink.com/public-snapshot</url>
 			<releases>
