@@ -1,6 +1,8 @@
 package org.ow2.choreos.services.datamodel;
 
 import org.ow2.choreos.nodes.datamodel.CloudNode;
+import org.ow2.choreos.services.datamodel.uri.URIContextRetriever;
+import org.ow2.choreos.services.datamodel.uri.URIContextRetrieverFactory;
 
 public class NativeUriRetriever {
 
@@ -24,15 +26,9 @@ public class NativeUriRetriever {
     }
 
     private String getUriContext() {
-        if (spec.getPackageType().equals(PackageType.COMMAND_LINE))
-            return spec.getEndpointName() + "/";
-        else if (spec.getPackageType().equals(PackageType.TOMCAT))
-            return instanceId + "/" + spec.getEndpointName();
-        else if (spec.getPackageType().equals(PackageType.EASY_ESB))
-            return "services/" + spec.getEndpointName() + "ClientProxyEndpoint/";
-        else
-            throw new IllegalStateException("Sorry, I don't know how to provide an URL to a " + spec.getPackageType()
-                    + " package type.");
+        PackageType packageType = spec.getPackageType();
+        URIContextRetriever uriContextRetriever = URIContextRetrieverFactory.getNewInstance(packageType);
+        return uriContextRetriever.retrieveURI(spec, instanceId);
     }
 
     private String getUriWithPort(String uriContext) {
