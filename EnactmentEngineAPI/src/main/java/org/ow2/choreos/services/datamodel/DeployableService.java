@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 
@@ -21,9 +20,6 @@ public class DeployableService extends Service {
     // may be not deployed
     private Set<CloudNode> selectedNodes;
     private List<ServiceInstance> serviceInstances;
-
-    @XmlTransient
-    private RecipeBundle recipeBundle;
 
     public DeployableService() {
 	super();
@@ -110,14 +106,6 @@ public class DeployableService extends Service {
 	    }
 	}
 	throw new IllegalArgumentException("getSpec().getUUID() " + " / " + instanceId);
-    }
-
-    public RecipeBundle getRecipeBundle() {
-	return recipeBundle;
-    }
-
-    public void setRecipeBundle(RecipeBundle recipeBundle) {
-	this.recipeBundle = recipeBundle;
     }
 
     @Override
