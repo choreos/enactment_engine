@@ -22,6 +22,8 @@ public class URIContextRetrieverFactory {
 
     public static URIContextRetriever getNewInstance(String packageType) {
         Class<? extends URIContextRetriever> clazz = classMap.get(packageType);
+        if (clazz == null)
+            creationFailed(packageType);
         URIContextRetriever uriContextRetriever = null;
         try {
             uriContextRetriever = clazz.newInstance();
