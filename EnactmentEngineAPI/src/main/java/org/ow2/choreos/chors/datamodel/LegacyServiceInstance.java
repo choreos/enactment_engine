@@ -1,11 +1,9 @@
 package org.ow2.choreos.chors.datamodel;
 
-import org.ow2.choreos.services.datamodel.Proxification;
 
 public class LegacyServiceInstance {
 
     private String uri;
-    private Proxification proxification;
     private LegacyServiceSpec spec;
     
     public String getUri() {
@@ -14,14 +12,6 @@ public class LegacyServiceInstance {
     
     public void setUri(String uri) {
         this.uri = uri;
-    }
-    
-    public Proxification getProxification() {
-        return proxification;
-    }
-    
-    public void setProxification(Proxification proxification) {
-        this.proxification = proxification;
     }
     
     public LegacyServiceSpec getSpec() {
@@ -59,7 +49,7 @@ public class LegacyServiceInstance {
 
     @Override
     public String toString() {
-        return "LegacyServiceInstance [uri=" + uri + ", proxification=" + proxification + "]";
+        return "LegacyServiceInstance [uri=" + uri + "]";
     }
     
 }
