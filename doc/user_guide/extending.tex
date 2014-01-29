@@ -89,22 +89,13 @@ end
 default['CHOReOSData']['serviceData']['$NAME']['PackageURL'] = "$PACKAGE_URL"
 \end{lstlisting}
 
-\todo{NativeURI}
-
-%
-%
-%nativeUri -> vai ter q criar mais uma classe pra ser extendida
-%e é preciso um arquivo mapeando o packageType pra classe que define as uris (uricontexts)
-%defaultPort -> criar arquivo de portas padrões (ports)
-%Tanto uricontexts quanto ports são arquivos que vão ser lidos pelas classes em EnactmentEngineAPI
-%Mas se os arquivos ficarem nesse projeto, aí eles não serão lidos corretamente quando 
-%essas classes forem chamadas no EnactmentEngine.
-%Que fazer? =T
-%
-%usando novo package type no service spec
-%
-%dica: pode ser interessante criar uma nova imagem
-%com o middleware do pacote correspondente já instalado
+It is up to EE to ``guess'' the service URI too.
+A service URI follows the format \texttt{http://IP:PORT/CONTEXT}.
+And the CONTEXT formation rule is package type dependent.
+Therefore, when extending package type, it is necessary to create a new \textsf{URIContextRetriever}
+implementation and to link this implementation to its package type in the \textsf{URIContextRetrieverFactory} class. To make this relationship, it is enough to add
+a single line in the factory, by adding a new entry in the \texttt{classMap} variable.
+Both \textsf{URIContextRetriever} and \textsf{URIContextRetrieverFactory} classes are in the \textsf{org.ow2.choreos.services.datamodel.uri} package, on the EnactmentEngineAPI project.
 
 \emph{Hint:} if your package type is based on some kind of container to run the services,
 such as Tomcat, it may be a good idea to prepare a new image with this container already
