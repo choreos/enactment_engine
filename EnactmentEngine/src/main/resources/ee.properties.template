@@ -1,6 +1,4 @@
 
-EE_PORT=9102
-
 # Value must be a <clustername> in clouds.properties
 DEFAULT_CLOUD_ACCOUNT=MY_AWS_ACCOUNT
 
