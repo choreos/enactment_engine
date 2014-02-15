@@ -15,7 +15,7 @@ import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
 
 public class ChoreographyRegistryHelper {
 
-    private static final String CHOR_DEPLOYER_URI = "http://localhost:9102/choreographydeployer/";
+    private static final String CHOR_DEPLOYER_URI = "http://localhost:9100/choreographydeployer/";
 
     private ChorRegistry registry = ChorRegistry.getInstance();
 

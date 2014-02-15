@@ -89,8 +89,7 @@ public class NewDeploymentPreparing {
                     logger.error("Future returned a null service for service " + entry.getKey().getName());
                 }
             } catch (ExecutionException e) {
-                logger.error("Could not get service from future for service " + entry.getKey().getName() + " because "
-                        + e.getMessage());
+                logger.error("Could not get service from future for service " + entry.getKey().getName() + " because ", e);
             }
         }
     }

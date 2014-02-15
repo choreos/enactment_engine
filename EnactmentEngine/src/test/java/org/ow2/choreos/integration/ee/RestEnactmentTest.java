@@ -31,8 +31,6 @@ import org.ow2.choreos.utils.LogConfigurator;
 /**
  * It is the same than SimpleEnactmentTest, but using the REST API.
  * 
- * Before the test, start the DeployerManagerServer.
- * 
  * This test will enact a choreography with two services, with a service
  * depending on the other.
  * 
