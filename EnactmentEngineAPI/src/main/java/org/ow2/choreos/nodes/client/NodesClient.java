@@ -31,15 +31,19 @@ import org.ow2.choreos.nodes.datamodel.NodeSpec;
 public class NodesClient implements NodePoolManager {
 
     private String host;
+    private String cloudAccount;
 
     /**
      * 
      * @param host
-     *            ex: 'http://localhost:9100/deploymentmanager'
+     *            ex: 'http://localhost:9100/enactmentengine'
+     * @param cloudAccount
+     *            ex: MY_AWS_ACCOUNT
      * 
      */
-    public NodesClient(String host) {
+    public NodesClient(String host, String cloudAccount) {
         this.host = host;
+        this.cloudAccount = cloudAccount;
     }
 
     private WebClient setupClient() {
@@ -61,7 +65,7 @@ public class NodesClient implements NodePoolManager {
     public CloudNode createNode(NodeSpec nodeSpec) throws NodeNotCreatedException {
 
         WebClient client = setupClient();
-        client.path("nodes");
+        client.path(cloudAccount).path("nodes");
         client.type(MediaType.APPLICATION_XML);
         CloudNode node = null;
 
@@ -78,7 +82,7 @@ public class NodesClient implements NodePoolManager {
     public CloudNode getNode(String nodeId) throws NodeNotFoundException {
 
         WebClient client = setupClient();
-        client.path("nodes/" + nodeId);
+        client.path(cloudAccount).path("nodes").path(nodeId);
         CloudNode node = null;
 
         try {
@@ -103,11 +107,11 @@ public class NodesClient implements NodePoolManager {
     @Override
     public void destroyNodes() throws NodeNotDestroyed {
         WebClient client = setupClient();
-        client.path("nodes");
+        client.path(cloudAccount).path("nodes");
         Response response = client.delete();
         if (response.getStatus() != 200) {
             throw new NodeNotDestroyed("?");
-        }        
+        }
     }
 
 }
