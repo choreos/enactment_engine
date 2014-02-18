@@ -17,27 +17,26 @@ public class IncreaseNumberOfReplicas extends BaseAction {
     private DeployableServiceSpec newSpec;
 
     public IncreaseNumberOfReplicas(DeployableService currentService, DeployableServiceSpec newSpec) {
-	this.currentService = currentService;
-	this.newSpec = newSpec;
+        this.currentService = currentService;
+        this.newSpec = newSpec;
     }
 
     @Override
     public void applyUpdate() throws UpdateActionFailedException {
-	ServiceDeploymentPreparer deploymentPreparer = ServiceDeploymentPreparerFactory.getNewInstance(newSpec,
-		currentService);
-	try {
-	    Set<CloudNode> nodes = deploymentPreparer.prepareDeployment();
-	    currentService.setSpec(newSpec);
-	    for (CloudNode node : nodes)
-		currentService.addSelectedNode(node);
-	} catch (PrepareDeploymentFailedException e) {
-	    throw new UpdateActionFailedException();
-	}
+        ServiceDeploymentPreparer deploymentPreparer = ServiceDeploymentPreparerFactory.getNewInstance(currentService);
+        currentService.setSpec(newSpec);
+        try {
+            Set<CloudNode> nodes = deploymentPreparer.prepareDeployment();
+            for (CloudNode node : nodes)
+                currentService.addSelectedNode(node);
+        } catch (PrepareDeploymentFailedException e) {
+            throw new UpdateActionFailedException();
+        }
     }
 
     @Override
     public String getName() {
-	return NAME;
+        return NAME;
     }
 
 }

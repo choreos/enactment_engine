@@ -43,8 +43,7 @@ public class ServiceCreator {
     }
 
     private Set<CloudNode> prepareDeployment() throws ServiceNotCreatedException {
-        ServiceDeploymentPreparer deploymentPreparer = ServiceDeploymentPreparerFactory.getNewInstance(
-                service.getSpec(), service);
+        ServiceDeploymentPreparer deploymentPreparer = ServiceDeploymentPreparerFactory.getNewInstance(service);
         try {
             return deploymentPreparer.prepareDeployment();
         } catch (PrepareDeploymentFailedException e1) {

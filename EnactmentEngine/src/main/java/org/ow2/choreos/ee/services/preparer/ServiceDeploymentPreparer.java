@@ -14,17 +14,17 @@ import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
 
 public class ServiceDeploymentPreparer {
 
-    private DeployableServiceSpec newSpec;
+    private DeployableServiceSpec spec;
     private DeployableService service;
     private String serviceSpecName;
     private Set<CloudNode> nodes;
 
     private Logger logger = Logger.getLogger(ServiceDeploymentPreparer.class);
 
-    public ServiceDeploymentPreparer(DeployableServiceSpec newSpec, DeployableService service) {
-        this.newSpec = newSpec;
+    public ServiceDeploymentPreparer(DeployableService service) {
         this.service = service;
-        this.serviceSpecName = newSpec.getName();
+        this.spec = service.getSpec();
+        this.serviceSpecName = spec.getName();
     }
 
     public Set<CloudNode> prepareDeployment() throws PrepareDeploymentFailedException {
@@ -38,7 +38,7 @@ public class ServiceDeploymentPreparer {
         int numberOfNewInstances = getNumberOfNewInstances();
         if (numberOfNewInstances > 0) {
             try {
-                List<CloudNode> nodesList = selector.select(newSpec, numberOfNewInstances);
+                List<CloudNode> nodesList = selector.select(spec, numberOfNewInstances);
                 nodes = new HashSet<CloudNode>(nodesList);
                 logger.info("Selected nodes to " + serviceSpecName + ": " + nodes);
             } catch (NotSelectedException e) {
@@ -54,7 +54,7 @@ public class ServiceDeploymentPreparer {
 
     private int getNumberOfNewInstances() {
         int selectedNodesLen = service.getSelectedNodes() == null ? 0 : service.getSelectedNodes().size();
-        int numberOfNewInstances = newSpec.getNumberOfInstances() - selectedNodesLen;
+        int numberOfNewInstances = spec.getNumberOfInstances() - selectedNodesLen;
         return numberOfNewInstances;
     }
 
@@ -65,7 +65,7 @@ public class ServiceDeploymentPreparer {
     private void prepareInstances() {
         for (CloudNode node : nodes) {
             try {
-                InstanceDeploymentPreparer instanceDeploymentPreparer = new InstanceDeploymentPreparer(newSpec,
+                InstanceDeploymentPreparer instanceDeploymentPreparer = new InstanceDeploymentPreparer(spec,
                         service, node);
                 instanceDeploymentPreparer.prepareDeployment();
             } catch (PrepareDeploymentFailedException e) {
