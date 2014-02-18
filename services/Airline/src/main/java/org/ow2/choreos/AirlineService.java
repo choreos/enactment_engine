@@ -22,7 +22,8 @@ public class AirlineService implements Airline {
     @Override
     public String buyFlight() {
         logger.info("Request to buy flight; response: " + FLIGHT_NUMBER);
-        return FLIGHT_NUMBER;
+        long threadId = Thread.currentThread().getId();
+        return FLIGHT_NUMBER + "--" + threadId;
     }
 
 }
