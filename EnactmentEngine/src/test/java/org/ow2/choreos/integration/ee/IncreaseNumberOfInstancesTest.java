@@ -82,8 +82,10 @@ public class IncreaseNumberOfInstancesTest {
 	assertTrue(codes2.startsWith("33") && codes2.endsWith("--22"));
 	assertFalse(codes.equals(codes2));
 
+	System.out.println("TEST PAUSED, plz, provide input to continue...");
 	System.in.read();
-
+	System.out.println("Continuing test.");
+	
 	ee.updateChoreography(chorId, newSpec);
 	chor = ee.enactChoreography(chorId);
 

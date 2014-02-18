@@ -77,6 +77,8 @@ public class ChorEnactmentWithReplicasTest {
         String codes2 = client2.buyTrip();
         assertTrue(codes2.startsWith("33") && codes2.endsWith("--22"));
 
+        System.out.println(codes);
+        System.out.println(codes2);
         assertFalse(codes.equals(codes2));
     }
 
