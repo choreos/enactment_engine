@@ -23,10 +23,7 @@ public class IncreaseNumberOfReplicas extends BaseAction {
 
     @Override
     public void applyUpdate() throws UpdateActionFailedException {
-	int increaseAmount = newSpec.getNumberOfInstances() - currentService.getSpec().getNumberOfInstances();
-	DeployableServiceSpec deltaSpec = newSpec.clone();
-	deltaSpec.setNumberOfInstances(increaseAmount);
-	ServiceDeploymentPreparer deploymentPreparer = ServiceDeploymentPreparerFactory.getNewInstance(deltaSpec,
+	ServiceDeploymentPreparer deploymentPreparer = ServiceDeploymentPreparerFactory.getNewInstance(newSpec,
 		currentService);
 	try {
 	    Set<CloudNode> nodes = deploymentPreparer.prepareDeployment();
