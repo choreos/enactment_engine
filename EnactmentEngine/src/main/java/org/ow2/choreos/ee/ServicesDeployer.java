@@ -17,9 +17,7 @@ import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
 public class ServicesDeployer {
 
     private Choreography chor;
-
-    private List<DeployableService> notModifiedServices;
-    private List<DeployableService> servicesToDeploy;
+    private List<DeployableService> allServices;
 
     public ServicesDeployer(Choreography chor) {
 	this.chor = chor;
@@ -34,14 +32,7 @@ public class ServicesDeployer {
     public List<DeployableService> deployServices() throws EnactmentException {
 	prepare();
 	updateNodes();
-	List<DeployableService> deployedServices = getDeployedServices();
-	return deployedServices;
-    }
-
-    private List<DeployableService> getDeployedServices() {
-	List<DeployableService> deployedServices = new ArrayList<DeployableService>(servicesToDeploy);
-	deployedServices.addAll(notModifiedServices);
-	return deployedServices;
+	return allServices;
     }
 
     private void prepare() throws EnactmentException {
@@ -49,7 +40,7 @@ public class ServicesDeployer {
 	ChorDiffer differ = new ChorDiffer(chor);
 	List<DeployableServiceSpec> toCreate = differ.getNewServiceSpecs();
 	Map<DeployableService, DeployableServiceSpec> toUpdate = differ.getServicesToUpdate();
-	notModifiedServices = differ.getNotModifiedServices();
+	List<DeployableService> notModifiedServices = differ.getNotModifiedServices();
 
 	NewDeploymentPreparing newPreparer = new NewDeploymentPreparing(chor.getId(), toCreate);
 	List<DeployableService> newServices = newPreparer.prepare();
@@ -57,12 +48,13 @@ public class ServicesDeployer {
 	UpdateDeploymentPreparing preparer = new UpdateDeploymentPreparing(chor.getId(), toUpdate);
 	List<DeployableService> updatedServices = preparer.prepare();
 
-	servicesToDeploy = new ArrayList<DeployableService>(newServices);
-	servicesToDeploy.addAll(updatedServices);
+	allServices = new ArrayList<DeployableService>(newServices);
+	allServices.addAll(updatedServices);
+	allServices.addAll(notModifiedServices);
     }
 
     private void updateNodes() throws EnactmentException {
-	NodesUpdater nodesUpdater = new NodesUpdater(servicesToDeploy, chor.getId());
+	NodesUpdater nodesUpdater = new NodesUpdater(allServices, chor.getId());
 	nodesUpdater.updateNodes();
     }
 
