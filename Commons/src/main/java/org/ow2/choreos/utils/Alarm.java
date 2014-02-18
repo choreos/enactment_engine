@@ -20,6 +20,10 @@ public class Alarm {
         File folder = new File(SONGS_FOLDER);
         File[] songs = folder.listFiles(filter);
         int numberOfSongs = songs.length;
+        if (numberOfSongs == 0) {
+            fallBack();
+            return;
+        }
         Random random = new Random();
         int songIndex = random.nextInt(numberOfSongs);
         File song = songs[songIndex];
@@ -31,6 +35,10 @@ public class Alarm {
         } catch (CommandLineException e) {
             System.out.println("Alarm!");
         }
+    }
+
+    private void fallBack() {
+        System.out.println("Pam!");
     }
 
     public static void main(String[] args) {
