@@ -26,9 +26,9 @@ public class ModelsForTest {
     public static final String AIRLINE = "airline";
     public static final String TRAVEL_AGENCY = "travelagency";
 
-    public static String AIRLINE_JAR = "http://valinhos.ime.usp.br:54080/enact_test/v3/Airline-3.0.0.jar";
+    public static String AIRLINE_JAR = "http://valinhos.ime.usp.br:54080/enact_test/v3/Airline-3.1.0.jar";
     public static String TRAVEL_AGENCY_JAR = "http://valinhos.ime.usp.br:54080/enact_test/v3/TravelAgency-3.0.0.jar";
-    public static String AIRLINE_WAR = "http://valinhos.ime.usp.br:54080/enact_test/v3/Airline-3.0.0.war";
+    public static String AIRLINE_WAR = "http://valinhos.ime.usp.br:54080/enact_test/v3/Airline-3.1.0.war";
     public static String TRAVEL_AGENCY_WAR = "http://valinhos.ime.usp.br:54080/enact_test/v3/TravelAgency-3.0.0.war";
 
     public static final String AIRLINE_IP = "192.168.56.101";
