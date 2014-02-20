@@ -23,8 +23,8 @@ public class IncreaseNumberOfReplicas extends BaseAction {
 
     @Override
     public void applyUpdate() throws UpdateActionFailedException {
-        ServiceDeploymentPreparer deploymentPreparer = ServiceDeploymentPreparerFactory.getNewInstance(currentService);
         currentService.setSpec(newSpec);
+        ServiceDeploymentPreparer deploymentPreparer = ServiceDeploymentPreparerFactory.getNewInstance(currentService);
         try {
             Set<CloudNode> nodes = deploymentPreparer.prepareDeployment();
             for (CloudNode node : nodes)
