@@ -50,23 +50,17 @@ public class AWSCloudProvider extends JCloudsCloudProvider {
 
     @Override
     protected String getDefaultImageId() {
-        String imageId = DEFAULT_IMAGE;
-        try {
-            imageId = cloudConfiguration.get("AMAZON_IMAGE_ID");
-        } catch (IllegalArgumentException e) {
-            // pas du problem, using default
-        }
+        String imageId = cloudConfiguration.getOptional("AMAZON_IMAGE_ID");
+        if (imageId == null | imageId.isEmpty())
+            imageId = DEFAULT_IMAGE;
         return imageId;
     }
 
     @Override
     protected String getHardwareId() {
-        String instanceType = DEFAULT_INSTANCE_TYPE;
-        try {
-            instanceType = cloudConfiguration.get("AMAZON_INSTANCE_TYPE");
-        } catch (IllegalArgumentException e) {
-            // pas du problem, using default
-        }
+        String instanceType = cloudConfiguration.getOptional("AMAZON_INSTANCE_TYPE");
+        if (instanceType == null || instanceType.isEmpty())
+            instanceType = DEFAULT_INSTANCE_TYPE;
         return instanceType;
     }
 

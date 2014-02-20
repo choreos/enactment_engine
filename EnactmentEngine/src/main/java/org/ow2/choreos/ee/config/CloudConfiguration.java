@@ -51,27 +51,27 @@ public class CloudConfiguration {
     }
 
     /**
-     * If the value is not found, the DEFAULT value is returned. If both the
-     * value of key and DEFAULT are not found, an IllegalArgumentException is
-     * thrown.
      * 
      * @param key
-     * @return
-     * @throws IllegalArgumentException
+     * @return value
+     * @throws IllegalArgumentException if key does not have a value
      */
     public String get(String key) {
-
-	key = keyForCloudAccount(key);
-
-	String value = getProperties().get(key);
-
-	if (value == null || value.trim().isEmpty()) {
+	String value = getOptional(key);
+	if (value == null || value.isEmpty()) {
 	    logger.error("Could not retrieve the CloudConfiguration property " + key + " for cloud account " + cloudAccount
 		    + ". Please, check the file " + PROPERTIES_FILE);
 	    throw new IllegalArgumentException();
 	}
-
-	return value.trim();
+	return value;
+    }
+    
+    public String getOptional(String key) {
+        key = keyForCloudAccount(key);
+        String value = getProperties().get(key);
+        if (value != null)
+            value = value.trim();
+        return value;
     }
 
     public String[] getMultiple(String key) {
