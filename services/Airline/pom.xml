@@ -7,7 +7,7 @@
 	<groupId>org.ow2.choreos</groupId>
 	<artifactId>Airline</artifactId>
 	<version>3.1.0</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<dependencies>
 		<dependency>
