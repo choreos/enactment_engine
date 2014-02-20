@@ -1,7 +1,7 @@
 HOW CHOREOGRAPHY DEPLOYMENT WORKS (internals)
 =================================
 
-Leonardo Leite, 30/01/14
+Leonardo Leite, 20/02/14
 
 At ServicesDeployer:
 ChorDiffer(chor) returns { new , to update, not modified } services
@@ -49,14 +49,13 @@ FAIL ON PREPARING SERVICES
 
 **Handling**:
 
+* ServiceDeploymentPreparer prepares N instances,
+where N = spec.getNumberOfInstances() - service.instances.len
 * at ServicesDeployer: not modified -> NotModifiedDeploymentPreparing -> NodesUpdater
 * NotModifiedDeploymentPreparing -> ServiceDeploymentPreparer
 
-**Obs**: currently ServiceDeploymentPreparer already receives service spec and service.
-So we need just one modification. Rather then creating spec.getNumberOfInstances() instances
-of InstanceDeploymentPreparer, create spec.getNumberOfInstances() - service.instances.len of them.
+TODO: NotModifiedDeploymentPreparing
 
-**TODO**: IncreaseNumberOfInstances will must pass newSpec rather than deltaSpec to ServiceDeploymentPreparer.
 
 FAIL ON UPDATE NODES
 --------------------
@@ -73,7 +72,7 @@ FAIL ON BINDING SERVICES
 
 **Consequences**: there are no visible consequences to EE.
 
-**Handling**: just cast all the dependencies again (already implemented).
+**Handling**: just cast all the dependencies again.
 
 **Obs**: the setInvocationAddress already has an idempotent design,
 since each call describes all the possible endpoints for a single partner.
