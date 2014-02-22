@@ -18,6 +18,7 @@ import org.ow2.choreos.ee.nodes.cm.NodeUpdater;
 import org.ow2.choreos.ee.nodes.cm.NodeUpdaters;
 import org.ow2.choreos.ee.services.ServiceCreator;
 import org.ow2.choreos.ee.services.ServiceCreatorFactory;
+import org.ow2.choreos.ee.services.preparer.ServiceDeploymentPreparer;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.nodes.datamodel.ResourceImpact;
 import org.ow2.choreos.services.datamodel.DeployableService;
@@ -59,6 +60,8 @@ public class WARDeployTest {
     public void shouldDeployAWarServiceInANode() throws Exception {
 
 	DeployableService service = serviceCreator.createService(specWar);
+        ServiceDeploymentPreparer preparer = new ServiceDeploymentPreparer(service);
+        preparer.prepareDeployment();
 	assertNull(service.getInstances());
 	CloudNode node = service.getSelectedNodes().iterator().next();
 	NodeUpdater nodeUpdater = NodeUpdaters.getUpdaterFor(node);

@@ -20,6 +20,7 @@ import org.ow2.choreos.ee.nodes.cm.NodeUpdater;
 import org.ow2.choreos.ee.nodes.cm.NodeUpdaters;
 import org.ow2.choreos.ee.services.ServiceCreator;
 import org.ow2.choreos.ee.services.ServiceCreatorFactory;
+import org.ow2.choreos.ee.services.preparer.ServiceDeploymentPreparer;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
@@ -53,8 +54,10 @@ public class JARDeployTest {
 
     @Test
     public void shouldDeployAJarServiceInANode() throws Exception {
-
+        
 	DeployableService service = serviceCreator.createService(spec);
+	ServiceDeploymentPreparer preparer = new ServiceDeploymentPreparer(service);
+	preparer.prepareDeployment();
 	assertNull(service.getInstances());
 	CloudNode node = service.getSelectedNodes().iterator().next();
         NodeUpdater nodeUpdater = NodeUpdaters.getUpdaterFor(node);
@@ -70,6 +73,7 @@ public class JARDeployTest {
 	client = WebClient.create(wsdl);
 	Response response = client.get();
 	assertEquals(200, response.getStatus());
+	
     }
 
 }
