@@ -53,6 +53,8 @@ public class NotModifiedDeploymentPreparing {
     }
 
     public List<DeployableService> prepare() throws EnactmentException {
+        if (services.size() == 0)
+            return new ArrayList<DeployableService>();        
         submitConfigureTasks();
         waitConfigureTasks();
         retrieveConfiguredServices();
@@ -112,7 +114,7 @@ public class NotModifiedDeploymentPreparing {
             ServiceDeploymentPreparer deploymentPreparer = ServiceDeploymentPreparerFactory.getNewInstance(service);
             try {
                 Set<CloudNode> selectedNodes = deploymentPreparer.prepareDeployment();
-                service.setSelectedNodes(selectedNodes);
+                service.addSelectedNodes(selectedNodes);
                 return service;
             } catch (PrepareDeploymentFailedException e1) {
                 logger.error("Could not prepare the deployment of the service " + service.getUUID() + " ("

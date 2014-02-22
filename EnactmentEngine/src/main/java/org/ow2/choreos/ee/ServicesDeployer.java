@@ -20,7 +20,7 @@ public class ServicesDeployer {
     private List<DeployableService> allServices;
 
     public ServicesDeployer(Choreography chor) {
-	this.chor = chor;
+        this.chor = chor;
     }
 
     /**
@@ -30,32 +30,38 @@ public class ServicesDeployer {
      * @throws EnactmentException
      */
     public List<DeployableService> deployServices() throws EnactmentException {
-	prepare();
-	updateNodes();
-	return allServices;
+        prepare();
+        updateNodes();
+        return allServices;
     }
 
     private void prepare() throws EnactmentException {
 
-	ChorDiffer differ = new ChorDiffer(chor);
-	List<DeployableServiceSpec> toCreate = differ.getNewServiceSpecs();
-	Map<DeployableService, DeployableServiceSpec> toUpdate = differ.getServicesToUpdate();
-	List<DeployableService> notModifiedServices = differ.getNotModifiedServices();
+        String chorId = chor.getId();
 
-	NewDeploymentPreparing newPreparer = new NewDeploymentPreparing(chor.getId(), toCreate);
-	List<DeployableService> newServices = newPreparer.prepare();
+        ChorDiffer differ = new ChorDiffer(chor);
+        List<DeployableServiceSpec> toCreate = differ.getNewServiceSpecs();
+        Map<DeployableService, DeployableServiceSpec> toUpdate = differ.getServicesToUpdate();
+        List<DeployableService> notModifiedServices = differ.getNotModifiedServices();
 
-	UpdateDeploymentPreparing preparer = new UpdateDeploymentPreparing(chor.getId(), toUpdate);
-	List<DeployableService> updatedServices = preparer.prepare();
+        NewDeploymentPreparing newPreparer = new NewDeploymentPreparing(chorId, toCreate);
+        List<DeployableService> newServices = newPreparer.prepare();
 
-	allServices = new ArrayList<DeployableService>(newServices);
-	allServices.addAll(updatedServices);
-	allServices.addAll(notModifiedServices);
+        UpdateDeploymentPreparing updatePreparer = new UpdateDeploymentPreparing(chorId, toUpdate);
+        List<DeployableService> updatedServices = updatePreparer.prepare();
+
+        NotModifiedDeploymentPreparing notModifiedPreparer = new NotModifiedDeploymentPreparing(chorId,
+                notModifiedServices);
+        List<DeployableService> notModifiedPreparedServices = notModifiedPreparer.prepare();
+
+        allServices = new ArrayList<DeployableService>(newServices);
+        allServices.addAll(updatedServices);
+        allServices.addAll(notModifiedPreparedServices);
     }
 
     private void updateNodes() throws EnactmentException {
-	NodesUpdater nodesUpdater = new NodesUpdater(allServices, chor.getId());
-	nodesUpdater.updateNodes();
+        NodesUpdater nodesUpdater = new NodesUpdater(allServices, chor.getId());
+        nodesUpdater.updateNodes();
     }
 
 }
