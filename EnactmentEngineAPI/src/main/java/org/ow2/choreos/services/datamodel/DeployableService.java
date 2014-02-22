@@ -5,6 +5,7 @@
 package org.ow2.choreos.services.datamodel;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,7 +54,7 @@ public class DeployableService extends Service {
     public List<ServiceInstance> getServiceInstances() {
 	return serviceInstances;
     }
-
+    
     public void setServiceInstances(List<ServiceInstance> instances) {
 	this.serviceInstances = instances;
     }
@@ -80,6 +81,14 @@ public class DeployableService extends Service {
 
     public boolean hasInstances() {
 	return serviceInstances != null && serviceInstances.size() > 0;
+    }
+    
+    public void addSelectedNodes(Collection<CloudNode> newSelectedNodes) {
+        synchronized(this) {
+            if (selectedNodes == null)
+                selectedNodes = new HashSet<CloudNode>();
+        }
+        selectedNodes.addAll(newSelectedNodes);
     }
 
     @Override

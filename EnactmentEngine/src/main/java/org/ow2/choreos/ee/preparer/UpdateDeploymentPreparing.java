@@ -1,4 +1,4 @@
-package org.ow2.choreos.ee;
+package org.ow2.choreos.ee.preparer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,15 +17,17 @@ import org.ow2.choreos.services.ServiceNotModifiedException;
 import org.ow2.choreos.services.UnhandledModificationException;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
-import org.ow2.choreos.utils.Concurrency;
 
 public class UpdateDeploymentPreparing {
 
+    private static Logger logger = Logger.getLogger(UpdateDeploymentPreparing.class);
+
     private String chorId;
     private Map<DeployableService, DeployableServiceSpec> toUpdate;
-    private List<DeployableService> configuredServices;
 
-    private Logger logger = Logger.getLogger(UpdateDeploymentPreparing.class);
+    private ExecutorService executor;
+    private Map<DeployableServiceSpec, Future<DeployableService>> futures;
+    private List<DeployableService> preparedServices;
 
     public UpdateDeploymentPreparing(String chorId, Map<DeployableService, DeployableServiceSpec> toUpdate) {
 	this.chorId = chorId;
@@ -36,47 +38,34 @@ public class UpdateDeploymentPreparing {
 	if (toUpdate.size() == 0)
 	    return new ArrayList<DeployableService>();
 	logger.info("Request to configure nodes; creating services; setting up Chef");
-	updateExistingServices();
-	checkStatus();
-	return configuredServices;
+	submitPrepareTasks();
+        waitConfigureTasks();
+        retrievePreparedServices();	
+	return preparedServices;
+    }
+    
+    private void submitPrepareTasks() {
+        final int N = toUpdate.size();
+        ExecutorService executor = Executors.newFixedThreadPool(N);
+        List<Future<DeployableService>> futures = new ArrayList<Future<DeployableService>>();
+        for (Entry<DeployableService, DeployableServiceSpec> entry : toUpdate.entrySet()) {
+            DeployableService service = entry.getKey();
+            DeployableServiceSpec spec = entry.getValue();
+            logger.debug("Requesting update of " + spec);
+            ServiceUpdateInvoker invoker = new ServiceUpdateInvoker(service, spec);
+            Future<DeployableService> future = executor.submit(invoker);
+            futures.add(future);
+        }
+    }
+    
+    private void waitConfigureTasks() {
+        PreparerWaiter waiter = new PreparerWaiter(chorId, executor);
+        waiter.waitPreparement();
     }
 
-    private void checkStatus() throws EnactmentException {
-	if (configuredServices == null || configuredServices.isEmpty()) {
-	    logger.error("No services configured in chor " + chorId + "!");
-	    throw new EnactmentException();
-	}
-    }
-
-    private void updateExistingServices() {
-
-	final int TIMEOUT = 10;
-	final int N = toUpdate.size();
-	ExecutorService executor = Executors.newFixedThreadPool(N);
-	List<Future<DeployableService>> futures = new ArrayList<Future<DeployableService>>();
-	for (Entry<DeployableService, DeployableServiceSpec> entry : toUpdate.entrySet()) {
-	    DeployableService service = entry.getKey();
-	    DeployableServiceSpec spec = entry.getValue();
-	    logger.debug("Requesting update of " + spec);
-	    ServiceUpdateInvoker invoker = new ServiceUpdateInvoker(service, spec);
-	    Future<DeployableService> future = executor.submit(invoker);
-	    futures.add(future);
-	}
-
-	Concurrency.waitExecutor(executor, TIMEOUT, "Could not properly update all the services of chor" + chorId);
-
-	configuredServices = new ArrayList<DeployableService>();
-	for (Future<DeployableService> future : futures) {
-	    try {
-		DeployableService service = Concurrency.checkAndGetFromFuture(future);
-		if (service != null) {
-		    configuredServices.add(service);
-		}
-	    } catch (Exception e) {
-		logger.error("Could not get service from future: " + e.getMessage());
-	    }
-	}
-
+    private void retrievePreparedServices() {
+        FutureCollector futureCollector = new FutureCollector(chorId, futures);
+        preparedServices = futureCollector.collectDeployedServicesFromFutures();
     }
 
     private class ServiceUpdateInvoker implements Callable<DeployableService> {

@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.ow2.choreos.chors.EnactmentException;
 import org.ow2.choreos.chors.datamodel.Choreography;
+import org.ow2.choreos.ee.preparer.NewDeploymentPreparing;
 import org.ow2.choreos.ee.services.ServiceCreator;
 import org.ow2.choreos.ee.services.ServiceCreatorFactory;
 import org.ow2.choreos.services.ServiceNotCreatedException;
