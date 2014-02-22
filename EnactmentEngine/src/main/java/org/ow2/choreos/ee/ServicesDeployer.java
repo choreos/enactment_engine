@@ -48,18 +48,18 @@ public class ServicesDeployer {
         List<DeployableService> notModifiedServices = differ.getNotModifiedServices();
 
         NewDeploymentPreparing newPreparer = new NewDeploymentPreparing(chorId, toCreate);
-        List<DeployableService> newServices = newPreparer.prepare();
+        List<DeployableService> preparedNewServices = newPreparer.prepare();
 
         UpdateDeploymentPreparing updatePreparer = new UpdateDeploymentPreparing(chorId, toUpdate);
-        List<DeployableService> updatedServices = updatePreparer.prepare();
+        List<DeployableService> preparedUpdatedServices = updatePreparer.prepare();
 
         NotModifiedDeploymentPreparing notModifiedPreparer = new NotModifiedDeploymentPreparing(chorId,
                 notModifiedServices);
-        List<DeployableService> notModifiedPreparedServices = notModifiedPreparer.prepare();
+        List<DeployableService> preparedNotModifiedServices = notModifiedPreparer.prepare();
 
-        allServices = new ArrayList<DeployableService>(newServices);
-        allServices.addAll(updatedServices);
-        allServices.addAll(notModifiedPreparedServices);
+        allServices = new ArrayList<DeployableService>(preparedNewServices);
+        allServices.addAll(preparedUpdatedServices);
+        allServices.addAll(preparedNotModifiedServices);
     }
 
     private void updateNodes() throws EnactmentException {

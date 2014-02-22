@@ -14,8 +14,8 @@ import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
 
 public class ServiceDeploymentPreparer {
 
-    private DeployableServiceSpec spec;
     private DeployableService service;
+    private DeployableServiceSpec spec;
     private String serviceSpecName;
     private Set<CloudNode> nodes;
 
@@ -27,10 +27,10 @@ public class ServiceDeploymentPreparer {
         this.serviceSpecName = spec.getName();
     }
 
-    public Set<CloudNode> prepareDeployment() throws PrepareDeploymentFailedException {
+    public void prepareDeployment() throws PrepareDeploymentFailedException {
         selectNodes();
+        service.addSelectedNodes(nodes);
         prepareInstances();
-        return nodes;
     }
 
     private void selectNodes() throws PrepareDeploymentFailedException {

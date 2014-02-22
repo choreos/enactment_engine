@@ -13,6 +13,9 @@ import org.apache.log4j.Logger;
 import org.ow2.choreos.chors.EnactmentException;
 import org.ow2.choreos.ee.services.ServiceCreator;
 import org.ow2.choreos.ee.services.ServiceCreatorFactory;
+import org.ow2.choreos.ee.services.preparer.PrepareDeploymentFailedException;
+import org.ow2.choreos.ee.services.preparer.ServiceDeploymentPreparer;
+import org.ow2.choreos.ee.services.preparer.ServiceDeploymentPreparerFactory;
 import org.ow2.choreos.services.ServiceNotCreatedException;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
@@ -23,11 +26,11 @@ public class NewDeploymentPreparing {
 
     private String chorId;
     private List<DeployableServiceSpec> specs;
-    
+
     private ExecutorService executor;
     private Map<DeployableServiceSpec, Future<DeployableService>> futures;
     private List<DeployableService> preparedServices;
-    
+
     public NewDeploymentPreparing(String chorId, List<DeployableServiceSpec> specs) {
         this.chorId = chorId;
         this.specs = specs;
@@ -75,13 +78,18 @@ public class NewDeploymentPreparing {
 
         @Override
         public DeployableService call() throws Exception {
-            ServiceCreator serviceCreator = ServiceCreatorFactory.getNewInstance();
             try {
-                DeployableService deployedService = serviceCreator.createService(spec);
-                return deployedService;
+                ServiceCreator serviceCreator = ServiceCreatorFactory.getNewInstance();
+                DeployableService service = serviceCreator.createService(spec);
+                ServiceDeploymentPreparer deploymentPreparer = ServiceDeploymentPreparerFactory.getNewInstance(service);
+                deploymentPreparer.prepareDeployment();
+                return service;
             } catch (ServiceNotCreatedException e) {
                 logger.error("Service " + spec.getName() + " not created!");
                 throw e;
+            } catch (PrepareDeploymentFailedException e) {
+                logger.error("Could not prepare the deployment of the service " + spec.getName());
+                throw new ServiceNotCreatedException(spec.getName());
             }
         }
     }

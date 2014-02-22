@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,7 +14,6 @@ import org.ow2.choreos.chors.EnactmentException;
 import org.ow2.choreos.ee.services.preparer.PrepareDeploymentFailedException;
 import org.ow2.choreos.ee.services.preparer.ServiceDeploymentPreparer;
 import org.ow2.choreos.ee.services.preparer.ServiceDeploymentPreparerFactory;
-import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.services.ServiceNotCreatedException;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
@@ -78,10 +76,9 @@ public class NotModifiedDeploymentPreparing {
 
         @Override
         public DeployableService call() throws Exception {
-            ServiceDeploymentPreparer deploymentPreparer = ServiceDeploymentPreparerFactory.getNewInstance(service);
             try {
-                Set<CloudNode> selectedNodes = deploymentPreparer.prepareDeployment();
-                service.addSelectedNodes(selectedNodes);
+                ServiceDeploymentPreparer deploymentPreparer = ServiceDeploymentPreparerFactory.getNewInstance(service);
+                deploymentPreparer.prepareDeployment();
                 return service;
             } catch (PrepareDeploymentFailedException e1) {
                 logger.error("Could not prepare the deployment of the service " + service.getUUID() + " ("

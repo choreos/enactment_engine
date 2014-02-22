@@ -31,8 +31,6 @@ import org.ow2.choreos.utils.LogConfigurator;
  * will serve with two replicas. The test assume that Travel Agency round robins
  * the Airline instances.
  * 
- * Before the test, start the NPMServer and the ServiceDeployerServer
- * 
  * @author tfmend
  * 
  */

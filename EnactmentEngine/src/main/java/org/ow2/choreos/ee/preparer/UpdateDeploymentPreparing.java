@@ -1,6 +1,7 @@
 package org.ow2.choreos.ee.preparer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -46,15 +47,15 @@ public class UpdateDeploymentPreparing {
     
     private void submitPrepareTasks() {
         final int N = toUpdate.size();
-        ExecutorService executor = Executors.newFixedThreadPool(N);
-        List<Future<DeployableService>> futures = new ArrayList<Future<DeployableService>>();
+        executor = Executors.newFixedThreadPool(N);
+        futures = new HashMap<DeployableServiceSpec, Future<DeployableService>>();
         for (Entry<DeployableService, DeployableServiceSpec> entry : toUpdate.entrySet()) {
             DeployableService service = entry.getKey();
             DeployableServiceSpec spec = entry.getValue();
             logger.debug("Requesting update of " + spec);
             ServiceUpdateInvoker invoker = new ServiceUpdateInvoker(service, spec);
             Future<DeployableService> future = executor.submit(invoker);
-            futures.add(future);
+            futures.put(spec, future);
         }
     }
     
@@ -81,8 +82,8 @@ public class UpdateDeploymentPreparing {
 	@Override
 	public DeployableService call() throws UnhandledModificationException, ServiceNotFoundException,
 		ServiceNotModifiedException {
-	    ServiceUpdater servicesManager = new ServiceUpdater(service, serviceSpec);
 
+	    ServiceUpdater servicesManager = new ServiceUpdater(service, serviceSpec);
 	    try {
 		servicesManager.updateService();
 		logger.debug("Service updated: " + service);
