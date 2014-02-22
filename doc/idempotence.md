@@ -12,7 +12,8 @@ ChorDiffer(chor) returns { new , to update, not modified } services
 *Prepare* means to prepare Chef cookbooks and the node.json. 
 *Updating* a node just runs "chef-solo".
 
-* NewDeploymentPreparing : for each service -> create service -> ServiceDeploymentPreparer
+* NewDeploymentPreparing : for each service -> create service and ServiceDeploymentPreparer
+* NotModifiedDeploymentPreparing: for each service -> ServiceDeploymentPreparer
 * UpdateDeploymentPreparing : for each service -> ServiceUpdater ->
   for each UpdateAction retrieved from UpdateActionFactory(service) -> action.aplyUpdate()
 
@@ -53,9 +54,6 @@ FAIL ON PREPARING SERVICES
 where N = spec.getNumberOfInstances() - service.instances.len
 * at ServicesDeployer: not modified -> NotModifiedDeploymentPreparing -> NodesUpdater
 * NotModifiedDeploymentPreparing -> ServiceDeploymentPreparer
-
-TODO: NotModifiedDeploymentPreparing
-
 
 FAIL ON UPDATE NODES
 --------------------
