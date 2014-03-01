@@ -47,7 +47,9 @@ public class NodesDestroyer {
      *             if some node was not destroyed
      */
     public List<CloudNode> destroyNodes() throws NodeNotDestroyed {
-	destroy();
+        if (nodesToDestroy == null || nodesToDestroy.isEmpty())
+            return new ArrayList<CloudNode>();
+        destroy();
 	waitDestroy();
 	check();
 	return destroyedNodes;
@@ -62,8 +64,6 @@ public class NodesDestroyer {
     }
 
     private void destroy() {
-	if (nodesToDestroy == null || nodesToDestroy.isEmpty())
-	    return;
 	executor = Executors.newFixedThreadPool(nodesToDestroy.size());
 	tasks = new ArrayList<DestroyTask>();
 	for (CloudNode node : nodesToDestroy) {
