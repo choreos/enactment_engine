@@ -1,6 +1,6 @@
 package org.ow2.choreos;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 import java.util.Collections;
@@ -20,8 +20,8 @@ public class TravelAgencyServiceTest {
 	@Test
 	public void shouldBuyTrip() throws MalformedURLException {
 
-		final String EXPECTED_OUTPUT = AirlineService.FLIGHT_NUMBER + "--"
-				+ TravelAgencyService.HOTEL_RESERVATION_NUMBER;
+		final String EXPECTED_BEGINNIG = AirlineService.FLIGHT_NUMBER;
+		final String EXPECTED_END = TravelAgencyService.HOTEL_RESERVATION_NUMBER;
 
 		String wsdl = TravelAgencyStarter.SERVICE_ADDRESS + "?wsdl";
 		TravelAgencyClientFactory factory = new TravelAgencyClientFactory(wsdl);
@@ -32,6 +32,7 @@ public class TravelAgencyServiceTest {
 		client.setInvocationAddress("airline", "airline", airlineEndpoints);
 		String result = client.buyTrip();
 
-		assertEquals(EXPECTED_OUTPUT, result);
+		assertTrue(result.startsWith(EXPECTED_BEGINNIG));
+		assertTrue(result.endsWith(EXPECTED_END));
 	}
 }
