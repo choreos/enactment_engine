@@ -141,6 +141,7 @@ public class Reservoir {
 	        synchronized (Reservoir.this){
 	            creating = creating + 1;
 	        }
+	        logger.info("Creating node on the reservoir");
 		NodeCreatorFactory factory = new NodeCreatorFactory();
 		NodeCreator nodeCreator = factory.getNewNodeCreator(cloudConfiguration);
 		CloudNode node = nodeCreator.createBootstrappedNode(new NodeSpec());
@@ -160,7 +161,7 @@ public class Reservoir {
 
 	@Override
 	public void run() {
-	    int extra = poolSize - idleNodes.size();
+	    int extra = poolSize - (idleNodes.size() + creating);
 	    if (extra > 0) {
 		ExecutorService executor = Executors.newFixedThreadPool(extra);
 		for (int i = 0; i < extra; i++) {

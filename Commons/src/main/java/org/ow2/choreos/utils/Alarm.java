@@ -8,7 +8,7 @@ import org.eclipse.jetty.util.URIUtil;
 
 public class Alarm {
 
-    private static final String SONGS_FOLDER = System.getProperty("user.home") + "/Music";
+    private static final String SONGS_FOLDER = System.getProperty("user.home") + "/Music/metal";
 
     public void play() {
         FileFilter filter = new FileFilter() {
