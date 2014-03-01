@@ -65,12 +65,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.choreos</groupId>
-			<artifactId>Airline</artifactId>
-			<version>3.0.0</version>
-			<classifier>classes</classifier>
-		</dependency>	
-		<dependency>
-			<groupId>org.ow2.choreos</groupId>
 			<artifactId>TravelAgency</artifactId>
 			<version>3.0.0</version>
 			<classifier>classes</classifier>
