@@ -4,13 +4,11 @@ import static org.junit.Assert.assertFalse;
 
 import java.util.List;
 
-import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.junit.Before;
-import org.junit.Test;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.PackageType;
@@ -29,7 +27,7 @@ public class DroolsRulesTest {
 
 	private DroolsRulesBuilder droolsRulesBuilder = new DroolsRulesBuilder();
 	
-	private KnowledgeBase knowledgeBase;
+//	private KnowledgeBase knowledgeBase;
 	private String rule;
 	private KnowledgeBuilder builder;
 
