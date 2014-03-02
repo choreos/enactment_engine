@@ -2,25 +2,27 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-package org.ow2.choreos.utils;
+package org.ow2.choreos.invoker;
+
+import org.ow2.choreos.utils.Configuration;
 
 /**
  * 
  * @author leonardo
  * 
  */
-public class TimeoutsAndTrials {
+public class InvokerConfiguration {
 
-    private static final String FILE_PATH = "timeouts_and_trials.properties";
+    private static final String FILE_PATH = "invoker.properties";
 
     private static final int TRIALS_DEFAULT = 1;
     private static final int PAUSE_DEFAULT = 0;
 
     private final Configuration configuration;
 
-    private static TimeoutsAndTrials INSTANCE = new TimeoutsAndTrials();
+    private static InvokerConfiguration INSTANCE = new InvokerConfiguration();
 
-    private TimeoutsAndTrials() {
+    private InvokerConfiguration() {
         this.configuration = new Configuration(FILE_PATH);
     }
 
@@ -73,9 +75,9 @@ public class TimeoutsAndTrials {
      * @return
      */
     public static int getTotalTimeout(String taskName) {
-        int timeout = TimeoutsAndTrials.getTimeout(taskName);
-        int trials = TimeoutsAndTrials.getTrials(taskName);
-        int pause = TimeoutsAndTrials.getPauseBetweenTrials(taskName);
+        int timeout = InvokerConfiguration.getTimeout(taskName);
+        int trials = InvokerConfiguration.getTrials(taskName);
+        int pause = InvokerConfiguration.getPauseBetweenTrials(taskName);
         int totalTimeout = (timeout + pause) * trials;
         return totalTimeout;
     }

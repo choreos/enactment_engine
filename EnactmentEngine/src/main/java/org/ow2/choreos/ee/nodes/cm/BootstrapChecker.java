@@ -4,12 +4,12 @@
 
 package org.ow2.choreos.ee.nodes.cm;
 
+import org.ow2.choreos.invoker.InvokerConfiguration;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.utils.SshCommandFailed;
 import org.ow2.choreos.utils.SshNotConnected;
 import org.ow2.choreos.utils.SshUtil;
 import org.ow2.choreos.utils.SshWaiter;
-import org.ow2.choreos.utils.TimeoutsAndTrials;
 
 import com.jcraft.jsch.JSchException;
 
@@ -27,7 +27,7 @@ public class BootstrapChecker {
 
     public boolean isBootstrapped(CloudNode node) {
 
-        int timeout = TimeoutsAndTrials.getTimeout("CONNECT_SSH");
+        int timeout = InvokerConfiguration.getTimeout("CONNECT_SSH");
         try {
             ssh = sshWaiter.waitSsh(node.getIp(), node.getUser(), node.getPrivateKeyFile(), timeout);
         } catch (SshNotConnected e) {

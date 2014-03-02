@@ -14,6 +14,7 @@ import org.ow2.choreos.ee.nodes.cm.NodeNotBootstrappedException;
 import org.ow2.choreos.invoker.Invoker;
 import org.ow2.choreos.invoker.InvokerException;
 import org.ow2.choreos.invoker.InvokerFactory;
+import org.ow2.choreos.invoker.InvokerConfiguration;
 import org.ow2.choreos.nodes.NodeNotAccessibleException;
 import org.ow2.choreos.nodes.NodeNotCreatedException;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
@@ -21,7 +22,6 @@ import org.ow2.choreos.nodes.datamodel.NodeSpec;
 import org.ow2.choreos.utils.SshNotConnected;
 import org.ow2.choreos.utils.SshUtil;
 import org.ow2.choreos.utils.SshWaiter;
-import org.ow2.choreos.utils.TimeoutsAndTrials;
 
 /**
  * Creates a new node and bootstrapped it
@@ -47,7 +47,7 @@ public class NodeCreator {
     }
 
     private void waitFirstSsh(CloudNode node) throws NodeNotCreatedException {
-	int timeout = TimeoutsAndTrials.getTimeout("FIRST_CONNECT_SSH");
+	int timeout = InvokerConfiguration.getTimeout("FIRST_CONNECT_SSH");
 	SshWaiter sshWaiter = new SshWaiter();
 	try {
 	    SshUtil ssh = sshWaiter.waitSsh(node.getIp(), node.getUser(), node.getPrivateKeyFile(), timeout);

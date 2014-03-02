@@ -10,9 +10,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.ow2.choreos.chors.datamodel.Choreography;
+import org.ow2.choreos.invoker.InvokerConfiguration;
 import org.ow2.choreos.services.datamodel.Service;
 import org.ow2.choreos.utils.Concurrency;
-import org.ow2.choreos.utils.TimeoutsAndTrials;
 
 /**
  * Context choreography context to choreography services
@@ -35,9 +35,9 @@ public class ContextCaster {
     private Logger logger = Logger.getLogger(ContextCaster.class);
 
     public ContextCaster(Choreography chor) {
-        this.timeout = TimeoutsAndTrials.getTimeout(TASK_NAME);
-        this.trials = TimeoutsAndTrials.getTrials(TASK_NAME);
-        this.pauseBetweenTrials = TimeoutsAndTrials.getPauseBetweenTrials(TASK_NAME);
+        this.timeout = InvokerConfiguration.getTimeout(TASK_NAME);
+        this.trials = InvokerConfiguration.getTrials(TASK_NAME);
+        this.pauseBetweenTrials = InvokerConfiguration.getPauseBetweenTrials(TASK_NAME);
         this.chor = chor;
     }
 

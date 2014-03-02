@@ -2,7 +2,6 @@ package org.ow2.choreos.invoker;
 
 import java.util.concurrent.Callable;
 
-import org.ow2.choreos.utils.TimeoutsAndTrials;
 
 /**
  * Retrieves configuration from timeouts_and_trials
@@ -28,13 +27,13 @@ public class StaticInvokerConfigurator<T> implements InvokerConfigurator<T> {
     }
 
     private void initBuilder() {
-        int timeout = TimeoutsAndTrials.getTimeout(taskName);
+        int timeout = InvokerConfiguration.getTimeout(taskName);
         builder = new InvokerBuilder<T>(taskName, task, timeout);
     }
 
     private void setTrials() {
         try {
-            int trials = TimeoutsAndTrials.getTrials(taskName);
+            int trials = InvokerConfiguration.getTrials(taskName);
             builder.trials(trials);
         } catch (IllegalArgumentException e) {
             // pas du problem: InvokerBuilder will use default value
@@ -43,7 +42,7 @@ public class StaticInvokerConfigurator<T> implements InvokerConfigurator<T> {
     
     private void setPause() {
         try {
-            int pause = TimeoutsAndTrials.getPauseBetweenTrials(taskName);
+            int pause = InvokerConfiguration.getPauseBetweenTrials(taskName);
             builder.pauseBetweenTrials(pause);
         } catch (IllegalArgumentException e) {
             // pas du problem: InvokerBuilder will use default value

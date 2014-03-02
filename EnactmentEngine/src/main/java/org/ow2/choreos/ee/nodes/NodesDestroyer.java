@@ -12,11 +12,11 @@ import org.apache.log4j.Logger;
 import org.ow2.choreos.ee.config.CloudConfiguration;
 import org.ow2.choreos.ee.nodes.cloudprovider.CloudProvider;
 import org.ow2.choreos.ee.nodes.cloudprovider.CloudProviderFactory;
+import org.ow2.choreos.invoker.InvokerConfiguration;
 import org.ow2.choreos.nodes.NodeNotDestroyed;
 import org.ow2.choreos.nodes.NodeNotFoundException;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.utils.Concurrency;
-import org.ow2.choreos.utils.TimeoutsAndTrials;
 
 public class NodesDestroyer {
 
@@ -36,7 +36,7 @@ public class NodesDestroyer {
 
     public NodesDestroyer(CloudConfiguration cloudConfiguration, Collection<CloudNode> nodesToDestroy) {
 	this.nodesToDestroy = nodesToDestroy;
-	this.totalTimeout = TimeoutsAndTrials.getTotalTimeout(TASK_NAME);
+	this.totalTimeout = InvokerConfiguration.getTotalTimeout(TASK_NAME);
 	totalTimeout += totalTimeout * 0.2;
 	this.cp = CloudProviderFactory.getFactoryInstance().getCloudProviderInstance(cloudConfiguration);
     }

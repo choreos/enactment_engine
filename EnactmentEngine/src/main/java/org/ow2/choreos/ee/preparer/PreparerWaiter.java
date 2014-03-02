@@ -2,8 +2,8 @@ package org.ow2.choreos.ee.preparer;
 
 import java.util.concurrent.ExecutorService;
 
+import org.ow2.choreos.invoker.InvokerConfiguration;
 import org.ow2.choreos.utils.Concurrency;
-import org.ow2.choreos.utils.TimeoutsAndTrials;
 
 class PreparerWaiter {
 
@@ -22,10 +22,10 @@ class PreparerWaiter {
     }
 
     private int getTotalTimeout() {
-        int nodeCreationTotalTimeout = TimeoutsAndTrials.getTotalTimeout("NODE_CREATION");
-        int firstSshTimeout = TimeoutsAndTrials.getTimeout("FIRST_CONNECT_SSH");
-        int bootstrapTotalTimeout = TimeoutsAndTrials.getTotalTimeout("BOOTSTRAP");
-        int prepareTotalTimeout = TimeoutsAndTrials.getTotalTimeout("PREPARE_DEPLOYMENT");
+        int nodeCreationTotalTimeout = InvokerConfiguration.getTotalTimeout("NODE_CREATION");
+        int firstSshTimeout = InvokerConfiguration.getTimeout("FIRST_CONNECT_SSH");
+        int bootstrapTotalTimeout = InvokerConfiguration.getTotalTimeout("BOOTSTRAP");
+        int prepareTotalTimeout = InvokerConfiguration.getTotalTimeout("PREPARE_DEPLOYMENT");
         int oneReqPerSec = 2 * 100;
         int totalTimeout = nodeCreationTotalTimeout + firstSshTimeout + bootstrapTotalTimeout + prepareTotalTimeout
                 + oneReqPerSec;
