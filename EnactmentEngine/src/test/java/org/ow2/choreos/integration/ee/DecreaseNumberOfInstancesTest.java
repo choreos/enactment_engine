@@ -69,7 +69,7 @@ public class DecreaseNumberOfInstancesTest {
         EnactmentEngine ee = new EEImpl();
 
         String chorId = ee.createChoreography(spec);
-        Choreography chor = ee.enactChoreography(chorId);
+        Choreography chor = ee.deployChoreography(chorId);
 
         Service airline = chor.getDeployableServiceBySpecName(ModelsForTest.AIRLINE);
 
@@ -92,7 +92,7 @@ public class DecreaseNumberOfInstancesTest {
         assertFalse(codes3.equals(codes2));
 
         ee.updateChoreography(chorId, newSpec);
-        chor = ee.enactChoreography(chorId);
+        chor = ee.deployChoreography(chorId);
 
         airline = chor.getDeployableServiceBySpecName(ModelsForTest.AIRLINE);
         travel = chor.getDeployableServiceBySpecName(ModelsForTest.TRAVEL_AGENCY);

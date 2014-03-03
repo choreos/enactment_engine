@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
-import org.ow2.choreos.chors.EnactmentException;
+import org.ow2.choreos.chors.DeploymentException;
 import org.ow2.choreos.ee.services.preparer.PrepareDeploymentFailedException;
 import org.ow2.choreos.ee.services.preparer.ServiceDeploymentPreparer;
 import org.ow2.choreos.ee.services.preparer.ServiceDeploymentPreparerFactory;
@@ -36,7 +36,7 @@ public class NotModifiedDeploymentPreparing {
     }
 
 
-    public List<DeployableService> prepare() throws EnactmentException {
+    public List<DeployableService> prepare() throws DeploymentException {
         if (services.size() == 0)
             return new ArrayList<DeployableService>();        
         submitPrepareTasks();

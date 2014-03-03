@@ -10,7 +10,7 @@ import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 public interface EnactmentEngine {
 
     /**
-     * Creates a new choreography that still have to be enacted.
+     * Creates a new choreography that still have to be deployed.
      * 
      * @param services
      *            specification of choreography services
@@ -30,7 +30,7 @@ public interface EnactmentEngine {
     public Choreography getChoreography(String chorId) throws ChoreographyNotFoundException;
 
     /**
-     * Enacts a choreography
+     * Deploys a choreography
      * 
      * @param chorId
      *            the choreography id
@@ -38,10 +38,10 @@ public interface EnactmentEngine {
      *         services
      * @throws ChoreographyNotFoundException
      *             if <code>chorId</code> does not exist
-     * @throws EnactmentException
+     * @throws DeploymentException
      *             if something goes wrong
      */
-    public Choreography enactChoreography(String chorId) throws EnactmentException, ChoreographyNotFoundException;
+    public Choreography deployChoreography(String chorId) throws DeploymentException, ChoreographyNotFoundException;
 
     /**
      * Updates a choreography
@@ -52,10 +52,10 @@ public interface EnactmentEngine {
      *         services
      * @throws ChoreographyNotFoundException
      *             if <code>chorId</code> does not exist
-     * @throws EnactmentException
+     * @throws DeploymentException
      *             if something goes wrong
      */
-    public void updateChoreography(String chorId, ChoreographySpec spec) throws EnactmentException,
+    public void updateChoreography(String chorId, ChoreographySpec spec) throws DeploymentException,
             ChoreographyNotFoundException;
 
 }

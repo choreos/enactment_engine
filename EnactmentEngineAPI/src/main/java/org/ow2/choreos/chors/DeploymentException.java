@@ -4,15 +4,15 @@
 
 package org.ow2.choreos.chors;
 
-public class EnactmentException extends Exception {
+public class DeploymentException extends Exception {
 
     private static final long serialVersionUID = 5102006903483679509L;
 
-    public EnactmentException() {
+    public DeploymentException() {
 
     }
 
-    public EnactmentException(String message) {
+    public DeploymentException(String message) {
         super(message);
     }
 

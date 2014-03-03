@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
-import org.ow2.choreos.chors.EnactmentException;
+import org.ow2.choreos.chors.DeploymentException;
 import org.ow2.choreos.ee.services.update.ServiceUpdater;
 import org.ow2.choreos.services.ServiceNotFoundException;
 import org.ow2.choreos.services.ServiceNotModifiedException;
@@ -35,7 +35,7 @@ public class UpdateDeploymentPreparing {
 	this.toUpdate = toUpdate;
     }
 
-    public List<DeployableService> prepare() throws EnactmentException {
+    public List<DeployableService> prepare() throws DeploymentException {
 	if (toUpdate.size() == 0)
 	    return new ArrayList<DeployableService>();
 	logger.info("Request to configure nodes; creating services; setting up Chef");

@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
-import org.ow2.choreos.chors.EnactmentException;
+import org.ow2.choreos.chors.DeploymentException;
 import org.ow2.choreos.invoker.InvokerConfiguration;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.services.datamodel.DeployableService;
@@ -38,7 +38,7 @@ public class NodesUpdater {
         this.totalTimeout += totalTimeout * 0.1;
     }
 
-    public void updateNodes() throws EnactmentException {
+    public void updateNodes() throws DeploymentException {
         logger.info("Going to update nodes of choreography " + chorId);
         setNodesToUpdate();
         submitUpdates();

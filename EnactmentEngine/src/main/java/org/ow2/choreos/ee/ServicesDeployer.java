@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.ow2.choreos.chors.EnactmentException;
+import org.ow2.choreos.chors.DeploymentException;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.ee.nodes.cm.NodesUpdater;
 import org.ow2.choreos.ee.preparer.NewDeploymentPreparing;
@@ -30,15 +30,15 @@ public class ServicesDeployer {
      * 
      * @return all the choreography deployed services (not only the just
      *         deployed)
-     * @throws EnactmentException
+     * @throws DeploymentException
      */
-    public List<DeployableService> deployServices() throws EnactmentException {
+    public List<DeployableService> deployServices() throws DeploymentException {
         prepare();
         updateNodes();
         return allServices;
     }
 
-    private void prepare() throws EnactmentException {
+    private void prepare() throws DeploymentException {
 
         String chorId = chor.getId();
 
@@ -62,7 +62,7 @@ public class ServicesDeployer {
         allServices.addAll(preparedNotModifiedServices);
     }
 
-    private void updateNodes() throws EnactmentException {
+    private void updateNodes() throws DeploymentException {
         NodesUpdater nodesUpdater = new NodesUpdater(allServices, chor.getId());
         nodesUpdater.updateNodes();
     }

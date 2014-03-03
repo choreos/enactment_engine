@@ -3,7 +3,7 @@ package org.ow2.choreos.ee;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.ow2.choreos.chors.EnactmentException;
+import org.ow2.choreos.chors.DeploymentException;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 import org.ow2.choreos.chors.datamodel.LegacyService;
@@ -22,7 +22,7 @@ public class ChoreographyEnacter {
 	this.chor = chor;
     }
 
-    public Choreography enact() throws EnactmentException {
+    public Choreography enact() throws DeploymentException {
 	logBegin();
 	deploy();
 	createLegacyServices();
@@ -41,7 +41,7 @@ public class ChoreographyEnacter {
 	    logger.info("Starting enactment for requested update; chorId= " + chor.getId());
     }
 
-    private void deploy() throws EnactmentException {
+    private void deploy() throws DeploymentException {
 	ServicesDeployer deployer = new ServicesDeployer(chor);
 	List<DeployableService> deployedServices = deployer.deployServices();
 	chor.setDeployableServices(deployedServices);

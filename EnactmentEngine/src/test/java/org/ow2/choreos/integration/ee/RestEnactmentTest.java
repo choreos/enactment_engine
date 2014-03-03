@@ -99,7 +99,7 @@ public class RestEnactmentTest {
         String host = EnactmentEngineServer.URL;
         EnactmentEngine ee = new EEClient(host);
         String chorId = ee.createChoreography(chorSpec);
-        Choreography chor = ee.enactChoreography(chorId);
+        Choreography chor = ee.deployChoreography(chorId);
         System.out.println("A chor: " + chor);
 
         String uri = ((DeployableService) chor.getDeployableServiceBySpecName(ModelsForTest.TRAVEL_AGENCY))

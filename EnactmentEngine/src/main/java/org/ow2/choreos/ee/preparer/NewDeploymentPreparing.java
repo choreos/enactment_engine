@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
-import org.ow2.choreos.chors.EnactmentException;
+import org.ow2.choreos.chors.DeploymentException;
 import org.ow2.choreos.ee.services.ServiceCreator;
 import org.ow2.choreos.ee.services.ServiceCreatorFactory;
 import org.ow2.choreos.ee.services.preparer.PrepareDeploymentFailedException;
@@ -36,7 +36,7 @@ public class NewDeploymentPreparing {
         this.specs = specs;
     }
 
-    public List<DeployableService> prepare() throws EnactmentException {
+    public List<DeployableService> prepare() throws DeploymentException {
         if (specs.size() == 0)
             return new ArrayList<DeployableService>();
         logger.info("Request to configure nodes; creating services; setting up Chef; for chor " + chorId);

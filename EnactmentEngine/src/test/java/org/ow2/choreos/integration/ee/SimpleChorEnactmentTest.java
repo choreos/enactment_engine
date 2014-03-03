@@ -56,7 +56,7 @@ public class SimpleChorEnactmentTest {
         EnactmentEngine ee = new EEImpl();
 
         String chorId = ee.createChoreography(chorSpec);
-        Choreography chor = ee.enactChoreography(chorId);
+        Choreography chor = ee.deployChoreography(chorId);
 
         Service travelService = chor.getDeployableServiceBySpecName(ModelsForTest.TRAVEL_AGENCY);
         

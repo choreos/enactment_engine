@@ -58,7 +58,7 @@ public class ChorEnactmentWithReplicasTest {
         EnactmentEngine ee = new EEImpl();
 
         String chorId = ee.createChoreography(spec);
-        Choreography chor = ee.enactChoreography(chorId);
+        Choreography chor = ee.deployChoreography(chorId);
 
         Service airline = chor.getDeployableServiceBySpecName(ModelsForTest.AIRLINE);
         assertEquals(2, airline.getUris().size());

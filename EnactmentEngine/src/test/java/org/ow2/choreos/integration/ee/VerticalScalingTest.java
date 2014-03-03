@@ -76,7 +76,7 @@ public class VerticalScalingTest {
         EnactmentEngine ee = new EEImpl();
 
         String chorId = ee.createChoreography(smallSpec);
-        Choreography chor = ee.enactChoreography(chorId);
+        Choreography chor = ee.deployChoreography(chorId);
 
         DeployableService airline = chor.getDeployableServiceBySpecName(ModelsForTest.AIRLINE);
         DeployableService travel = chor.getDeployableServiceBySpecName(ModelsForTest.TRAVEL_AGENCY);
@@ -90,7 +90,7 @@ public class VerticalScalingTest {
         assertTrue(codes.startsWith("33") && codes.endsWith("--22"));
 
         ee.updateChoreography(chorId, mediumSpec);
-        chor = ee.enactChoreography(chorId);
+        chor = ee.deployChoreography(chorId);
         Thread.sleep(4000);
 
         airline = chor.getDeployableServiceBySpecName(ModelsForTest.AIRLINE);
