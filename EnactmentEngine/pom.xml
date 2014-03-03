@@ -211,6 +211,8 @@
 						<exclude>*.properties</exclude>
 						<exclude>*.properties.template</exclude>
 						<exclude>.gitignore</exclude>
+						<exclude>extensible/**</exclude>
+						<exclude>rules/**</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
