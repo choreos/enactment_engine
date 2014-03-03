@@ -1,6 +1,10 @@
 CHOReOS Enactment Engine
 
-To execute Enactment Engine, first properly edit configuration files, and then just run "mvn exec:java".
+To execute Enactment Engine, first properly edit configuration files.
 
-To more information, refer to Enactment Enginse user guide (http://ccsl.ime.usp.br/enactmentengine).
+If you downloaded the EE package, then just execute the JAR file to start EE.
+
+If you checked out the source code, then run the build.sh and after "mvn exec:java" to start EE.
+
+To more information, refer to the Enactment Enginse user guide (http://ccsl.ime.usp.br/enactmentengine).
 

@@ -201,7 +201,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>org.ow2.choreos.ee.rest.EnactmentEngineServer</mainClass>
+							<mainClass>org.ow2.choreos.ee.rest.EnactmentEngineServer</mainClass>  
 						</manifest>
 						<manifestEntries>
 							<Class-Path>conf/</Class-Path>
@@ -213,6 +213,7 @@
 						<exclude>.gitignore</exclude>
 						<exclude>extensible/**</exclude>
 						<exclude>rules/**</exclude>
+						<exclude>chef-solo/**</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
