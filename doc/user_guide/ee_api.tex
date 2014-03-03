@@ -40,7 +40,7 @@ We proceed with a brief explanation about each class:
 \item [Node:] information about the node, including IP address, where a service instance is running.
 \end{description}
 
-To request a choreography enactment, it is important to understand very well the \verb!ServiceSpec!, \verb!DeployableServiceSpec!, and the \verb!LegacyServiceSpec! classes. Therefore, the description of them follows:
+To request a choreography deployment, it is important to understand very well the \verb!ServiceSpec!, \verb!DeployableServiceSpec!, and the \verb!LegacyServiceSpec! classes. Therefore, the description of them follows:
 
 \begin{enumerate}
 
@@ -321,7 +321,7 @@ location = "/chors/{id}"
 \end{tabular} \\
 
 Creates a specification of the choreography on the \ee.
-It does not enact the choreography. 
+It does not deploy the choreography. 
 
 \emph{Obs:} \texttt{application/xml} is the value to the \texttt{Content Type} header when XML representations are written in the request or response body. 
 
@@ -356,15 +356,15 @@ representation \\
 \hline 
 \end{tabular} \\
 
-If this operation is invoked after the creation and before the enactment of a choreography, the body response will be a \verb!Choreography! representation without any deployed service.
+If this operation is invoked after the creation and before the deployment of a choreography, the body response will be a \verb!Choreography! representation without any deployed service.
 
-\subsubsection*{Enact a choreography}
+\subsubsection*{Deploy a choreography}
 
 \begin{tabular}{|c|c|c|c|}
 \hline 
 \itshape{HTTP Method} & \itshape{URI} & \itshape{Request body} & \itshape{Responses} \\ 
 \hline 
-POST & /chors/\{id\}/enactment & - &
+POST & /chors/\{id\}/deployment & - &
 \begin{minipage}{2in}
 \begin{verbatim}
 
@@ -429,8 +429,8 @@ representation \\
 \end{tabular} \\
 
 This operation has the same behavior of the create choreography operation.
-To apply the changes it is necessary to invoke the enactment operation again.
-When the new enactment is invoked, the \ee\ will detect the changes that have
+To apply the changes it is necessary to invoke the deployment operation again.
+When the new deployment is invoked, the \ee\ will detect the changes that have
 been inserted in the choreography and deploys new services, remove unneeded services and redeploy
 services where some aspect (such as version number, number of instances etc) has changed.
 Currently, the only detected changes are increased or decreased number of instances
@@ -457,8 +457,8 @@ public interface EnactmentEngine {
     public Choreography getChoreography(String chorId) 
         throws ChoreographyNotFoundException;
 
-    public Choreography enactChoreography(String chorId) 
-        throws EnactmentException, ChoreographyNotFoundException;
+    public Choreography deployChoreography(String chorId) 
+        throws DeploymentException, ChoreographyNotFoundException;
 
     public void updateChoreography(String chorId, ChoreographySpec spec) 
         throws EnactmentException, ChoreographyNotFoundException;
@@ -539,9 +539,9 @@ Finally, Listing~\ref{lst:java_chor_enactment} is an example of how to use the J
 
 {\footnotesize
 \begin{lstlisting}[breaklines, caption={Deploying a choreography using the Java API.}, label={lst:java_chor_enactment}]
-public class Enactment {
+public class Deployment {
 
-    public static void main(String[] args) throws EnactmentException, ChoreographyNotFoundException {
+    public static void main(String[] args) throws DeploymentException, ChoreographyNotFoundException {
 
         final String EE_URI = "http://localhost:9102/enactmentengine";
         EnactmentEngine ee = new EnactmentEngineClient(EE_URI);
@@ -549,7 +549,7 @@ public class Enactment {
         ChoreographySpec chorSpec = example.getChorSpec();
 
         String chorId = ee.createChoreography(chorSpec);
-        Choreography chor = ee.enactChoreography(chorId);
+        Choreography chor = ee.deployChoreography(chorId);
 
         System.out.println(chor); // checking output
     }
