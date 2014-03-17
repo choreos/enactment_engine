@@ -10,7 +10,7 @@ import org.ow2.choreos.utils.LogConfigurator;
 
 public class EnactmentEngineServer {
 
-    public static final String NAME = "Choreography Deployer";
+    public static final String NAME = "Enactment Engine";
     public static String URL;
 
     private static final String ENACTMENT_ENGINE_PORT = "9100";

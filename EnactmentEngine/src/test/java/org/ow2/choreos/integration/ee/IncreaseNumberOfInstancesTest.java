@@ -38,82 +38,78 @@ import org.ow2.choreos.utils.LogConfigurator;
  */
 @Category(IntegrationTest.class)
 public class IncreaseNumberOfInstancesTest {
+    
+    private ChoreographySpec spec;
+    private ChoreographySpec newSpec;
 
-	private ChoreographySpec spec;
-	private ChoreographySpec newSpec;
+    @BeforeClass
+    public static void startServers() {
+	LogConfigurator.configLog();
+    }
 
-	@BeforeClass
-	public static void startServers() {
-		LogConfigurator.configLog();
-	}
+    @Before
+    public void setUp() {
+        EEConfiguration.set("BUS", "false");
+        EEConfiguration.set("RESERVOIR", "false");
+	ModelsForTest models = new ModelsForTest(ServiceType.SOAP, PackageType.TOMCAT, 2);
+	spec = models.getChorSpec();
+	ModelsForTest newModels = new ModelsForTest(ServiceType.SOAP, PackageType.TOMCAT, 3);
+	newSpec = newModels.getChorSpec();
+    }
 
-	@Before
-	public void setUp() {
-		EEConfiguration.set("BUS", "false");
-		EEConfiguration.set("RESERVOIR", "false");
-		ModelsForTest models = new ModelsForTest(ServiceType.SOAP,
-				PackageType.TOMCAT, 2);
-		spec = models.getChorSpec();
-		ModelsForTest newModels = new ModelsForTest(ServiceType.SOAP,
-				PackageType.TOMCAT, 3);
-		newSpec = newModels.getChorSpec();
-	}
+    @Test
+    public void shouldEnactChoreographyWithTwoAirlineServicesAndChangeToThree() throws Exception {
 
-	@Test
-	public void shouldEnactChoreographyWithTwoAirlineServicesAndChangeToThree()
-			throws Exception {
+	EnactmentEngine ee = new EEImpl();
 
-		EnactmentEngine ee = new EEImpl();
+	String chorId = ee.createChoreography(spec);
+	Choreography chor = ee.deployChoreography(chorId);
 
-		String chorId = ee.createChoreography(spec);
-		Choreography chor = ee.enactChoreography(chorId);
+	Service airline = chor.getDeployableServiceBySpecName(ModelsForTest.AIRLINE);
 
-		Service airline = chor
-				.getDeployableServiceBySpecName(ModelsForTest.AIRLINE);
+	Service travel = chor.getDeployableServiceBySpecName(ModelsForTest.TRAVEL_AGENCY);
+        String wsdl = travel.getUris().get(0) + "?wsdl";
+        TravelAgencyClientFactory factory = new TravelAgencyClientFactory(wsdl);
+        TravelAgency client = factory.getClient();
 
-		Service travel = chor
-				.getDeployableServiceBySpecName(ModelsForTest.TRAVEL_AGENCY);
-		String wsdl = travel.getUris().get(0) + "?wsdl";
-		TravelAgencyClientFactory factory = new TravelAgencyClientFactory(wsdl);
-		TravelAgency client = factory.getClient();
+	String codes, codes2, codes3 = "";
 
-		String codes, codes2, codes3 = "";
+	codes = client.buyTrip();
+	codes2 = client.buyTrip();
 
-		codes = client.buyTrip();
-		codes2 = client.buyTrip();
+	assertEquals(2, airline.getUris().size());
+	assertTrue(codes.startsWith("33") && codes.endsWith("--22"));
+	assertTrue(codes2.startsWith("33") && codes2.endsWith("--22"));
+	assertFalse(codes.equals(codes2));
 
-		assertEquals(2, airline.getUris().size());
-		assertTrue(codes.startsWith("33") && codes.endsWith("--22"));
-		assertTrue(codes2.startsWith("33") && codes2.endsWith("--22"));
-		assertFalse(codes.equals(codes2));
+	System.out.println("TEST PAUSED, plz, provide input to continue...");
+	System.in.read();
+	System.out.println("Continuing test.");
+	
+	ee.updateChoreography(chorId, newSpec);
+	chor = ee.deployChoreography(chorId);
 
-		System.in.read();
+	airline = chor.getDeployableServiceBySpecName(ModelsForTest.AIRLINE);
+	travel = chor.getDeployableServiceBySpecName(ModelsForTest.TRAVEL_AGENCY);
+	wsdl = travel.getUris().get(0) + "?wsdl";
+        factory = new TravelAgencyClientFactory(wsdl);
+        client = factory.getClient();
+	
+	codes = client.buyTrip();
+	codes2 = client.buyTrip();
+	codes3 = client.buyTrip();
 
-		ee.updateChoreography(chorId, newSpec);
-		chor = ee.enactChoreography(chorId);
+	assertEquals(3, airline.getUris().size());
+	assertTrue(codes.startsWith("33") && codes.endsWith("--22"));
+	assertTrue(codes2.startsWith("33") && codes2.endsWith("--22"));
+	assertTrue(codes3.startsWith("33") && codes3.endsWith("--22"));
+	assertFalse(codes.equals(codes2));
+	assertFalse(codes3.equals(codes));
+	assertFalse(codes3.equals(codes2));
+	
+	Alarm alarm = new Alarm();
+	alarm.play();
 
-		airline = chor.getDeployableServiceBySpecName(ModelsForTest.AIRLINE);
-		travel = chor
-				.getDeployableServiceBySpecName(ModelsForTest.TRAVEL_AGENCY);
-		wsdl = travel.getUris().get(0) + "?wsdl";
-		factory = new TravelAgencyClientFactory(wsdl);
-		client = factory.getClient();
-
-		codes = client.buyTrip();
-		codes2 = client.buyTrip();
-		codes3 = client.buyTrip();
-
-		assertEquals(3, airline.getUris().size());
-		assertTrue(codes.startsWith("33") && codes.endsWith("--22"));
-		assertTrue(codes2.startsWith("33") && codes2.endsWith("--22"));
-		assertTrue(codes3.startsWith("33") && codes3.endsWith("--22"));
-		assertFalse(codes.equals(codes2));
-		assertFalse(codes3.equals(codes));
-		assertFalse(codes3.equals(codes2));
-
-		Alarm alarm = new Alarm();
-		alarm.play();
-
-	}
+    }
 
 }

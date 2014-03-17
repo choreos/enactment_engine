@@ -26,7 +26,7 @@ public class LimitedRoundRobinNodeSelector implements NodeSelector {
 
     private LimitedRoundRobinSelector<CloudNode, DeployableServiceSpec> retrieveSelector(
 	    DeployableServiceSpec serviceSpec) {
-	String cloudAccount = serviceSpec.getOwner();
+	String cloudAccount = serviceSpec.getCloudAccount();
 
 	synchronized (this) {
 	    if (!this.selectors.containsKey(cloudAccount)) {

@@ -25,6 +25,7 @@ public class AirlineServiceTest {
         
         String flightTicketNumber = client.buyFlight();
 
+        System.out.println("flightTicketNumber: " + flightTicketNumber);
         assertTrue(flightTicketNumber.startsWith(EXPECTED_FLIGHT_TICKET_NUMBER_BEGINNING));
     }
 }

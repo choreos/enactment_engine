@@ -61,7 +61,7 @@ public abstract class JCloudsCloudProvider implements CloudProvider {
 	    CloudNode node = invoker.invoke();
 	    return node;
 	} catch (InvokerException e) {
-	    e.getCause().printStackTrace();
+	    logger.error("Could not create CloudNode", e.getCause());
 	    throw new NodeNotCreatedException();
 	}
     }

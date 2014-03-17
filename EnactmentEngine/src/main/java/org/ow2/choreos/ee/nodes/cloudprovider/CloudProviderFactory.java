@@ -4,7 +4,6 @@
 
 package org.ow2.choreos.ee.nodes.cloudprovider;
 
-import org.apache.log4j.Logger;
 import org.ow2.choreos.ee.config.CloudConfiguration;
 import org.ow2.choreos.utils.Configuration;
 import org.ow2.choreos.utils.SingletonsFactory;
@@ -12,8 +11,6 @@ import org.ow2.choreos.utils.SingletonsFactory;
 public class CloudProviderFactory extends SingletonsFactory<CloudProvider> {
 
     private static final String CLASS_MAP_FILE_PATH = "extensible/cloud_providers.properties";
-
-    private static final Logger logger = Logger.getLogger(CloudProviderFactory.class);
 
     private static CloudProviderFactory INSTANCE;
 

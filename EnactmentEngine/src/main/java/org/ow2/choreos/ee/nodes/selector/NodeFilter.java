@@ -27,7 +27,7 @@ class NodeFilter implements ObjectFilter<CloudNode, DeployableServiceSpec> {
 	ANY_FIT, EXACT_FIT
     };
 
-    private static final String MAPPER_POLICY_PROPERTY = "MAPPER_POLICY";
+//    private static final String MAPPER_POLICY_PROPERTY = "MAPPER_POLICY";
     private static final MapperPolicy DEFAULT_MAPPER_POLICY = MapperPolicy.ANY_FIT;
     private static final String[] NODE_TYPES = QoSManagementConfiguration
 	    .getMultiple(QoSManagementConfiguration.NODE_TYPES);

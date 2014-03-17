@@ -1,4 +1,4 @@
-ENACTMENT_ENGINE_URL=http://localhost:9102/enactmentengine
+ENACTMENT_ENGINE_URL=http://localhost:9100/enactmentengine
 QOS_MGMT=False
 
 # the ip of the machine that runs GLIMPSE

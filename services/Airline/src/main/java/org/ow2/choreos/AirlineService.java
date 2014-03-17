@@ -1,5 +1,7 @@
 package org.ow2.choreos;
 
+import java.lang.management.ManagementFactory;
+
 import javax.jws.WebService;
 
 import org.apache.log4j.Logger;
@@ -22,7 +24,8 @@ public class AirlineService implements Airline {
     @Override
     public String buyFlight() {
         logger.info("Request to buy flight; response: " + FLIGHT_NUMBER);
-        return FLIGHT_NUMBER;
+        String threadId = ManagementFactory.getRuntimeMXBean().getName();
+        return FLIGHT_NUMBER + "--" + threadId;
     }
 
 }

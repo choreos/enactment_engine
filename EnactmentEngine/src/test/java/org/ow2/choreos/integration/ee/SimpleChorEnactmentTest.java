@@ -29,8 +29,6 @@ import org.ow2.choreos.utils.LogConfigurator;
  * This test will enact a choreography with two services, with a service
  * depending on the other.
  * 
- * Before the test, start the DeploymentManager
- * 
  * @author leonardo, tfmend, nelson
  * 
  */
@@ -58,7 +56,7 @@ public class SimpleChorEnactmentTest {
         EnactmentEngine ee = new EEImpl();
 
         String chorId = ee.createChoreography(chorSpec);
-        Choreography chor = ee.enactChoreography(chorId);
+        Choreography chor = ee.deployChoreography(chorId);
 
         Service travelService = chor.getDeployableServiceBySpecName(ModelsForTest.TRAVEL_AGENCY);
         

@@ -15,7 +15,7 @@ import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.ow2.choreos.chors.EnactmentEngine;
 import org.ow2.choreos.chors.ChoreographyNotFoundException;
-import org.ow2.choreos.chors.EnactmentException;
+import org.ow2.choreos.chors.DeploymentException;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 
@@ -44,20 +44,8 @@ public class EEClient implements EnactmentEngine {
 
     private Pattern pattern = Pattern.compile(".*/(.*)$");
 
-    private String getId(Response response) {
-
-        String location = (String) response.getMetadata().get("location").get(0);
-        Matcher matcher = pattern.matcher(location);
-        if (matcher.matches()) {
-            return matcher.group(1);
-        } else {
-            return null;
-        }
-    }
-
     @Override
     public String createChoreography(ChoreographySpec chor) {
-
         WebClient client = setupClient();
         client.path("chors");
         String chorId;
@@ -67,8 +55,17 @@ public class EEClient implements EnactmentEngine {
         } catch (WebApplicationException e) {
             return null;
         }
-
         return chorId;
+    }
+    
+    private String getId(Response response) {
+        String location = (String) response.getMetadata().get("location").get(0);
+        Matcher matcher = pattern.matcher(location);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -88,12 +85,12 @@ public class EEClient implements EnactmentEngine {
     }
 
     @Override
-    public Choreography enactChoreography(String chorId) throws EnactmentException, ChoreographyNotFoundException {
+    public Choreography deployChoreography(String chorId) throws DeploymentException, ChoreographyNotFoundException {
 
         WebClient client = setupClient();
         client.path("chors");
         client.path(chorId);
-        client.path("enactment");
+        client.path("deployment");
         Choreography chor;
         try {
             chor = client.post(null, Choreography.class);
@@ -102,7 +99,7 @@ public class EEClient implements EnactmentEngine {
             if (code == 400 || code == 404) {
                 throw new ChoreographyNotFoundException(chorId);
             } else {
-                throw new EnactmentException("POST /chors/" + chorId + "/enactment has failed (Error " + code + ")");
+                throw new DeploymentException("POST /chors/" + chorId + "/deployment has failed (Error " + code + ")");
             }
         }
 
@@ -111,7 +108,7 @@ public class EEClient implements EnactmentEngine {
 
     @Override
     public void updateChoreography(String chorId, ChoreographySpec spec) throws ChoreographyNotFoundException,
-            EnactmentException {
+            DeploymentException {
 
         WebClient client = setupClient();
         client.path("chors");
@@ -125,7 +122,7 @@ public class EEClient implements EnactmentEngine {
             if (code == 400 || code == 404) {
                 throw new ChoreographyNotFoundException(chorId);
             } else {
-                throw new EnactmentException("PUT /chors/" + chorId + "/update has failed (Error " + code + ")");
+                throw new DeploymentException("PUT /chors/" + chorId + "/update has failed (Error " + code + ")");
             }
         }
 

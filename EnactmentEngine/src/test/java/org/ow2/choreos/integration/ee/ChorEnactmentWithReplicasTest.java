@@ -31,8 +31,6 @@ import org.ow2.choreos.utils.LogConfigurator;
  * will serve with two replicas. The test assume that Travel Agency round robins
  * the Airline instances.
  * 
- * Before the test, start the NPMServer and the ServiceDeployerServer
- * 
  * @author tfmend
  * 
  */
@@ -60,7 +58,7 @@ public class ChorEnactmentWithReplicasTest {
         EnactmentEngine ee = new EEImpl();
 
         String chorId = ee.createChoreography(spec);
-        Choreography chor = ee.enactChoreography(chorId);
+        Choreography chor = ee.deployChoreography(chorId);
 
         Service airline = chor.getDeployableServiceBySpecName(ModelsForTest.AIRLINE);
         assertEquals(2, airline.getUris().size());
@@ -77,6 +75,8 @@ public class ChorEnactmentWithReplicasTest {
         String codes2 = client2.buyTrip();
         assertTrue(codes2.startsWith("33") && codes2.endsWith("--22"));
 
+        System.out.println(codes);
+        System.out.println(codes2);
         assertFalse(codes.equals(codes2));
     }
 

@@ -18,9 +18,9 @@ import org.ow2.choreos.utils.LogConfigurator;
  * This test will enact a choreography with two services, with a service
  * depending on the other.
  * 
- * Before the test, make sure that you have two owners configured in
+ * Before the test, make sure that you have two cloud accounts configured in
  * clouds.properties named according the values of the constants
- * OWNER_FOR_AIRLINE and OWNER_FOR_TRAVEL
+ * CLOUD_ACCOUNT_FOR_AIRLINE and CLOUD_ACCOUNT_FOR_TRAVEL
  * 
  * @author leonardo
  * 
@@ -28,8 +28,8 @@ import org.ow2.choreos.utils.LogConfigurator;
 @Category(IntegrationTest.class)
 public class TwoCloudsEnactmentTest extends SimpleChorEnactmentTest {
 
-    private static final String OWNER_FOR_TRAVEL = "AWS_ACCOUNT";
-    private static final String OWNER_FOR_AIRLINE = "AWS_ACCOUNT_COPY";
+    private static final String CLOUD_ACCOUNT_FOR_TRAVEL = "AWS_ACCOUNT";
+    private static final String CLOUD_ACCOUNT_FOR_AIRLINE = "AWS_ACCOUNT_COPY";
 
     @BeforeClass
     public static void startServers() {
@@ -44,7 +44,7 @@ public class TwoCloudsEnactmentTest extends SimpleChorEnactmentTest {
 	DeployableServiceSpec airlineSpec = models.getAirlineSpec();
 	DeployableServiceSpec travelSpec = models.getTravelSpec();
 
-	travelSpec.setOwner(OWNER_FOR_TRAVEL);
-	airlineSpec.setOwner(OWNER_FOR_AIRLINE);
+	travelSpec.setCloudAccount(CLOUD_ACCOUNT_FOR_TRAVEL);
+	airlineSpec.setCloudAccount(CLOUD_ACCOUNT_FOR_AIRLINE);
     }
 }

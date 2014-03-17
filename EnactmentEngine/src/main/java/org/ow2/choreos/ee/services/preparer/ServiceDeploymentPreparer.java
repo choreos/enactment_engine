@@ -14,53 +14,64 @@ import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
 
 public class ServiceDeploymentPreparer {
 
-    private DeployableServiceSpec newSpec;
     private DeployableService service;
+    private DeployableServiceSpec spec;
     private String serviceSpecName;
     private Set<CloudNode> nodes;
 
     private Logger logger = Logger.getLogger(ServiceDeploymentPreparer.class);
 
-    public ServiceDeploymentPreparer(DeployableServiceSpec newSpec, DeployableService service) {
-	this.newSpec = newSpec;
-	this.service = service;
-	this.serviceSpecName = newSpec.getName();
+    public ServiceDeploymentPreparer(DeployableService service) {
+        this.service = service;
+        this.spec = service.getSpec();
+        this.serviceSpecName = spec.getName();
     }
 
-    public Set<CloudNode> prepareDeployment() throws PrepareDeploymentFailedException {
-	selectNodes();
-	prepareInstances();
-	return nodes;
+    public void prepareDeployment() throws PrepareDeploymentFailedException {
+        selectNodes();
+        service.addSelectedNodes(nodes);
+        prepareInstances();
     }
 
     private void selectNodes() throws PrepareDeploymentFailedException {
-	NodeSelector selector = NodeSelectorFactory.getFactoryInstance().getNodeSelectorInstance();
-	try {
-	    List<CloudNode> nodesList = selector.select(newSpec, newSpec.getNumberOfInstances());
-	    nodes = new HashSet<CloudNode>(nodesList);
-	    logger.info("Selected nodes to " + serviceSpecName + ": " + nodes);
-	} catch (NotSelectedException e) {
-	    failDeployment();
-	}
-	if (nodes == null || nodes.isEmpty()) {
-	    failDeployment();
-	}
+        NodeSelector selector = NodeSelectorFactory.getFactoryInstance().getNodeSelectorInstance();
+        int numberOfNewInstances = getNumberOfNewInstances();
+        if (numberOfNewInstances > 0) {
+            try {
+                List<CloudNode> nodesList = selector.select(spec, numberOfNewInstances);
+                nodes = new HashSet<CloudNode>(nodesList);
+                logger.info("Selected nodes to " + serviceSpecName + ": " + nodes);
+            } catch (NotSelectedException e) {
+                failDeployment();
+            }
+            if (nodes == null || nodes.isEmpty()) {
+                failDeployment();
+            }
+        } else {
+            nodes = new HashSet<CloudNode>();
+        }
+    }
+
+    private int getNumberOfNewInstances() {
+        int selectedNodesLen = service.getSelectedNodes() == null ? 0 : service.getSelectedNodes().size();
+        int numberOfNewInstances = spec.getNumberOfInstances() - selectedNodesLen;
+        return numberOfNewInstances;
     }
 
     private void failDeployment() throws PrepareDeploymentFailedException {
-	throw new PrepareDeploymentFailedException(serviceSpecName);
+        throw new PrepareDeploymentFailedException(serviceSpecName);
     }
 
     private void prepareInstances() {
-	for (CloudNode node : nodes) {
-	    try {
-		InstanceDeploymentPreparer instanceDeploymentPreparer = new InstanceDeploymentPreparer(newSpec,
-			service, node);
-		instanceDeploymentPreparer.prepareDeployment();
-	    } catch (PrepareDeploymentFailedException e) {
-		logger.error(e.getMessage());
-	    }
-	}
+        for (CloudNode node : nodes) {
+            try {
+                InstanceDeploymentPreparer instanceDeploymentPreparer = new InstanceDeploymentPreparer(spec,
+                        service, node);
+                instanceDeploymentPreparer.prepareDeployment();
+            } catch (PrepareDeploymentFailedException e) {
+                logger.error(e.getMessage());
+            }
+        }
     }
 
 }

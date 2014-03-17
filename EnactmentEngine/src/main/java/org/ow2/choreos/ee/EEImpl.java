@@ -7,7 +7,7 @@ package org.ow2.choreos.ee;
 import org.apache.log4j.Logger;
 import org.ow2.choreos.chors.EnactmentEngine;
 import org.ow2.choreos.chors.ChoreographyNotFoundException;
-import org.ow2.choreos.chors.EnactmentException;
+import org.ow2.choreos.chors.DeploymentException;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 
@@ -31,7 +31,7 @@ public class EEImpl implements EnactmentEngine {
     }
 
     @Override
-    public Choreography enactChoreography(String chorId) throws EnactmentException, ChoreographyNotFoundException {
+    public Choreography deployChoreography(String chorId) throws DeploymentException, ChoreographyNotFoundException {
 	if (!reg.contains(chorId))
 	    throw new ChoreographyNotFoundException(chorId);
 	Choreography chor = reg.getChoreography(chorId);

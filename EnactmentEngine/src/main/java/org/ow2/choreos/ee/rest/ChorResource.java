@@ -22,7 +22,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.ow2.choreos.chors.EnactmentEngine;
 import org.ow2.choreos.chors.ChoreographyNotFoundException;
-import org.ow2.choreos.chors.EnactmentException;
+import org.ow2.choreos.chors.DeploymentException;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 import org.ow2.choreos.ee.EEImpl;
@@ -122,9 +122,9 @@ public class ChorResource {
      *         choreography with id == chorID.
      */
     @POST
-    @Path("{chorID}/enactment")
+    @Path("{chorID}/deployment")
     @Produces(MediaType.APPLICATION_XML)
-    public Response enact(@PathParam("chorID") String chorId, @Context UriInfo uriInfo) {
+    public Response deploy(@PathParam("chorID") String chorId, @Context UriInfo uriInfo) {
 
         if (chorId == null || chorId.isEmpty()) {
             return Response.status(Status.BAD_REQUEST).build();
@@ -136,8 +136,8 @@ public class ChorResource {
 
         Choreography chor;
         try {
-            chor = chorDeployer.enactChoreography(chorId);
-        } catch (EnactmentException e) {
+            chor = chorDeployer.deployChoreography(chorId);
+        } catch (DeploymentException e) {
             return Response.serverError().build();
         } catch (ChoreographyNotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();
@@ -164,7 +164,7 @@ public class ChorResource {
         try {
             chorDeployer.updateChoreography(chorId, spec);
             chor = chorDeployer.getChoreography(chorId);
-        } catch (EnactmentException e) {
+        } catch (DeploymentException e) {
             return Response.serverError().build();
         } catch (ChoreographyNotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();

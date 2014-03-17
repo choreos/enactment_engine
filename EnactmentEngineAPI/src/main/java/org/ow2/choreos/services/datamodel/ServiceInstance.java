@@ -12,8 +12,6 @@ public class ServiceInstance {
     private String nativeUri; // URI for access instance directly
     private CloudNode node; // The hosting node
 
-    private Proxification proxification;
-
     private DeployableServiceSpec serviceSpec;
 
     // used by JAXB
@@ -49,14 +47,6 @@ public class ServiceInstance {
         this.instanceId = instanceId;
     }
     
-    public Proxification getProxification() {
-        return proxification;
-    }
-
-    public void setProxification(Proxification proxification) {
-        this.proxification = proxification;
-    }
-
     public void setNativeUri(String uri) {
         this.nativeUri = uri;
     }

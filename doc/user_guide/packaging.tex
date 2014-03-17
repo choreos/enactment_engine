@@ -4,7 +4,7 @@
 
 \section{Introduction}
 
-There are two main attributes in the \textsf{DeployableServiceSpec} class that define constraints on how a service must be coded and packaged. The \texttt{packageType} attribute defines which kind of deployable package is expected by the \ee\ and, therefore, the process of deploying and running the specified service. Examples of package types are COMMAND\_LINE and TOMCAT. The \texttt{serviceType} attribute defines the process of invoking the specified service, which is used by the \ee\ to properly invoke the \texttt{setInvocationAddress} operation during enactment. Examples of service types are SOAP and REST types, although only SOAP services are currently supported by the \ee.
+There are two main attributes in the \textsf{DeployableServiceSpec} class that define constraints on how a service must be coded and packaged. The \texttt{packageType} attribute defines which kind of deployable package is expected by the \ee\ and, therefore, the process of deploying and running the specified service. Examples of package types are COMMAND\_LINE and TOMCAT. The \texttt{serviceType} attribute defines the process of invoking the specified service, which is used by the \ee\ to properly invoke the \texttt{setInvocationAddress} operation during deployment. Examples of service types are SOAP and REST types, although only SOAP services are currently supported by the \ee.
 
 This chapter is targeted to service \emph{developers} that intend to develop EE compatible services.
 Descriptions and hints encompass coding and packaging phases.
@@ -314,7 +314,7 @@ endpoint=WeatherForecastServicePort
 
 \section{Choreographing services that are already running}
 
-A service choreography can be composed of services that are running before the choreography enactment. Although a service like this do not need to be deployed by the middleware, it must be declared on the choreography specification with the \textsf{LegacyServiceSpec} class. The \texttt{URIs} attribute must contain the list of URIs where the multiple replicas of the service are accessible, which will be used by the middleware to invoke the \texttt{setInvocationAddress} operation of other services. 
+A service choreography can be composed of services that are running before the choreography deployment. Although a service like this do not need to be deployed by the middleware, it must be declared on the choreography specification with the \textsf{LegacyServiceSpec} class. The \texttt{URIs} attribute must contain the list of URIs where the multiple replicas of the service are accessible, which will be used by the middleware to invoke the \texttt{setInvocationAddress} operation of other services. 
 
 \section{SOAP service type}
 
@@ -431,7 +431,7 @@ label=lst:wsdl_address]
 
 \item If service A needs to invoke service B, there is no problem if service A is compiled with classes used to build service B. Actually, usually it is very useful to A having access to B interfaces. Nonetheless, this class dependency must be only static. There is no point in service A trying to access objects states of service B, or access resources, as configuration files, bundled in service B package.
 
-\item The \texttt{packageUri} attribute defines the URL from where the \ee\ retrieves the package to be deployed. Therefore, all the services packages need to be already Internet accessible at enactment time. This can be accomplished, for example, by hosting the packages on a web server.
+\item The \texttt{packageUri} attribute defines the URL from where the \ee\ retrieves the package to be deployed. Therefore, all the services packages need to be already Internet accessible at deployment time. This can be accomplished, for example, by hosting the packages on a web server.
 
 \item Packages cannot be downloaded from https URLs. This restricts using some services, such as Dropbox, to host the packages.
 

@@ -70,7 +70,7 @@ public class TravelAgencyService implements TravelAgency {
         Airline airlineClient = getAirlineClientInRoundRobin();
         String flightTicketNumber = null;
         try {
-            flightTicketNumber = airlineClient.buyFlight(); // "33"
+            flightTicketNumber = airlineClient.buyFlight(); // "33--threadId"
         } catch (Exception e) {
             logger.error(AIRLINE_ERROR_MESSAGE);
             return AIRLINE_ERROR_MESSAGE;

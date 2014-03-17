@@ -12,7 +12,6 @@ import org.jclouds.compute.domain.NodeMetadata;
 import org.jclouds.compute.options.TemplateOptions;
 import org.jclouds.ec2.domain.InstanceType;
 import org.ow2.choreos.ee.config.CloudConfiguration;
-import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.nodes.NodeNotCreatedException;
 import org.ow2.choreos.nodes.NodeNotDestroyed;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
@@ -24,83 +23,82 @@ public class AWSCloudProvider extends JCloudsCloudProvider {
     private static final String DEFAULT_USER = "ubuntu";
     private static final String PROVIDER = "aws-ec2";
     private static final String DEFAULT_IMAGE = "us-east-1/ami-3b4ff252"; // Ubuntu
-									  // 12.04
+    // 12.04
     private static final String DEFAULT_INSTANCE_TYPE = InstanceType.M1_SMALL;
 
     private static final int TIME_BETWEEN_REQUESTS_MILLIS = 2000;
     private static final DelayedRequestEnforcer delayedRequestsEnforcer = new DelayedRequestEnforcer(
-	    TIME_BETWEEN_REQUESTS_MILLIS);
+            TIME_BETWEEN_REQUESTS_MILLIS);
     private String defaultPrivateKey;
     private CloudConfiguration cloudConfiguration;
 
     public String getCloudProviderName() {
-	return PROVIDER;
+        return PROVIDER;
     }
 
     @Override
     public CloudNode createNode(NodeSpec nodeSpec) throws NodeNotCreatedException {
-	delayedRequestsEnforcer.enforceRule();
-	return super.createNode(nodeSpec);
+        delayedRequestsEnforcer.enforceRule();
+        return super.createNode(nodeSpec);
     }
 
     @Override
     public void destroyNode(String nodeId) throws NodeNotDestroyed {
-	delayedRequestsEnforcer.enforceRule();
-	super.destroyNode(nodeId);
+        delayedRequestsEnforcer.enforceRule();
+        super.destroyNode(nodeId);
     }
 
     @Override
     protected String getDefaultImageId() {
-	String imageId = EEConfiguration.get("AMAZON_IMAGE_ID");
-	;
-	if (imageId == null || imageId.trim().isEmpty())
-	    imageId = DEFAULT_IMAGE;
-	return imageId;
+        String imageId = cloudConfiguration.getOptional("AMAZON_IMAGE_ID");
+        if (imageId == null | imageId.isEmpty())
+            imageId = DEFAULT_IMAGE;
+        return imageId;
     }
 
     @Override
     protected String getHardwareId() {
-	String instanceType = EEConfiguration.get("AMAZON_INSTANCE_TYPE");
-	if (instanceType == null || instanceType.isEmpty())
-	    instanceType = DEFAULT_INSTANCE_TYPE;
-	return instanceType;
+        String instanceType = cloudConfiguration.getOptional("AMAZON_INSTANCE_TYPE");
+        if (instanceType == null || instanceType.isEmpty())
+            instanceType = DEFAULT_INSTANCE_TYPE;
+        return instanceType;
     }
 
     @Override
     protected String getUserName() {
-	return DEFAULT_USER;
+        return DEFAULT_USER;
     }
 
     @Override
     protected String getUserPrivateKey() {
-	return defaultPrivateKey;
+        return defaultPrivateKey;
     }
 
     @Override
     protected String getNodeIp(NodeMetadata nodeMetadata) {
-	Iterator<String> publicAddresses = nodeMetadata.getPublicAddresses().iterator();
-	if (publicAddresses != null && publicAddresses.hasNext()) {
-	    return publicAddresses.next();
-	} else {
-	    return null;
-	}
+        Iterator<String> publicAddresses = nodeMetadata.getPublicAddresses().iterator();
+        if (publicAddresses != null && publicAddresses.hasNext()) {
+            return publicAddresses.next();
+        } else {
+            return null;
+        }
     }
 
     @Override
     protected void configureTemplateOptions(TemplateOptions templateOptions) {
-	AWSEC2TemplateOptions options = templateOptions.as(AWSEC2TemplateOptions.class);
-	options.securityGroups("default");
-	options.keyPair(cloudConfiguration.get("AMAZON_KEY_PAIR"));
+        AWSEC2TemplateOptions options = templateOptions.as(AWSEC2TemplateOptions.class);
+        options.securityGroups("default");
+        options.keyPair(cloudConfiguration.get("AMAZON_KEY_PAIR"));
     }
 
     @Override
     public void setCloudConfiguration(CloudConfiguration cloudConfiguration) {
-	this.cloudConfiguration = cloudConfiguration;
-	defaultPrivateKey = cloudConfiguration.get("AMAZON_PRIVATE_SSH_KEY");
-	super.identity = cloudConfiguration.get("AMAZON_ACCESS_KEY_ID");
-	super.credential = cloudConfiguration.get("AMAZON_SECRET_KEY");
-	super.provider = PROVIDER;
-	super.properties = PROPERTIES;
+        this.cloudConfiguration = cloudConfiguration;
+        defaultPrivateKey = cloudConfiguration.get("AMAZON_PRIVATE_SSH_KEY");
+        super.identity = cloudConfiguration.get("AMAZON_ACCESS_KEY_ID");
+        super.credential = cloudConfiguration.get("AMAZON_SECRET_KEY");
+        super.provider = PROVIDER;
+        super.properties = PROPERTIES;
 
     }
 }

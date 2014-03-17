@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>org.ow2.choreos</groupId>
 			<artifactId>Airline</artifactId>
-			<version>3.0.0</version>
+			<version>3.1.0</version>
 			<classifier>classes</classifier>
 		</dependency>
 	</dependencies>
@@ -51,8 +51,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.0</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.6</source>
+          <target>1.6</target>
         </configuration>
       </plugin>
 			<plugin>

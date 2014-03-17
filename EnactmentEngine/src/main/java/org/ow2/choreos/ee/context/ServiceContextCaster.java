@@ -13,7 +13,6 @@ import org.ow2.choreos.invoker.Invoker;
 import org.ow2.choreos.invoker.InvokerException;
 import org.ow2.choreos.invoker.InvokerFactory;
 import org.ow2.choreos.services.datamodel.DeployableService;
-import org.ow2.choreos.services.datamodel.Proxification;
 import org.ow2.choreos.services.datamodel.Service;
 import org.ow2.choreos.services.datamodel.ServiceDependency;
 import org.ow2.choreos.services.datamodel.ServiceInstance;
@@ -111,14 +110,7 @@ public class ServiceContextCaster {
     private List<String> getUrisFromDeployable(DeployableService providerService) {
         List<String> uris = new ArrayList<String>();
         for (ServiceInstance instance : providerService.getInstances()) {
-            Proxification prox = instance.getProxification();
-            boolean isProxified = prox != null && prox.getBusUri(ServiceType.SOAP) != null;
-            if (isProxified) {
-                String proxifiedUri = prox.getBusUri(ServiceType.SOAP);
-                uris.add(proxifiedUri);
-            } else {
-                uris.add(instance.getNativeUri());
-            }
+            uris.add(instance.getNativeUri());
         }
         return uris;
     }
@@ -128,14 +120,7 @@ public class ServiceContextCaster {
     private List<String> getUrisFromLegacy(LegacyService providerService) {
         List<String> uris = new ArrayList<String>();
         for (LegacyServiceInstance instance : providerService.getLegacyServiceInstances()) {
-            Proxification prox = instance.getProxification();
-            boolean isProxified = prox != null && prox.getBusUri(ServiceType.SOAP) != null;
-            if (isProxified) {
-                String proxifiedUri = prox.getBusUri(ServiceType.SOAP);
-                uris.add(proxifiedUri);
-            } else {
-                uris.add(instance.getUri());
-            }
+            uris.add(instance.getUri());
         }
         return uris;
     }

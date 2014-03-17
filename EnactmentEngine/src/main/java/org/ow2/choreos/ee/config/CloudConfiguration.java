@@ -11,7 +11,9 @@ import org.apache.log4j.Logger;
 import org.ow2.choreos.utils.Configuration;
 
 /**
- * Encapsulates the reading of the file owners.properties
+ * Encapsulates the reading of the file clouds.properties,
+ * retrieving information about cloud accounts configure in this EE instance.
+ * A cloud account contains credentials to access some infrastructure provider service.
  * 
  * @author leonardo
  * 
@@ -22,7 +24,7 @@ public class CloudConfiguration {
 
     public static final String DEFAULT = EEConfiguration.get("DEFAULT_CLOUD_ACCOUNT");
 
-    private final String owner;
+    private final String cloudAccount;
 
     private static String PROPERTIES_FILE = "clouds.properties";
 
@@ -34,61 +36,60 @@ public class CloudConfiguration {
 	return properties;
     }
 
-    public static CloudConfiguration getCloudConfigurationInstance(String owner) {
-	if (!INSTANCES.containsKey(owner))
-	    INSTANCES.put(owner, new CloudConfiguration(owner));
-
-	return INSTANCES.get(owner);
+    public static CloudConfiguration getCloudConfigurationInstance(String cloudAccount) {
+	if (!INSTANCES.containsKey(cloudAccount))
+	    INSTANCES.put(cloudAccount, new CloudConfiguration(cloudAccount));
+	return INSTANCES.get(cloudAccount);
     }
 
     public static CloudConfiguration getCloudConfigurationInstance() {
 	return getCloudConfigurationInstance(DEFAULT);
     }
 
-    private CloudConfiguration(String owner) {
-	this.owner = owner;
+    private CloudConfiguration(String cloudAccount) {
+	this.cloudAccount = cloudAccount;
     }
 
     /**
-     * If the value is not found, the DEFAULT value is returned. If both the
-     * value of key and DEFAULT are not found, an IllegalArgumentException is
-     * thrown.
      * 
      * @param key
-     * @return
-     * @throws IllegalArgumentException
+     * @return value
+     * @throws IllegalArgumentException if key does not have a value
      */
     public String get(String key) {
-
-	key = keyForOwner(key);
-
-	String value = getProperties().get(key);
-
-	if (value == null || value.trim().isEmpty()) {
-	    logger.error("Could not retrieve the CloudConfiguration property " + key + " for owner " + owner
+	String value = getOptional(key);
+	if (value == null || value.isEmpty()) {
+	    logger.error("Could not retrieve the CloudConfiguration property " + key + " for cloud account " + cloudAccount
 		    + ". Please, check the file " + PROPERTIES_FILE);
 	    throw new IllegalArgumentException();
 	}
-
-	return value.trim();
+	return value;
+    }
+    
+    public String getOptional(String key) {
+        key = keyForCloudAccount(key);
+        String value = getProperties().get(key);
+        if (value != null)
+            value = value.trim();
+        return value;
     }
 
     public String[] getMultiple(String key) {
-	return getProperties().getMultiple(keyForOwner(key));
+	return getProperties().getMultiple(keyForCloudAccount(key));
     }
 
     public void set(String key, String value) {
 	if (key != null) {
-	    key = keyForOwner(key);
+	    key = keyForCloudAccount(key);
 	    getProperties().set(key, value);
 	}
     }
 
-    private String keyForOwner(String key) {
-	return owner + "." + key;
+    private String keyForCloudAccount(String key) {
+	return cloudAccount + "." + key;
     }
 
-    public String getOwner() {
-	return owner;
+    public String getCloudAccount() {
+	return cloudAccount;
     }
 }

@@ -19,7 +19,7 @@ public class RoundRobinNodeSelector implements NodeSelector {
     }
 
     public RoundRobinSelector<CloudNode, DeployableServiceSpec> retrieveSelector(DeployableServiceSpec spec) {
-	String cloudAccount = spec.getOwner();
+	String cloudAccount = spec.getCloudAccount();
 
 	synchronized (this) {
 	    if (!this.selectors.containsKey(cloudAccount)) {

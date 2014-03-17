@@ -2,7 +2,7 @@ package org.ow2.choreos.ee.reconfiguration.events;
 
 import org.apache.log4j.Logger;
 import org.ow2.choreos.chors.ChoreographyNotFoundException;
-import org.ow2.choreos.chors.EnactmentException;
+import org.ow2.choreos.chors.DeploymentException;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 import org.ow2.choreos.ee.reconfiguration.ComplexEventHandler;
@@ -46,14 +46,14 @@ public class HighResponseTime extends ComplexEventHandler {
 	    registryHelper.getChorClient().updateChoreography(choreography.getId(), choreographySpec);
 	} catch (ChoreographyNotFoundException e) {
 	    logger.error(e.getMessage());
-	} catch (EnactmentException e) {
+	} catch (DeploymentException e) {
 	    logger.error(e.getMessage());
 	}
 
 	try {
 	    logger.info("Enacting choreography");
-	    registryHelper.getChorClient().enactChoreography(choreography.getId());
-	} catch (EnactmentException e) {
+	    registryHelper.getChorClient().deployChoreography(choreography.getId());
+	} catch (DeploymentException e) {
 	    logger.error(e.getMessage());
 	} catch (ChoreographyNotFoundException e) {
 	    logger.error(e.getMessage());

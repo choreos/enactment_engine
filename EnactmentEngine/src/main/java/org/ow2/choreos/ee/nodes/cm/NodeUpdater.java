@@ -14,12 +14,12 @@ import java.util.concurrent.Future;
 import org.apache.log4j.Logger;
 import org.ow2.choreos.invoker.Invoker;
 import org.ow2.choreos.invoker.InvokerFactory;
+import org.ow2.choreos.invoker.InvokerConfiguration;
 import org.ow2.choreos.nodes.NodeNotUpdatedException;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.utils.SshNotConnected;
 import org.ow2.choreos.utils.SshUtil;
 import org.ow2.choreos.utils.SshWaiter;
-import org.ow2.choreos.utils.TimeoutsAndTrials;
 
 /**
  * 
@@ -104,7 +104,7 @@ public class NodeUpdater {
         }
 
         private SshUtil getSsh() throws SshNotConnected {
-            int timeout = TimeoutsAndTrials.getTimeout("CONNECT_SSH");
+            int timeout = InvokerConfiguration.getTimeout("CONNECT_SSH");
             return sshWaiter.waitSsh(node.getIp(), node.getUser(), node.getPrivateKeyFile(), timeout);
         }
 

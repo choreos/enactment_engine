@@ -22,16 +22,6 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>ebmws-public.others</id>
-			<url>http://maven.petalslink.com/others</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
 			<id>ebmws-public.snapshot</id>
 			<url>http://maven.petalslink.com/public-snapshot</url>
 			<releases>
@@ -75,12 +65,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.choreos</groupId>
-			<artifactId>Airline</artifactId>
-			<version>3.0.0</version>
-			<classifier>classes</classifier>
-		</dependency>	
-		<dependency>
-			<groupId>org.ow2.choreos</groupId>
 			<artifactId>TravelAgency</artifactId>
 			<version>3.0.0</version>
 			<classifier>classes</classifier>
@@ -122,16 +106,9 @@
 			<version>0.1.44-1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jclouds</groupId>
+			<groupId>org.apache.jclouds</groupId>
 			<artifactId>jclouds-all</artifactId>
-			<version>1.6.0</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jclouds.driver</groupId>
-			<artifactId>jclouds-slf4j</artifactId>
-			<version>1.6.0</version>
+			<version>1.7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-configuration</groupId>
@@ -224,7 +201,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>org.ow2.choreos.ee.rest.EnactmentEngineServer</mainClass>
+							<mainClass>org.ow2.choreos.ee.rest.EnactmentEngineServer</mainClass>  
 						</manifest>
 						<manifestEntries>
 							<Class-Path>conf/</Class-Path>
@@ -234,6 +211,9 @@
 						<exclude>*.properties</exclude>
 						<exclude>*.properties.template</exclude>
 						<exclude>.gitignore</exclude>
+						<exclude>extensible/**</exclude>
+						<exclude>rules/**</exclude>
+						<exclude>chef-solo/**</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

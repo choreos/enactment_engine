@@ -9,7 +9,7 @@ import org.ow2.choreos.nodes.NodePoolManager;
 
 /**
  * Retrieve DeploymentManager clients using the URIs configured on
- * owners.properties.
+ * clouds.properties.
  * 
  * @author leonardo
  * 
@@ -19,9 +19,9 @@ public class RESTClientsRetriever {
     public static NodePoolManager npmForTest;
     public static boolean testing = false;
 
-    public static NodePoolManager getNodePoolManager(String owner) {
+    public static NodePoolManager getNodePoolManager(String cloudAccount) {
 	if (!testing) {
-	    NodePoolManager nodePoolManager = NPMFactory.getNewNPMInstance(owner);
+	    NodePoolManager nodePoolManager = NPMFactory.getNewNPMInstance(cloudAccount);
 	    return nodePoolManager;
 	} else {
 	    return npmForTest;
