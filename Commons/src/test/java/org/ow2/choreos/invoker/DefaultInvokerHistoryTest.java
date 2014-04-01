@@ -9,11 +9,11 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class InvokerHistoryTest {
+public class DefaultInvokerHistoryTest {
 
     @Before
     public void setUp() {
-        Invoker.SAVE_HISTORY = true;
+        DefaultInvoker.SAVE_HISTORY = true;
         InvokerHistory.getInstance().clear();
     }
     
@@ -24,7 +24,7 @@ public class InvokerHistoryTest {
         int trials = 1;
         int pause = 0;
         TakesTwoSecondsTask task = new TakesTwoSecondsTask();
-        Invoker<String> invoker = new Invoker<String>(taskName, task, trials, timeout, pause, TimeUnit.SECONDS);
+        Invoker<String> invoker = new DefaultInvoker<String>(taskName, task, trials, timeout, pause, TimeUnit.SECONDS);
         invoker.invoke();
         List<Long> history = InvokerHistory.getInstance().getHistory(taskName);
         assertEquals(1, history.size());
@@ -38,7 +38,7 @@ public class InvokerHistoryTest {
         int trials = 1;
         int pause = 0;
         TakesOneSecondsAndFailsTask task = new TakesOneSecondsAndFailsTask();
-        Invoker<String> invoker = new Invoker<String>(taskName, task, trials, timeout, pause, TimeUnit.SECONDS);
+        Invoker<String> invoker = new DefaultInvoker<String>(taskName, task, trials, timeout, pause, TimeUnit.SECONDS);
         try {
             invoker.invoke();
         } catch (InvokerException e) {
@@ -55,7 +55,7 @@ public class InvokerHistoryTest {
         int trials = 1;
         int pause = 0;
         TakesTwoSecondsTask task = new TakesTwoSecondsTask();
-        Invoker<String> invoker = new Invoker<String>(taskName, task, trials, timeout, pause, TimeUnit.SECONDS);
+        Invoker<String> invoker = new DefaultInvoker<String>(taskName, task, trials, timeout, pause, TimeUnit.SECONDS);
         try {
             invoker.invoke();
         } catch (InvokerException e) {

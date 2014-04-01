@@ -44,7 +44,7 @@ public class InvokerBuilder<T> {
     }
 
     public Invoker<T> build() {
-        return new Invoker<T>(taskName, task, trials, trialTimeout, pauseBetweenTrials, timeUnit);
+        return new DefaultInvoker<T>(taskName, task, trials, trialTimeout, pauseBetweenTrials, timeUnit);
     }
 
 }
