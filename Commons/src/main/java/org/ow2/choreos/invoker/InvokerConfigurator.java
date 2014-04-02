@@ -4,6 +4,6 @@ import java.util.concurrent.Callable;
 
 public interface InvokerConfigurator<T> {
 
-    public InvokerBuilder<T> getConfiguredInvokerBuilder(String taskName, Callable<T> task);
+    public Invoker<T> getConfiguredInvoker(String taskName, Callable<T> task);
 
 }

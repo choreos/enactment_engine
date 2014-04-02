@@ -4,14 +4,11 @@ import java.util.concurrent.Callable;
 
 public class AdaptiveInvokerConfigurator<T> implements InvokerConfigurator<T> {
 
-    private InvokerBuilder<T> builder;
-
     @Override
-    public InvokerBuilder<T> getConfiguredInvokerBuilder(String taskName, Callable<T> task) {
+    public Invoker<T> getConfiguredInvoker(String taskName, Callable<T> task) {
         adaptValues();
         InvokerConfigurator<T> staticConfigurator = new StaticInvokerConfigurator<T>();
-        builder = staticConfigurator.getConfiguredInvokerBuilder(taskName, task);
-        return builder;
+        return staticConfigurator.getConfiguredInvoker(taskName, task);
     }
 
     private void adaptValues() {

@@ -17,13 +17,13 @@ public class StaticInvokerConfigurator<T> implements InvokerConfigurator<T> {
     private InvokerBuilder<T> builder;
 
     @Override
-    public InvokerBuilder<T> getConfiguredInvokerBuilder(String taskName, Callable<T> task) {
+    public Invoker<T> getConfiguredInvoker(String taskName, Callable<T> task) {
         this.taskName = taskName;
         this.task = task;
         initBuilder();
         setTrials();
         setPause();
-        return builder;
+        return builder.build();
     }
 
     private void initBuilder() {
