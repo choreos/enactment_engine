@@ -28,7 +28,8 @@ class TimeoutedInvoker<T> implements Invoker<T> {
     public TimeoutedInvoker(String taskName, Callable<T> task, int timeout, TimeUnit timeUnit) {
         this.taskName = taskName;
         this.task = task;
-        this.timeout = timeout;        
+        this.timeout = timeout;    
+        this.timeUnit = timeUnit;
     }
 
     @Override
