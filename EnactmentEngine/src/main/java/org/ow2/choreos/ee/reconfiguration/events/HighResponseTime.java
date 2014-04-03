@@ -12,52 +12,57 @@ import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
 
 public class HighResponseTime extends ComplexEventHandler {
 
-    Logger logger = Logger.getLogger(this.getClass());
+	Logger logger = Logger.getLogger(this.getClass());
 
-    @Override
-    public void handleEvent(HandlingEvent event) {
+	@Override
+	public void handleEvent(HandlingEvent event, Choreography chor) {
 
-	String node = event.getNode();
-	String service = event.getService();
+		String serviceId = event.getServiceId();
 
-	Choreography choreography = registryHelper.getChoreography(node, service);
+		if (chor == null) 
+			return;
+		
+		String serviceSpecName = null;
+		for (DeployableService s : chor.getDeployableServices()) {
+			if (s.getUUID().equals(serviceId))
+				serviceSpecName = s.getSpec().getName();
+		}
 
-	String serviceName = null;
-	for (DeployableService s : choreography.getDeployableServices()) {
-	    if (s.getUUID().equals(service))
-		serviceName = s.getSpec().getName();
+		if (serviceSpecName == null) {
+			logger.warn("Service name for service uuid " + serviceId + " is null");
+			return;
+		}
+
+		ChoreographySpec choreographySpec = chor.getChoreographySpec();
+
+		for (DeployableServiceSpec spec : choreographySpec
+				.getDeployableServiceSpecs()) {
+			if (spec.getName().equals(serviceSpecName)) {
+				logger.debug("Found service spec. Going to increase number of instances");
+				spec.setNumberOfInstances(spec.getNumberOfInstances() + 1);
+				break;
+			}
+		}
+
+		try {
+			logger.info("Going to update chor with spec: " + choreographySpec);
+			registryHelper.getChorClient().updateChoreography(
+					chor.getId(), choreographySpec);
+		} catch (ChoreographyNotFoundException e) {
+			logger.error(e.getMessage());
+		} catch (DeploymentException e) {
+			logger.error(e.getMessage());
+		}
+
+		try {
+			logger.info("Enacting choreography");
+			registryHelper.getChorClient().deployChoreography(
+					chor.getId());
+		} catch (DeploymentException e) {
+			logger.error(e.getMessage());
+		} catch (ChoreographyNotFoundException e) {
+			logger.error(e.getMessage());
+		}
+
 	}
-
-	if (choreography == null || serviceName == null)
-	    return;
-
-	ChoreographySpec choreographySpec = choreography.getChoreographySpec();
-
-	for (DeployableServiceSpec s : choreographySpec.getDeployableServiceSpecs()) {
-	    if (s.getName().equals(service)) {
-		logger.debug("Found service spec. Going to increase number of instances");
-		s.setNumberOfInstances(s.getNumberOfInstances() + 1);
-		break;
-	    }
-	}
-
-	try {
-	    logger.info("Going to update chor with spec: " + choreographySpec);
-	    registryHelper.getChorClient().updateChoreography(choreography.getId(), choreographySpec);
-	} catch (ChoreographyNotFoundException e) {
-	    logger.error(e.getMessage());
-	} catch (DeploymentException e) {
-	    logger.error(e.getMessage());
-	}
-
-	try {
-	    logger.info("Enacting choreography");
-	    registryHelper.getChorClient().deployChoreography(choreography.getId());
-	} catch (DeploymentException e) {
-	    logger.error(e.getMessage());
-	} catch (ChoreographyNotFoundException e) {
-	    logger.error(e.getMessage());
-	}
-
-    }
 }
