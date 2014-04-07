@@ -15,7 +15,7 @@ public class AdaptiveInvokerConfigurator<T> implements InvokerConfigurator<T> {
         // Analyze the history of time consumed to perform the task in previous
         // invocations, using InvokerHistory.
         // If necessary, changes parameters to invoke the task,
-        // using TimeoutsAndTrials.
+        // using InvokerConfiguration.
     }
 
 }

@@ -115,7 +115,7 @@ public class LimitedRoundRobinSelector<T, R> implements Selector<T, R> {
         return this.roundRobinSelector.select(requirements, objectsQuantity);
     }
 
-    private void waitNodesCreation() {
+    private void waitNodesCreation() throws NotSelectedException {
 
         int c = 0;
         while (objectsBeenCreated.get() > 0) {
@@ -125,6 +125,7 @@ public class LimitedRoundRobinSelector<T, R> implements Selector<T, R> {
                 else
                     Thread.sleep(1000);
             } catch (InterruptedException e) {
+                throw new NotSelectedException("Killed at sleeping");
             }
             c++;
         }
