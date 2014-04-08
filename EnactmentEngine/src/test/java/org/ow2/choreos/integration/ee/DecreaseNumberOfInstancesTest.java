@@ -106,8 +106,8 @@ public class DecreaseNumberOfInstancesTest {
         assertTrue(codes2.startsWith("33") && codes2.endsWith("--22"));
         assertFalse(codes.equals(codes2));
 
-        Alarm alarm = new Alarm();
-        alarm.play();
+    //    Alarm alarm = new Alarm();
+    //    alarm.play();
 
     }
 

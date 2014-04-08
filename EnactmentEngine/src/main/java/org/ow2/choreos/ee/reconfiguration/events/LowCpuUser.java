@@ -17,7 +17,7 @@ public class LowCpuUser extends ComplexEventHandler {
     Logger logger = Logger.getLogger(this.getClass());
 
     @Override
-    public void handleEvent(HandlingEvent event) {
+    public void handleEvent(HandlingEvent event, Choreography chor) {
 
 	List<DeployableService> services = registryHelper.getServicesHostedOn(event.getNode());
 

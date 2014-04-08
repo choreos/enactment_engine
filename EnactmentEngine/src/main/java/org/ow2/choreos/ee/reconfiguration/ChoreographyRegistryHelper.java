@@ -9,101 +9,102 @@ import org.ow2.choreos.chors.ChoreographyNotFoundException;
 import org.ow2.choreos.chors.client.EEClient;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.ee.ChorRegistry;
+import org.ow2.choreos.ee.EEImpl;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
 
 public class ChoreographyRegistryHelper {
 
-    private static final String CHOR_DEPLOYER_URI = "http://localhost:9100/choreographydeployer/";
+	private ChorRegistry registry = ChorRegistry.getInstance();
 
-    private ChorRegistry registry = ChorRegistry.getInstance();
+	private EnactmentEngine enactmentEngine;
 
-    private EnactmentEngine chorClient;
+	public ChoreographyRegistryHelper() {
+		setClients();
+	}
 
-    public ChoreographyRegistryHelper() {
-	setClients();
-    }
+	private void setClients() {
+		this.enactmentEngine = new EEImpl();
+	}
 
-    private void setClients() {
-	this.chorClient = new EEClient(CHOR_DEPLOYER_URI);
-    }
+	public List<DeployableService> getServicesHostedOn(String ipAddress) {
 
-    public List<DeployableService> getServicesHostedOn(String ipAddress) {
+		Choreography chor = getChor(ipAddress);
 
-	Choreography chor = getChor(ipAddress);
-
-	List<DeployableService> result = new ArrayList<DeployableService>();
-	for (DeployableService service : chor.getDeployableServices()) {
-	    for (CloudNode node : service.getSelectedNodes())
-		if (node.getIp().equals(ipAddress)) {
-		    result.add(service);
-		    break;
+		List<DeployableService> result = new ArrayList<DeployableService>();
+		for (DeployableService service : chor.getDeployableServices()) {
+			for (CloudNode node : service.getSelectedNodes())
+				if (node.getIp().equals(ipAddress)) {
+					result.add(service);
+					break;
+				}
 		}
-	}
-	return result;
-    }
-
-    public List<DeployableServiceSpec> getServiceSpecsForServices(List<DeployableService> services) {
-
-	List<DeployableServiceSpec> specs = new ArrayList<DeployableServiceSpec>();
-	for (DeployableService service : services) {
-	    specs.add(service.getSpec());
+		return result;
 	}
 
-	return specs;
-    }
+	public List<DeployableServiceSpec> getServiceSpecsForServices(
+			List<DeployableService> services) {
 
-    public Choreography getChor(String ipAddress) {
-
-	String chorId = searchForChor(ipAddress);
-
-	if (chorId.isEmpty())
-	    return null;
-
-	Choreography chor = null;
-	try {
-	    chor = chorClient.getChoreography(chorId);
-	} catch (ChoreographyNotFoundException e) {
-	    e.printStackTrace();
-	}
-	return chor;
-    }
-
-    public EnactmentEngine getChorClient() {
-	return chorClient;
-    }
-
-    private String searchForChor(String ipAddress) {
-	for (Entry<String, Choreography> chor : registry.getAll().entrySet()) {
-	    for (DeployableService service : chor.getValue().getDeployableServices()) {
-		for (CloudNode node : service.getSelectedNodes()) {
-		    if (node.getIp().equals(ipAddress)) {
-			return chor.getKey();
-		    }
+		List<DeployableServiceSpec> specs = new ArrayList<DeployableServiceSpec>();
+		for (DeployableService service : services) {
+			specs.add(service.getSpec());
 		}
-	    }
+
+		return specs;
 	}
-	return "";
-    }
 
-    public Choreography getChoreography(String node, String service) {
+	public Choreography getChor(String ipAddress) {
 
-	for (Entry<String, Choreography> chor : registry.getAll().entrySet()) {
+		String chorId = searchForChor(ipAddress);
 
-	    for (DeployableService s : chor.getValue().getDeployableServices()) {
+		if (chorId.isEmpty())
+			return null;
 
-		if (s.getSpec().getName().equals(service)) {
+		Choreography chor = null;
+		try {
+			chor = enactmentEngine.getChoreography(chorId);
+		} catch (ChoreographyNotFoundException e) {
+			e.printStackTrace();
+		}
+		return chor;
+	}
 
-		    for (CloudNode n : s.getSelectedNodes()) {
+	public EnactmentEngine getChorClient() {
+		return enactmentEngine;
+	}
 
-			if (n.getIp().equals(node)) {
-			    return chor.getValue();
+	private String searchForChor(String ipAddress) {
+		for (Entry<String, Choreography> chor : registry.getAll().entrySet()) {
+			for (DeployableService service : chor.getValue()
+					.getDeployableServices()) {
+				for (CloudNode node : service.getSelectedNodes()) {
+					if (node.getIp().equals(ipAddress)) {
+						return chor.getKey();
+					}
+				}
 			}
-		    }
 		}
-	    }
+		return "";
 	}
-	return null;
-    }
+
+	public Choreography getChoreography(String node, String service) {
+
+		for (Entry<String, Choreography> chor : registry.getAll().entrySet()) {
+
+			for (DeployableService s : chor.getValue().getDeployableServices()) {
+
+				if (s.getSpec().getName().equals(service)) {
+
+					for (CloudNode n : s.getSelectedNodes()) {
+
+						if (n.getIp().equals(node)) {
+							return chor.getValue();
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
 }
