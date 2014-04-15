@@ -95,11 +95,17 @@ public class LimitedRoundRobinSelector<T, R> implements Selector<T, R> {
     private List<T> selectInCreatingState(List<T> objects, R requirements, int objectsQuantity, int newQty)
             throws NotSelectedException {
 
-        List<T> result = this.alwaysCreatorSelector.select(requirements, newQty);
-        synchronized (this) {
-            objectsBeenCreated.set(objectsBeenCreated.get() - newQty);
+        List<T> result = null;
+        try {
+            result = this.alwaysCreatorSelector.select(requirements, newQty);
+        } catch (NotSelectedException e) {
+            throw e;
+        } finally {
+            synchronized (this) {
+                objectsBeenCreated.set(objectsBeenCreated.get() - newQty);
+            }
         }
-
+        
         if (result.size() < objectsQuantity) {
             int diff = objectsQuantity = result.size();
             List<T> moreNodes = this.roundRobinSelector.select(requirements, diff);
