@@ -61,7 +61,6 @@ public class ChoreographyEnacter {
     private void finish() {
 	ChoreographyContext ctx = reg.getContext(chor.getId());
 	ctx.enactmentFinished();
-	ctx.startMonitoring();
     }
 
     private void logEnd() {

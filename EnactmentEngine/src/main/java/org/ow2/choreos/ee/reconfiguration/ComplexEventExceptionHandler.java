@@ -9,11 +9,13 @@ import org.apache.log4j.Logger;
 
 public class ComplexEventExceptionHandler {
 
-    Logger logger = Logger.getLogger("reconfLogger");
+	Logger logger = Logger.getLogger("reconfLogger");
 
-    public void handle(ObjectMessage responseFromMonitoring) throws JMSException {
-	ComplexEventException exceptionReceived = (ComplexEventException) responseFromMonitoring.getObject();
-	logger.warn("Exception ClassName: " + exceptionReceived.getClassName());
-    }
+	public void handle(ObjectMessage responseFromMonitoring)
+			throws JMSException {
+		ComplexEventException exceptionReceived = (ComplexEventException) responseFromMonitoring
+				.getObject();
+		logger.warn("Exception ClassName: " + exceptionReceived.getClassName());
+	}
 
 }

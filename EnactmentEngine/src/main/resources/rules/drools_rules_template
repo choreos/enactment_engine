@@ -19,82 +19,26 @@ end
 
 declare CpuUserEvent
 	@role(event)
-	@expires (5m)
-	value : float
-	ip : String
-end
-
-declare LoadOneEvent
-	@role(event)
-	@expires (5m)
-	value : float
-	ip : String
-end
-
-declare FreeRamEvent
-	@role(event)
-	@expires (5m)
-	value : float
-	ip : String
-end
-
-declare BytesInEvent
-	@role(event)
-	@expires (5m)
-	value : float
-	ip : String
-end
-
-declare BytesOutEvent
-	@role(event)
-	@expires (5m)
-	value : float
-	ip : String
-end
-
-declare PktsInEvent
-	@role(event)
-	@expires (5m)
-	value : float
-	ip : String
-end
-
-declare PktsOutEvent
-	@role(event)
-	@expires (5m)
-	value : float
-	ip : String
-end
-
-declare DiskBytesWrittenEvent
-	@role(event)
-	@expires (5m)
-	value : float
-	ip : String
-end
-
-declare DiskBytesReadEvent
-	@role(event)
-	@expires (5m)
+	@expires (2m)
 	value : float
 	ip : String
 end
 
 declare AddReplica
 	@role(event)
-	@expires( 10m )
+	@expires( 5m )
 	service : String
 end
 
 declare RemReplica
 	@role(event)
-	@expires ( 6m )
+	@expires ( 3m )
 	ip : String
 end
 
 rule "CpuUser"
 no-loop true
-salience 20
+salience 100
 dialect "mvel"
 
 when
@@ -118,236 +62,9 @@ then
 		"\nSLA resource measurement: " + (String) $aEvent.getMachineIP() + " " + f);
 end
 
-
-
-rule "LoadOne"
-no-loop true
-salience 20
-dialect "mvel"
-
-when
-	$aEvent : GlimpseBaseEventChoreos(
-		this.isConsumed == false,
-		this.isException == false,
-		this.getEventName == "load_one"
-	);
-then
-	$aEvent.setConsumed(true);
-	update($aEvent);
-	Pattern p = Pattern.compile("Measured: ([0-9.]+)");
-	Matcher m1 = p.matcher((String) $aEvent.getEventData());
-	float f = -1;
-	if (m1.find())
-		f = Float.parseFloat(m1.group(0).split(": ")[1]);
-	insert (new LoadOneEvent(f,$aEvent.getMachineIP()));
-	ResponseDispatcher.LogViolation(
-		"\nRule name: " + drools.getRule().getName(),
-		"\nFrom: Resource Metric Aggregator",
-		"\nSLA resource measurement: " + (String) $aEvent.getMachineIP() + " " + f);
-end
-
-
-
-rule "FreeRam"
-no-loop true
-salience 20
-dialect "mvel"
-
-when
-	$aEvent : GlimpseBaseEventChoreos(
-		this.isConsumed == false,
-		this.isException == false,
-		this.getEventName == "free_ram"
-	);
-then
-	$aEvent.setConsumed(true);
-	update($aEvent);
-	Pattern p = Pattern.compile("Measured: ([0-9.]+)");
-	Matcher m1 = p.matcher((String) $aEvent.getEventData());
-	float f = -1;
-	if (m1.find())
-		f = Float.parseFloat(m1.group(0).split(": ")[1]);
-	insert (new FreeRamEvent(f,$aEvent.getMachineIP()));
-	ResponseDispatcher.LogViolation(
-		"\nRule name: " + drools.getRule().getName(),
-		"\nFrom: Resource Metric Aggregator",
-		"\nSLA resource measurement: " + (String) $aEvent.getMachineIP() + " " + f);
-end
-
-
-
-rule "BytesIn"
-no-loop true
-salience 20
-dialect "mvel"
-
-when
-	$aEvent : GlimpseBaseEventChoreos(
-		this.isConsumed == false,
-		this.isException == false,
-		this.getEventName == "bytes_in"
-	);
-then
-	$aEvent.setConsumed(true);
-	update($aEvent);
-	Pattern p = Pattern.compile("Measured: ([0-9.]+)");
-	Matcher m1 = p.matcher((String) $aEvent.getEventData());
-	float f = -1;
-	if (m1.find())
-		f = Float.parseFloat(m1.group(0).split(": ")[1]);
-	insert (new BytesInEvent(f,$aEvent.getMachineIP()));
-	ResponseDispatcher.LogViolation(
-		"\nRule name: " + drools.getRule().getName(),
-		"\nFrom: Resource Metric Aggregator",
-		"\nSLA resource measurement: " + (String) $aEvent.getMachineIP() + " " + f);
-end
-
-
-
-rule "BytesOut"
-no-loop true
-salience 20
-dialect "mvel"
-
-when
-	$aEvent : GlimpseBaseEventChoreos(
-		this.isConsumed == false,
-		this.isException == false,
-		this.getEventName == "bytes_out"
-	);
-then
-	$aEvent.setConsumed(true);
-	update($aEvent);
-	Pattern p = Pattern.compile("Measured: ([0-9.]+)");
-	Matcher m1 = p.matcher((String) $aEvent.getEventData());
-	float f = -1;
-	if (m1.find())
-		f = Float.parseFloat(m1.group(0).split(": ")[1]);
-	insert (new BytesOutEvent(f,$aEvent.getMachineIP()));
-	ResponseDispatcher.LogViolation(
-		"\nRule name: " + drools.getRule().getName(),
-		"\nFrom: Resource Metric Aggregator",
-		"\nSLA resource measurement: " + (String) $aEvent.getMachineIP() + " " + f);
-end
-
-
-
-rule "PktsIn"
-no-loop true
-salience 20
-dialect "mvel"
-
-when
-	$aEvent : GlimpseBaseEventChoreos(
-		this.isConsumed == false,
-		this.isException == false,
-		this.getEventName == "pkts_in"
-	);
-then
-	$aEvent.setConsumed(true);
-	update($aEvent);
-	Pattern p = Pattern.compile("Measured: ([0-9.]+)");
-	Matcher m1 = p.matcher((String) $aEvent.getEventData());
-	float f = -1;
-	if (m1.find())
-		f = Float.parseFloat(m1.group(0).split(": ")[1]);
-	insert (new PktsInEvent(f,$aEvent.getMachineIP()));
-	ResponseDispatcher.LogViolation(
-		"\nRule name: " + drools.getRule().getName(),
-		"\nFrom: Resource Metric Aggregator",
-		"\nSLA resource measurement: " + (String) $aEvent.getMachineIP() + " " + f);
-end
-
-
-
-rule "PktsOut"
-no-loop true
-salience 20
-dialect "mvel"
-
-when
-	$aEvent : GlimpseBaseEventChoreos(
-		this.isConsumed == false,
-		this.isException == false,
-		this.getEventName == "pkts_out"
-	);
-then
-	$aEvent.setConsumed(true);
-	update($aEvent);
-	Pattern p = Pattern.compile("Measured: ([0-9.]+)");
-	Matcher m1 = p.matcher((String) $aEvent.getEventData());
-	float f = -1;
-	if (m1.find())
-		f = Float.parseFloat(m1.group(0).split(": ")[1]);
-	insert (new PktsOutEvent(f,$aEvent.getMachineIP()));
-	ResponseDispatcher.LogViolation(
-		"\nRule name: " + drools.getRule().getName(),
-		"\nFrom: Resource Metric Aggregator",
-		"\nSLA resource measurement: " + (String) $aEvent.getMachineIP() + " " + f);
-end
-
-
-
-rule "DiskBytesWritten"
-no-loop true
-salience 20
-dialect "mvel"
-
-when
-	$aEvent : GlimpseBaseEventChoreos(
-		this.isConsumed == false,
-		this.isException == false,
-		this.getEventName == "disk_bytes_written"
-	);
-then
-	$aEvent.setConsumed(true);
-	update($aEvent);
-	Pattern p = Pattern.compile("Measured: ([0-9.]+)");
-	Matcher m1 = p.matcher((String) $aEvent.getEventData());
-	float f = -1;
-	if (m1.find())
-		f = Float.parseFloat(m1.group(0).split(": ")[1]);
-	insert (new DiskBytesWrittenEvent(f,$aEvent.getMachineIP()));
-	ResponseDispatcher.LogViolation(
-		"\nRule name: " + drools.getRule().getName(),
-		"\nFrom: Resource Metric Aggregator",
-		"\nSLA resource measurement: " + (String) $aEvent.getMachineIP() + " " + f);
-end
-
-
-
-rule "DiskBytesRead"
-no-loop true
-salience 20
-dialect "mvel"
-
-when
-	$aEvent : GlimpseBaseEventChoreos(
-		this.isConsumed == false,
-		this.isException == false,
-		this.getEventName == "disk_bytes_read"
-	);
-then
-	$aEvent.setConsumed(true);
-	update($aEvent);
-	Pattern p = Pattern.compile("Measured: ([0-9.]+)");
-	Matcher m1 = p.matcher((String) $aEvent.getEventData());
-	float f = -1;
-	if (m1.find())
-		f = Float.parseFloat(m1.group(0).split(": ")[1]);
-	insert (new DiskBytesReadEvent(f,$aEvent.getMachineIP()));
-	ResponseDispatcher.LogViolation(
-		"\nRule name: " + drools.getRule().getName(),
-		"\nFrom: Resource Metric Aggregator",
-		"\nSLA resource measurement: " + (String) $aEvent.getMachineIP() + " " + f);
-end
-
-
-
-
 rule "LowCpuUser"
 no-loop true
-salience 20
+salience 10
 dialect "mvel"
 
 when

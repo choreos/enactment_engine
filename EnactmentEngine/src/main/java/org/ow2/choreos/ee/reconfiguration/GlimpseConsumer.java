@@ -3,29 +3,25 @@ package org.ow2.choreos.ee.reconfiguration;
 import it.cnr.isti.labsedc.glimpse.utils.Manager;
 
 import java.util.Properties;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.ow2.choreos.ee.ChoreographyContext;
 import org.ow2.choreos.ee.config.QoSManagementConfiguration;
 
-public class GlimpseConsumer implements Runnable {
+public class GlimpseConsumer {
 
 	private static final String namingURL = "tcp://"
 			+ QoSManagementConfiguration
 					.get(QoSManagementConfiguration.RESOURCE_METRIC_AGGREGATOR)
 			+ ":61616";
 
-	private final ChoreographyContext context;
-
 	String rules;
 	Properties properties;
 
-	private boolean running = false;
+	static Logger logger = Logger.getLogger("reconfLogger");
 
-	Logger logger = Logger.getLogger("reconfLogger");
-
-	public GlimpseConsumer(ChoreographyContext context) {
-		this.context = context;
+	public GlimpseConsumer() {
+		
 		this.properties = getConsumerProperties();
 		this.rules = getConsumerRules();
 	}
@@ -34,56 +30,28 @@ public class GlimpseConsumer implements Runnable {
 		return Manager.createConsumerSettingsPropertiesObject(
 				"org.apache.activemq.jndi.ActiveMQInitialContextFactory",
 				namingURL, "system", "manager", "TopicCF", "jms.serviceTopic",
-				false, "eeConsumer");
+				false, "eeConsumer"+ UUID.randomUUID().toString().replace("-", ""));
 	}
 
 	private String getConsumerRules() {
 		String fileContent = null;
 
-		
-		fileContent = new GlimpseRulesBuilder().assemblyGlimpseRules(this.context
-				.getChoreography());
+		fileContent = new GlimpseRulesBuilder().assemblyGlimpseRules();
 		
 		logger.debug(fileContent);
 
 		return fileContent;
 	}
 
-	@Override
 	public void run() {
 
-		logger.info("Starting running glimpse consumer for chor "
-				+ context.getChoreography().getId());
-		new ChorGlimpseConsumer(this.properties, this.rules,
-				context.getChoreography());
-
+		new ChorGlimpseConsumer(this.properties, this.rules);
 		logger.info("Glimpse consumer stated!");
-		running = true;
-
-		while (running) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		logger.info("Finished consumer for chor "
-				+ context.getChoreography().getId());
+	}	
+	
+	public static void main(String[] args) {
+		new GlimpseConsumer().run();
 	}
 
-	public void start() {
-		new Thread(this).start();
-		while (!running) {
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void stop() {
-		running = false;
-	}
 
 }

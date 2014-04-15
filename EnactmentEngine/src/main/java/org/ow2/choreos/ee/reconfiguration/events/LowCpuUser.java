@@ -1,7 +1,5 @@
 package org.ow2.choreos.ee.reconfiguration.events;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.ow2.choreos.chors.ChoreographyNotFoundException;
 import org.ow2.choreos.chors.DeploymentException;
@@ -11,54 +9,77 @@ import org.ow2.choreos.ee.reconfiguration.ComplexEventHandler;
 import org.ow2.choreos.ee.reconfiguration.HandlingEvent;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
+import org.ow2.choreos.services.datamodel.ServiceInstance;
 
 public class LowCpuUser extends ComplexEventHandler {
+	Logger logger = Logger.getLogger(this.getClass());
 
-    Logger logger = Logger.getLogger(this.getClass());
-
-    @Override
-    public void handleEvent(HandlingEvent event, Choreography chor) {
-
-	List<DeployableService> services = registryHelper.getServicesHostedOn(event.getNode());
-
-	if (services.isEmpty()) {
-	    logger.warn("Ooops! No servives hosted on " + event.getNode());
-	    return;
-	}
-
-	List<DeployableServiceSpec> serviceSpecs = registryHelper.getServiceSpecsForServices(services);
-
-	for (DeployableServiceSpec spec : serviceSpecs) {
-
-	    Choreography c = registryHelper.getChor(event.getNode());
-	    ChoreographySpec cSpec = c.getChoreographySpec();
-	    for (DeployableServiceSpec s : cSpec.getDeployableServiceSpecs()) {
-		if (s.getName().equals(spec.getName())) {
-		    logger.debug("Found service spec. Going to increase number of instances");
-		    if (s.getNumberOfInstances() > 1)
-			s.setNumberOfInstances(s.getNumberOfInstances() - 1);
-		    break;
+	@Override
+	public void handleEvent(HandlingEvent event) {
+		logger.info("Trying to handle " + event.getNode());
+		Choreography c = null;
+		try {
+			c = registryHelper.getChorClient().getChoreography("1");
+		} catch (ChoreographyNotFoundException e1) {
+			logger.error("Choeography not found");
+		} catch (NullPointerException e) {
+			logger.error("Choreography no deployed yet");
+			return;
 		}
-	    }
 
-	    try {
-		logger.info("Going to update chor with spec: " + cSpec);
-		registryHelper.getChorClient().updateChoreography("1", cSpec);
-	    } catch (ChoreographyNotFoundException e) {
-		logger.error(e.getMessage());
-	    } catch (DeploymentException e) {
-		logger.error(e.getMessage());
-	    }
+		ChoreographySpec cSpec;
+		try {			
+			cSpec = c.getChoreographySpec();
+		} catch (NullPointerException e) {
+			logger.error("Choreography no deployed yet");
+			return;
+		}
+		
+		String specName = "";
+		
+		for (DeployableService s : c.getDeployableServices()) {
+			for (ServiceInstance i : s.getInstances()) {
+				if (i.getNode().getIp().equals(event.getNode()))
+					specName = s.getSpec().getName();
+			}
+		}
 
-	    try {
-		logger.info("Enacting choreography");
-		registryHelper.getChorClient().deployChoreography("1");
-	    } catch (DeploymentException e) {
-		logger.error(e.getMessage());
-	    } catch (ChoreographyNotFoundException e) {
-		logger.error(e.getMessage());
-	    }
+		if (specName.isEmpty()) {
+			logger.debug("Not found service spec for services in " + event.getNode());
+			return;
+		}
+
+		for (DeployableServiceSpec s : cSpec.getDeployableServiceSpecs()) {
+			if (s.getName().equals(specName)) {
+				logger.debug("Found service spec " + specName);
+				if (s.getNumberOfInstances() > 1) {
+					s.setNumberOfInstances(s.getNumberOfInstances() - 1);
+					break;
+				}
+				else {
+					logger.debug("Number of instances <= 1. Not going to update");
+					return;
+				}
+			}
+		}
+
+		try {
+			logger.info("Going to decrease number of instance for chor with spec: " + cSpec);
+			registryHelper.getChorClient().updateChoreography("1", cSpec);
+		} catch (ChoreographyNotFoundException e) {
+			logger.error(e.getMessage());
+		} catch (DeploymentException e) {
+			logger.error(e.getMessage());
+		}
+
+		try {
+			logger.info("Enacting choreography");
+			registryHelper.getChorClient().deployChoreography("1");
+		} catch (DeploymentException e) {
+			logger.error(e.getMessage());
+		} catch (ChoreographyNotFoundException e) {
+			logger.error(e.getMessage());
+		}
 
 	}
-    }
 }

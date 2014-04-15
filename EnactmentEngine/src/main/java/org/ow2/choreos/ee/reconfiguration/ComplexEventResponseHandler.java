@@ -15,23 +15,24 @@ public class ComplexEventResponseHandler {
 	private ComplexEventResponse response;
 	private HandlingEvent event;
 
-	public void handle(ComplexEventResponse responseFromMonitoring, Choreography chor)
+	public void handle(ComplexEventResponse responseFromMonitoring)
 			throws JMSException {
 		setUp(responseFromMonitoring);
 		loadHandler();
-		handles(chor);
+		handles();
 	}
 
-	private void handles(Choreography chor) {
+	private void handles() {
 		logger.debug("Handling event\n\n>>>\n " + event.getRule()
 				+ " on host = " + event.getNode());
-		handler.handleEvent(event, chor);
-		try {
-			Thread.sleep(1000 * 60);
-			logger.debug("Sleeping one minute");
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		
+		handler.handleEvent(event);
+		//try {
+			//Thread.sleep(1000 * 60);
+			//logger.debug("Sleeping one minute");
+		//} catch (InterruptedException e) {
+		//	e.printStackTrace();
+		//}
 		logger.debug("Event handled!\n\n>>>");
 	}
 
@@ -40,14 +41,14 @@ public class ComplexEventResponseHandler {
 		response = responseFromMonitoring;
 		String ruleMatched = response.getRuleName();
 		String node = response.getResponseKey();
-		String serviceId = response.getResponseValue();
-		event = new HandlingEvent(ruleMatched, node, serviceId);
+		String instanceId = response.getResponseValue();
+		event = new HandlingEvent(ruleMatched, node, instanceId);
 	}
 
 	@SuppressWarnings("unchecked")
 	private void loadHandler() {
-		logger.debug("Loading handler...\n>>> " + "(" + event.getRule() + ", "
-				+ event.getNode() + ", " + event.getServiceId() + ")");
+		logger.debug("Loading handler " + "(" + event.getRule() + ", "
+				+ event.getNode() + ", " + event.getInstanceId() + ")");
 		Class<ComplexEventHandler> clazz;
 		try {
 			clazz = (Class<ComplexEventHandler>) Class

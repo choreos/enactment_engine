@@ -5,10 +5,13 @@
 
 <Insert RuleType="drools">
 
-<RuleName>Choreography_@{chor_id}</RuleName>
-<RuleBody>
-@{chor_rules}
-</RuleBody>
+	<RuleName>Choreography_@{chor_id}</RuleName>
+
+	<RuleBody>
+
+		@{chor_rules}
+
+	</RuleBody>
 
 </Insert>
 

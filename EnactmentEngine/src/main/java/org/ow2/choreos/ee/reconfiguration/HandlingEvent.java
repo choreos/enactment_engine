@@ -6,11 +6,11 @@ public class HandlingEvent {
 	String node;
 	String serviceId;
 
-	public HandlingEvent(String rule, String node, String service) {
+	public HandlingEvent(String rule, String node, String instanceId) {
 		super();
 		this.rule = rule;
 		this.node = node;
-		this.serviceId = service;
+		this.serviceId = instanceId;
 	}
 
 	public String getRule() {
@@ -29,11 +29,11 @@ public class HandlingEvent {
 		this.node = node;
 	}
 
-	public String getServiceId() {
+	public String getInstanceId() {
 		return serviceId;
 	}
 
-	public void setServiceId(String serviceId) {
+	public void setInstanceId(String serviceId) {
 		this.serviceId = serviceId;
 	}
 

@@ -98,6 +98,8 @@ public class AWSCloudProvider extends JCloudsCloudProvider {
         super.identity = cloudConfiguration.get("AMAZON_ACCESS_KEY_ID");
         super.credential = cloudConfiguration.get("AMAZON_SECRET_KEY");
         super.provider = PROVIDER;
+        PROPERTIES.setProperty("PROPERTY_CONNECTION_TIMEOUT", 15000 + "");
+        PROPERTIES.setProperty("PROPERTY_SO_TIMEOUT", 15000 + "");
         super.properties = PROPERTIES;
 
     }

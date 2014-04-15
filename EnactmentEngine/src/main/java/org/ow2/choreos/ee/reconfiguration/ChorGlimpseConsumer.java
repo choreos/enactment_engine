@@ -23,13 +23,9 @@ class ChorGlimpseConsumer extends GlimpseAbstractConsumer {
 	private ComplexEventExceptionHandler complexEventExceptionHandler;
 	private ComplexEventResponseHandler complexEventResponseHandler;
 
-	private Choreography chor;
-
-	public ChorGlimpseConsumer(Properties settings, String plainTextRule,
-			Choreography chor) {
+	public ChorGlimpseConsumer(Properties settings, String plainTextRule) {
 		super(settings, plainTextRule);
 
-		this.chor = chor;
 		complexEventExceptionHandler = new ComplexEventExceptionHandler();
 		complexEventResponseHandler = new ComplexEventResponseHandler();
 	}
@@ -46,80 +42,61 @@ class ChorGlimpseConsumer extends GlimpseAbstractConsumer {
 				ComplexEventResponse respObject = (ComplexEventResponse) responseFromMonitoring
 						.getObject();
 
-				if (isQoSComplexEvent(respObject) && isServiceKnown(respObject)
-						&& isCloudNodeKnown(respObject)) {
-					String serviceId = findService(respObject
-							.getResponseValue());
-					if (serviceId == null)
-						return;
-					respObject.setResponseValue(serviceId); // resets
-					// serviceName to
-					// serviceId
-					complexEventResponseHandler.handle(respObject, chor);
-				}
+				if (isQoSComplexEvent(respObject))
+					complexEventResponseHandler.handle(respObject);
 			}
 		} catch (ClassCastException asd) {
 			logger.error("Error while casting message received. It is not a ObjectMessage instance");
 		}
 	}
 
-	private String findService(String instanceId) {
-		for (DeployableService s : chor.getDeployableServices()) {
-			for (ServiceInstance i : s.getInstances()) {
-				if (i.getInstanceId().equals(instanceId))
-					return s.getUUID();
-			}
-		}
-		return null;
-	}
-
-	private boolean isServiceKnown(ComplexEventResponse respObject) {
-		logger.debug("isServiceKnown() : Searching for: "
-				+ respObject.getResponseValue());
-
-		if (respObject.getResponseValue().equals("all")) {
-			logger.debug("isServiceKnown() : Searching for: "
-					+ respObject.getResponseValue());
-			logger.debug("isServiceKnown() : Applicable for service scope!");
-			return true;
-		}
-
-		for (DeployableService service : chor.getDeployableServices()) {
-			logger.debug("isServiceKnown() : Found service = " + service
-					+ " for chor = " + chor.getId());
-
-			for (ServiceInstance instance : service.getInstances()) {
-
-				// if found an instance then return true the service's service name
-				if (instance.getInstanceId().equals(respObject.getResponseValue())) {				
-					logger.debug("isServiceKnown() : Macthed: " + service
-							+ " = " + service.getSpec().getName());
-					return true;
-				}
-
-			}
-		}
-		logger.debug("isServiceKnown() : Nothing matches");
-		return false;
-	}
-
-	private boolean isCloudNodeKnown(ComplexEventResponse respObject) {
-		logger.debug("isCloudNodeKnown() : Searching for: "
-				+ respObject.getResponseKey());
-		for (DeployableService service : chor.getDeployableServices()) {
-			for (CloudNode node : service.getSelectedNodes()) {
-				logger.debug("isCloudNodeKnown() : Found node = " + node
-						+ " for service = " + service);
-				if (node.getIp().equals(respObject.getResponseKey())) {
-					logger.debug("isCloudNodeKnown() : Matched: " + node
-							+ " = " + respObject.getResponseKey());
-					return true;
-				}
-			}
-		}
-		logger.debug("isCloudNodeKnown() : Nothing matches");
-		return false;
-	}
+	// private boolean isServiceKnown(ComplexEventResponse respObject) {
+	// logger.debug("isServiceKnown() : Searching for: "
+	// + respObject.getResponseValue());
+	//
+	// if (respObject.getResponseValue().equals("all")) {
+	// logger.debug("isServiceKnown() : Searching for: "
+	// + respObject.getResponseValue());
+	// logger.debug("isServiceKnown() : Applicable for service scope!");
+	// return true;
+	// }
+	//
+	// for (DeployableService service : chor.getDeployableServices()) {
+	// logger.debug("isServiceKnown() : Found service = " + service
+	// + " for chor = " + chor.getId());
+	//
+	// for (ServiceInstance instance : service.getInstances()) {
+	//
+	// // if found an instance then return true the service's service name
+	// if (instance.getInstanceId().equals(respObject.getResponseValue())) {
+	// logger.debug("isServiceKnown() : Macthed: " + service
+	// + " = " + service.getSpec().getName());
+	// return true;
+	// }
+	//
+	// }
+	// }
+	// logger.debug("isServiceKnown() : Nothing matches");
+	// return false;
+	// }
+	//
+	// private boolean isCloudNodeKnown(ComplexEventResponse respObject) {
+	// logger.debug("isCloudNodeKnown() : Searching for: "
+	// + respObject.getResponseKey());
+	// for (DeployableService service : chor.getDeployableServices()) {
+	// for (CloudNode node : service.getSelectedNodes()) {
+	// logger.debug("isCloudNodeKnown() : Found node = " + node
+	// + " for service = " + service);
+	// if (node.getIp().equals(respObject.getResponseKey())) {
+	// logger.debug("isCloudNodeKnown() : Matched: " + node
+	// + " = " + respObject.getResponseKey());
+	// return true;
+	// }
+	// }
+	// }
+	// logger.debug("isCloudNodeKnown() : Nothing matches");
+	// return false;
+	// }
 
 	private boolean isQoSComplexEvent(ComplexEventResponse respObject) {
 		boolean result = false;

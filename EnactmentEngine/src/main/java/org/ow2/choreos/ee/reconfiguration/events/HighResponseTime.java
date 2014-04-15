@@ -9,27 +9,47 @@ import org.ow2.choreos.ee.reconfiguration.ComplexEventHandler;
 import org.ow2.choreos.ee.reconfiguration.HandlingEvent;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
+import org.ow2.choreos.services.datamodel.ServiceInstance;
 
 public class HighResponseTime extends ComplexEventHandler {
 
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@Override
-	public void handleEvent(HandlingEvent event, Choreography chor) {
+	public void handleEvent(HandlingEvent event) {
 
-		String serviceId = event.getServiceId();
-
-		if (chor == null) 
-			return;
-		
 		String serviceSpecName = null;
+
+		Choreography chor = null;
+		try {
+			chor = registryHelper.getChorClient().getChoreography("1");
+		} catch (ChoreographyNotFoundException e1) {
+			e1.printStackTrace();
+		}
+
+		String serviceId = "";
+		
+		for (DeployableService s : chor.getDeployableServices()) {
+			boolean found = false;
+			for (ServiceInstance i : s.getServiceInstances()) {
+				if (i.getInstanceId().equals(event.getInstanceId())) {
+					serviceId = s.getUUID();
+					found = true;
+					break;
+				}
+			}
+			if (found)
+				break;
+		}
+
 		for (DeployableService s : chor.getDeployableServices()) {
 			if (s.getUUID().equals(serviceId))
 				serviceSpecName = s.getSpec().getName();
 		}
 
 		if (serviceSpecName == null) {
-			logger.warn("Service name for service uuid " + serviceId + " is null");
+			logger.warn("Service name for service uuid " + serviceId
+					+ " is null");
 			return;
 		}
 
@@ -46,8 +66,8 @@ public class HighResponseTime extends ComplexEventHandler {
 
 		try {
 			logger.info("Going to update chor with spec: " + choreographySpec);
-			registryHelper.getChorClient().updateChoreography(
-					chor.getId(), choreographySpec);
+			registryHelper.getChorClient().updateChoreography(chor.getId(),
+					choreographySpec);
 		} catch (ChoreographyNotFoundException e) {
 			logger.error(e.getMessage());
 		} catch (DeploymentException e) {
@@ -56,8 +76,7 @@ public class HighResponseTime extends ComplexEventHandler {
 
 		try {
 			logger.info("Enacting choreography");
-			registryHelper.getChorClient().deployChoreography(
-					chor.getId());
+			registryHelper.getChorClient().deployChoreography(chor.getId());
 		} catch (DeploymentException e) {
 			logger.error(e.getMessage());
 		} catch (ChoreographyNotFoundException e) {
