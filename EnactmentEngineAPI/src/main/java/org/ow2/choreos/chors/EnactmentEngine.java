@@ -57,5 +57,4 @@ public interface EnactmentEngine {
      */
     public void updateChoreography(String chorId, ChoreographySpec spec) throws DeploymentException,
             ChoreographyNotFoundException;
-
 }

@@ -21,6 +21,7 @@ public class ServicesDeployer {
 
     private Choreography chor;
     private List<DeployableService> allServices;
+    private List<DeployableService> toUpdateServices;
 
     public ServicesDeployer(Choreography chor) {
         this.chor = chor;
@@ -56,14 +57,16 @@ public class ServicesDeployer {
         NotModifiedDeploymentPreparing notModifiedPreparer = new NotModifiedDeploymentPreparing(chorId,
                 notModifiedServices);
         List<DeployableService> preparedNotModifiedServices = notModifiedPreparer.prepare();
+        
+        toUpdateServices = new ArrayList<DeployableService>(preparedNewServices);
+        toUpdateServices.addAll(preparedUpdatedServices);
 
-        allServices = new ArrayList<DeployableService>(preparedNewServices);
-        allServices.addAll(preparedUpdatedServices);
+        allServices = new ArrayList<DeployableService>(toUpdateServices);
         allServices.addAll(preparedNotModifiedServices);
     }
 
     private void updateNodes() throws DeploymentException {
-        NodesUpdater nodesUpdater = new NodesUpdater(allServices, chor.getId());
+        NodesUpdater nodesUpdater = new NodesUpdater(toUpdateServices, chor.getId());
         nodesUpdater.updateNodes();
     }
 

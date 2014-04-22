@@ -16,10 +16,11 @@ import org.ow2.choreos.chors.DeploymentException;
 import org.ow2.choreos.invoker.InvokerConfiguration;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.services.datamodel.DeployableService;
+import org.ow2.choreos.services.datamodel.ServiceInstance;
 import org.ow2.choreos.utils.Concurrency;
 
 public class NodesUpdater {
-    
+
     private static final String TASK_NAME = "NODE_UPDATE";
 
     private List<DeployableService> services;
@@ -47,9 +48,14 @@ public class NodesUpdater {
 
     private void setNodesToUpdate() {
         nodesToUpdate = new HashSet<CloudNode>();
+
         for (DeployableService deployable : services) {
+            if (deployable.getServiceInstances() != null)
+            logger.debug("# of Nodes vs. Instances: nodes = " + deployable.getSelectedNodes().size() + "; instances = "
+                    + deployable.getServiceInstances().size());
             for (CloudNode node : deployable.getSelectedNodes()) {
-                nodesToUpdate.add(node);
+                if (deployable.isNewInstanceNode(node))
+                    nodesToUpdate.add(node);
             }
         }
     }
