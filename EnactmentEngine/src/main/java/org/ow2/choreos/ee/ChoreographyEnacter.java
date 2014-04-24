@@ -9,6 +9,7 @@ import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 import org.ow2.choreos.chors.datamodel.LegacyService;
 import org.ow2.choreos.ee.context.ContextCaster;
 import org.ow2.choreos.services.datamodel.DeployableService;
+import org.ow2.choreos.services.datamodel.ServiceInstance;
 
 public class ChoreographyEnacter {
 
@@ -28,6 +29,7 @@ public class ChoreographyEnacter {
 	createLegacyServices();
 	castContext();
 	finish();
+	publish();
 	logEnd();
 	return chor;
     }
@@ -61,6 +63,18 @@ public class ChoreographyEnacter {
     private void finish() {
 	ChoreographyContext ctx = reg.getContext(chor.getId());
 	ctx.enactmentFinished();
+    }
+    
+    private void publish() {
+        String metric = "deploy_status";
+        String ch = chor.getId();
+        
+        GlimpseProbe probe = GlimpseProbe.getInstance();
+        for (DeployableService service : chor.getDeployableServices()) {
+            for (ServiceInstance instance : service.getInstances()) {
+                probe.publishDeployStatus(metric, ch, service.getSpec().getName(), instance.getInstanceId(), instance.getNode().getIp());
+            }
+        }
     }
 
     private void logEnd() {

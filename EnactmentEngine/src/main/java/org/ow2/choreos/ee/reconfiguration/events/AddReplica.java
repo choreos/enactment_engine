@@ -11,7 +11,7 @@ import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
 import org.ow2.choreos.services.datamodel.ServiceInstance;
 
-public class HighResponseTime extends ComplexEventHandler {
+public class AddReplica extends ComplexEventHandler {
 
 	Logger logger = Logger.getLogger(this.getClass());
 

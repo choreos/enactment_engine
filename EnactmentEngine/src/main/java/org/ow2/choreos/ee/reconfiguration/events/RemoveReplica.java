@@ -11,7 +11,7 @@ import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
 import org.ow2.choreos.services.datamodel.ServiceInstance;
 
-public class LowCpuUser extends ComplexEventHandler {
+public class RemoveReplica extends ComplexEventHandler {
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@Override

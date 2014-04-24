@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 import org.ow2.choreos.chors.DeploymentException;
+import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.invoker.InvokerConfiguration;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.services.datamodel.DeployableService;
@@ -49,15 +50,24 @@ public class NodesUpdater {
     private void setNodesToUpdate() {
         nodesToUpdate = new HashSet<CloudNode>();
 
-        for (DeployableService deployable : services) {
-            if (deployable.getServiceInstances() != null)
-            logger.debug("# of Nodes vs. Instances: nodes = " + deployable.getSelectedNodes().size() + "; instances = "
-                    + deployable.getServiceInstances().size());
-            for (CloudNode node : deployable.getSelectedNodes()) {
-                if (deployable.isNewInstanceNode(node))
+        if (Boolean.parseBoolean(EEConfiguration.get("IDEMPOTENCY_GUARANTEE"))) {
+            for (DeployableService deployable : services) {
+                for (CloudNode node : deployable.getSelectedNodes()) {
                     nodesToUpdate.add(node);
+                }
+            }
+        }else {
+            for (DeployableService deployable : services) {
+                if (deployable.getServiceInstances() != null)
+                    logger.debug("# of Nodes vs. Instances: nodes = " + deployable.getSelectedNodes().size() + "; instances = "
+                            + deployable.getServiceInstances().size());
+                for (CloudNode node : deployable.getSelectedNodes()) {
+                    if (deployable.isNewInstanceNode(node))
+                        nodesToUpdate.add(node);
+                }
             }
         }
+        
     }
 
     private void submitUpdates() {

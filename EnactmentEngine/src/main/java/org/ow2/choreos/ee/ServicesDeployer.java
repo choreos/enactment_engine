@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.ow2.choreos.chors.DeploymentException;
 import org.ow2.choreos.chors.datamodel.Choreography;
+import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.ee.nodes.cm.NodesUpdater;
 import org.ow2.choreos.ee.preparer.NewDeploymentPreparing;
 import org.ow2.choreos.ee.preparer.NotModifiedDeploymentPreparing;
@@ -66,7 +67,14 @@ public class ServicesDeployer {
     }
 
     private void updateNodes() throws DeploymentException {
-        NodesUpdater nodesUpdater = new NodesUpdater(toUpdateServices, chor.getId());
+        List<DeployableService> services;
+        
+        if (Boolean.parseBoolean(EEConfiguration.get("IDEMPOTENCY_GUARANTEE"))) {
+            services = allServices;
+        }else {
+            services = toUpdateServices;
+        }
+        NodesUpdater nodesUpdater = new NodesUpdater(services, chor.getId());
         nodesUpdater.updateNodes();
     }
 
