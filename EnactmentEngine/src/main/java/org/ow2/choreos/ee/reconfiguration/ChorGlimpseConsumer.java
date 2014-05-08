@@ -50,66 +50,18 @@ class ChorGlimpseConsumer extends GlimpseAbstractConsumer {
 		}
 	}
 
-	// private boolean isServiceKnown(ComplexEventResponse respObject) {
-	// logger.debug("isServiceKnown() : Searching for: "
-	// + respObject.getResponseValue());
-	//
-	// if (respObject.getResponseValue().equals("all")) {
-	// logger.debug("isServiceKnown() : Searching for: "
-	// + respObject.getResponseValue());
-	// logger.debug("isServiceKnown() : Applicable for service scope!");
-	// return true;
-	// }
-	//
-	// for (DeployableService service : chor.getDeployableServices()) {
-	// logger.debug("isServiceKnown() : Found service = " + service
-	// + " for chor = " + chor.getId());
-	//
-	// for (ServiceInstance instance : service.getInstances()) {
-	//
-	// // if found an instance then return true the service's service name
-	// if (instance.getInstanceId().equals(respObject.getResponseValue())) {
-	// logger.debug("isServiceKnown() : Macthed: " + service
-	// + " = " + service.getSpec().getName());
-	// return true;
-	// }
-	//
-	// }
-	// }
-	// logger.debug("isServiceKnown() : Nothing matches");
-	// return false;
-	// }
-	//
-	// private boolean isCloudNodeKnown(ComplexEventResponse respObject) {
-	// logger.debug("isCloudNodeKnown() : Searching for: "
-	// + respObject.getResponseKey());
-	// for (DeployableService service : chor.getDeployableServices()) {
-	// for (CloudNode node : service.getSelectedNodes()) {
-	// logger.debug("isCloudNodeKnown() : Found node = " + node
-	// + " for service = " + service);
-	// if (node.getIp().equals(respObject.getResponseKey())) {
-	// logger.debug("isCloudNodeKnown() : Matched: " + node
-	// + " = " + respObject.getResponseKey());
-	// return true;
-	// }
-	// }
-	// }
-	// logger.debug("isCloudNodeKnown() : Nothing matches");
-	// return false;
-	// }
-
 	private boolean isQoSComplexEvent(ComplexEventResponse respObject) {
 		boolean result = false;
 		String ruleName = respObject.getRuleName();
 
 		logger.debug("isQoSComplexEvent() : Rule name = " + ruleName);
 
-		if (ruleName.equals("LowCpuUser"))
+		if (ruleName.equals("RemoveReplica"))
 			result = true;
 
-		else if (ruleName.startsWith("HighResponseTime")) {
+		else if (ruleName.startsWith("AddReplica")) {
 			result = true;
-			respObject.setRuleName("HighResponseTime");
+			respObject.setRuleName("AddReplica");
 		}
 
 		logger.debug("isQoSComplexEvent() : return value = " + result);

@@ -72,7 +72,7 @@ public class ChoreographyEnacter {
         GlimpseProbe probe = GlimpseProbe.getInstance();
         for (DeployableService service : chor.getDeployableServices()) {
             for (ServiceInstance instance : service.getInstances()) {
-                probe.publishDeployStatus(metric, ch, service.getSpec().getName(), instance.getInstanceId(), instance.getNode().getIp());
+                probe.publishDeployStatus(metric, ch, service.getUUID(), instance.getInstanceId(), instance.getNode().getIp());
             }
         }
     }

@@ -22,7 +22,7 @@ public class AddReplica extends ComplexEventHandler {
 
 		Choreography chor = null;
 		try {
-			chor = registryHelper.getChorClient().getChoreography("1");
+			chor = registryHelper.getChorClient().getChoreography(event.getChorId());
 		} catch (ChoreographyNotFoundException e1) {
 			e1.printStackTrace();
 		}
@@ -32,7 +32,7 @@ public class AddReplica extends ComplexEventHandler {
 		for (DeployableService s : chor.getDeployableServices()) {
 			boolean found = false;
 			for (ServiceInstance i : s.getServiceInstances()) {
-				if (i.getInstanceId().equals(event.getInstanceId())) {
+				if (i.getInstanceId().equals(event.getServiceId())) {
 					serviceId = s.getUUID();
 					found = true;
 					break;

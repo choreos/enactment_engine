@@ -3,14 +3,14 @@ package org.ow2.choreos.ee.reconfiguration;
 public class HandlingEvent {
 
 	String rule;
-	String node;
+	String chorId;
 	String serviceId;
 
-	public HandlingEvent(String rule, String node, String instanceId) {
+	public HandlingEvent(String rule, String chorId, String serviceId) {
 		super();
 		this.rule = rule;
-		this.node = node;
-		this.serviceId = instanceId;
+		this.chorId = chorId;
+		this.serviceId = serviceId;
 	}
 
 	public String getRule() {
@@ -21,19 +21,19 @@ public class HandlingEvent {
 		this.rule = rule;
 	}
 
-	public String getNode() {
-		return node;
+	public String getChorId() {
+		return chorId;
 	}
 
-	public void setNode(String node) {
-		this.node = node;
+	public void setChorId(String chorId) {
+		this.chorId = chorId;
 	}
 
-	public String getInstanceId() {
+	public String getServiceId() {
 		return serviceId;
 	}
 
-	public void setInstanceId(String serviceId) {
+	public void setServiceId(String serviceId) {
 		this.serviceId = serviceId;
 	}
 
@@ -41,7 +41,7 @@ public class HandlingEvent {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((node == null) ? 0 : node.hashCode());
+		result = prime * result + ((chorId == null) ? 0 : chorId.hashCode());
 		result = prime * result + ((rule == null) ? 0 : rule.hashCode());
 		result = prime * result
 				+ ((serviceId == null) ? 0 : serviceId.hashCode());
@@ -57,10 +57,10 @@ public class HandlingEvent {
 		if (getClass() != obj.getClass())
 			return false;
 		HandlingEvent other = (HandlingEvent) obj;
-		if (node == null) {
-			if (other.node != null)
+		if (chorId == null) {
+			if (other.chorId != null)
 				return false;
-		} else if (!node.equals(other.node))
+		} else if (!chorId.equals(other.chorId))
 			return false;
 		if (rule == null) {
 			if (other.rule != null)
