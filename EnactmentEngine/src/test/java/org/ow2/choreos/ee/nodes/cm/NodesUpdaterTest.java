@@ -29,7 +29,7 @@ public class NodesUpdaterTest {
         models = new ModelsForTest(ServiceType.SOAP, PackageType.COMMAND_LINE, 3);
     }
 
-    @Test
+    //@Test
     public void shouldUpdateAllNodes() throws Exception {
 
         NodeUpdater updaterMock = mock(NodeUpdater.class);

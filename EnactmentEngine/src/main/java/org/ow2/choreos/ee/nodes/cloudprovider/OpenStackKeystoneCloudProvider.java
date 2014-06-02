@@ -12,6 +12,7 @@ import org.jclouds.compute.domain.NodeMetadata;
 import org.jclouds.compute.options.TemplateOptions;
 import org.jclouds.openstack.nova.v2_0.compute.options.NovaTemplateOptions;
 import org.ow2.choreos.ee.config.CloudConfiguration;
+import org.ow2.choreos.nodes.datamodel.NodeSpec;
 
 public class OpenStackKeystoneCloudProvider extends JCloudsCloudProvider {
 
@@ -65,7 +66,7 @@ public class OpenStackKeystoneCloudProvider extends JCloudsCloudProvider {
     }
 
     @Override
-    protected String getHardwareId() {
+    protected String getHardwareId(NodeSpec nodeSpec) {
 	String flavorName = cloudConfiguration.get("OPENSTACK_FLAVOR_NAME");
 	if (flavorName == null || flavorName.isEmpty())
 	    flavorName = DEFAULT_FLAVOR_NAME;

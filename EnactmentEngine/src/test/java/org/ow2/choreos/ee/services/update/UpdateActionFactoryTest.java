@@ -11,7 +11,8 @@ import org.ow2.choreos.ee.services.update.IncreaseNumberOfReplicas;
 import org.ow2.choreos.ee.services.update.Migrate;
 import org.ow2.choreos.ee.services.update.UpdateAction;
 import org.ow2.choreos.ee.services.update.UpdateActionFactory;
-import org.ow2.choreos.nodes.datamodel.MemoryType;
+import org.ow2.choreos.nodes.datamodel.CPUSize;
+import org.ow2.choreos.nodes.datamodel.RAMSize;
 import org.ow2.choreos.nodes.datamodel.ResourceImpact;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
@@ -62,11 +63,13 @@ public class UpdateActionFactoryTest {
         DeployableService airlineService = models1.getAirlineService();
         DeployableServiceSpec currentAirlineSpec = models1.getAirlineSpec();
         ResourceImpact currentImpact = new ResourceImpact();
-        currentImpact.setMemory(MemoryType.SMALL);
+        currentImpact.setRAM(RAMSize.SMALL);
+        currentImpact.setCpu(CPUSize.SMALL);
         currentAirlineSpec.setResourceImpact(currentImpact);
         DeployableServiceSpec newAirlineSpec = models2.getAirlineSpec();
         ResourceImpact newImpact = new ResourceImpact();
-        newImpact.setMemory(MemoryType.LARGE);
+        newImpact.setRAM(RAMSize.LARGE);
+        newImpact.setCpu(CPUSize.LARGE);
         newAirlineSpec.setResourceImpact(newImpact);
         
         UpdateActionFactory fac = new UpdateActionFactory();

@@ -132,10 +132,10 @@ public class ModelsForTest {
 
     private void initTravelSpec() {
 	if (packageType == PackageType.COMMAND_LINE) {
-	    travelSpec = new DeployableServiceSpec(TRAVEL_AGENCY, serviceType, packageType, resourceImpact,
+	    travelSpec = new DeployableServiceSpec(TRAVEL_AGENCY, serviceType, packageType, new ResourceImpact(),
 		    serviceVersion, TRAVEL_AGENCY_JAR, TRAVEL_AGENCY_PORT, TRAVEL_AGENCY, numberOfTravelInstances);
 	} else {
-	    travelSpec = new DeployableServiceSpec(TRAVEL_AGENCY, serviceType, packageType, resourceImpact,
+	    travelSpec = new DeployableServiceSpec(TRAVEL_AGENCY, serviceType, packageType, new ResourceImpact(),
 		    serviceVersion, TRAVEL_AGENCY_WAR, TRAVEL_AGENCY, numberOfTravelInstances);
 	}
 	travelSpec.setRoles(Collections.singletonList(TRAVEL_AGENCY));

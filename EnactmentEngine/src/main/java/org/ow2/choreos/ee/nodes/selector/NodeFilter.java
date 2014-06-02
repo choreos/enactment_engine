@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.ow2.choreos.ee.config.QoSManagementConfiguration;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
-import org.ow2.choreos.nodes.datamodel.MemoryType;
+import org.ow2.choreos.nodes.datamodel.RAMSize;
 import org.ow2.choreos.nodes.datamodel.ResourceImpact;
 import org.ow2.choreos.selectors.ObjectFilter;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
@@ -71,7 +71,7 @@ class NodeFilter implements ObjectFilter<CloudNode, DeployableServiceSpec> {
 	return false;
     }
 
-    private int getBaseMemoryFromType(MemoryType memory) {
+    private int getBaseMemoryFromType(RAMSize memory) {
 	switch (memory) {
 	case SMALL:
 	    return 256;
@@ -90,16 +90,16 @@ class NodeFilter implements ObjectFilter<CloudNode, DeployableServiceSpec> {
 	}
 	switch (this.policy) {
 	case ANY_FIT:
-	    return getBaseMemoryFromType(resourceImpact.getMemory()) <= selected.getRam();
+	    return getBaseMemoryFromType(resourceImpact.getRAM()) <= selected.getRam();
 	case EXACT_FIT:
-	    return near(getBaseMemoryFromType(resourceImpact.getMemory()), selected.getRam());
+	    return near(getBaseMemoryFromType(resourceImpact.getRAM()), selected.getRam());
 	default:
 	    return false;
 	}
     }
 
     private boolean noMemoryRequirements(ResourceImpact resourceImpact) {
-	return resourceImpact == null || resourceImpact.getMemory() == null;
+	return resourceImpact == null || resourceImpact.getRAM() == null;
     }
 
 }

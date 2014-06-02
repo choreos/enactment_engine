@@ -1,6 +1,6 @@
 package org.ow2.choreos.nodes.datamodel;
 
-public enum MemoryType {
+public enum RAMSize {
 
     SMALL, MEDIUM, LARGE;
 }

@@ -16,6 +16,7 @@ import org.ow2.choreos.nodes.NodeNotCreatedException;
 import org.ow2.choreos.nodes.NodeNotDestroyed;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.nodes.datamodel.NodeSpec;
+import org.ow2.choreos.nodes.datamodel.ResourceImpact;
 
 public class AWSCloudProvider extends JCloudsCloudProvider {
 
@@ -23,7 +24,7 @@ public class AWSCloudProvider extends JCloudsCloudProvider {
     private static final String DEFAULT_USER = "ubuntu";
     private static final String PROVIDER = "aws-ec2";
     private static final String DEFAULT_IMAGE = "us-east-1/ami-3b4ff252"; // Ubuntu
-    // 12.04
+                                                                          // 12.04
     private static final String DEFAULT_INSTANCE_TYPE = InstanceType.M1_SMALL;
 
     private static final int TIME_BETWEEN_REQUESTS_MILLIS = 2000;
@@ -57,10 +58,27 @@ public class AWSCloudProvider extends JCloudsCloudProvider {
     }
 
     @Override
-    protected String getHardwareId() {
+    protected String getHardwareId(NodeSpec nodeSpec) {
+
+        ResourceImpact resourceImpact = nodeSpec.getResourceImpact();
+        if (resourceImpact != null) {
+            if (resourceImpact.getCpu() != null)
+                switch (resourceImpact.getCpu()) {
+                case SMALL:
+                    return InstanceType.M1_SMALL;
+                case MEDIUM:
+                    return InstanceType.M1_MEDIUM;
+                case LARGE:
+                    return InstanceType.M1_LARGE;
+                default:
+                    return DEFAULT_INSTANCE_TYPE;
+                }
+        }
         String instanceType = cloudConfiguration.getOptional("AMAZON_INSTANCE_TYPE");
-        if (instanceType == null || instanceType.isEmpty())
+        if (instanceType == null || instanceType.isEmpty()) {
             instanceType = DEFAULT_INSTANCE_TYPE;
+        }
+
         return instanceType;
     }
 

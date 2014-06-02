@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,10 +23,13 @@ import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 import org.ow2.choreos.ee.EEImpl;
 import org.ow2.choreos.ee.config.EEConfiguration;
-import org.ow2.choreos.nodes.datamodel.MemoryType;
+import org.ow2.choreos.nodes.datamodel.CPUSize;
+import org.ow2.choreos.nodes.datamodel.CloudNode;
+import org.ow2.choreos.nodes.datamodel.RAMSize;
 import org.ow2.choreos.nodes.datamodel.ResourceImpact;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.PackageType;
+import org.ow2.choreos.services.datamodel.ServiceInstance;
 import org.ow2.choreos.services.datamodel.ServiceType;
 import org.ow2.choreos.tests.IntegrationTest;
 import org.ow2.choreos.tests.ModelsForTest;
@@ -46,7 +50,7 @@ public class VerticalScalingTest {
      * Needs to be manually defined with same ip addrress according to the first
      * medium ip in the DeploymentManager properties file
      */
-    private static final String MEDIUM_VM_IP = "192.168.122.14";
+    //private static final String MEDIUM_VM_IP = "192.168.122.14";
 
     @BeforeClass
     public static void startServers() {
@@ -60,12 +64,14 @@ public class VerticalScalingTest {
         EEConfiguration.set("RESERVOIR", "false");
 
         ResourceImpact smallImpact = new ResourceImpact();
-        smallImpact.setMemory(MemoryType.SMALL);
+        smallImpact.setRAM(RAMSize.SMALL);
+        smallImpact.setCpu(CPUSize.SMALL);
         ModelsForTest smallModels = new ModelsForTest(ServiceType.SOAP, PackageType.COMMAND_LINE, smallImpact);
         smallSpec = smallModels.getChorSpec();
 
         ResourceImpact mediumImpact = new ResourceImpact();
-        smallImpact.setMemory(MemoryType.MEDIUM);
+        mediumImpact.setRAM(RAMSize.MEDIUM);
+        mediumImpact.setCpu(CPUSize.MEDIUM);
         ModelsForTest mediumModels = new ModelsForTest(ServiceType.SOAP, PackageType.COMMAND_LINE, mediumImpact);
         mediumSpec = mediumModels.getChorSpec();
     }
@@ -85,7 +91,7 @@ public class VerticalScalingTest {
         TravelAgencyClientFactory factory = new TravelAgencyClientFactory(wsdl);
         TravelAgency client = factory.getClient();
         String codes = client.buyTrip();
-
+        
         assertEquals(1, airline.getUris().size());
         assertTrue(codes.startsWith("33") && codes.endsWith("--22"));
 
@@ -105,13 +111,9 @@ public class VerticalScalingTest {
         assertTrue(codes.startsWith("33") && codes.endsWith("--22"));
 
         String actualIp = airline.getUris().get(0);
+        
+     //   assertTrue(fixture == node.getRam());
 
-        Matcher m = Pattern.compile("(\\d{1,3}\\.){3}\\d{1,3}").matcher(actualIp);
-        if (m.find()) {
-            assertEquals(MEDIUM_VM_IP, m.group());
-        } else {
-            fail("Invalid IP");
-        }
     }
 
 }

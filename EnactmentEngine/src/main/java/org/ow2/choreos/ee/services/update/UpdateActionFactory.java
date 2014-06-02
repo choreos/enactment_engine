@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.ow2.choreos.nodes.datamodel.CPUSize;
+import org.ow2.choreos.nodes.datamodel.ResourceImpact;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
 
@@ -25,17 +27,39 @@ public class UpdateActionFactory {
             actions.add(action);
         }
 
-        if (!(currentServiceSpec.getResourceImpact() == null || currentServiceSpec.getResourceImpact().getMemory() == null)) {
-            if (!(currentServiceSpec.getResourceImpact().getMemory().ordinal() == newServiceSpec.getResourceImpact()
-                    .getMemory().ordinal())) {
-                UpdateAction action = new Migrate(currentService, newServiceSpec);
-                actions.add(action);
+        ResourceImpact currentResourceImpact = currentServiceSpec.getResourceImpact();
+        ResourceImpact requestedResourceImpact = newServiceSpec.getResourceImpact();
+
+        if (!isNull(currentResourceImpact) && !isNull(requestedResourceImpact)) {
+
+            CPUSize currentCPU = currentResourceImpact.getCpu();
+            CPUSize requestedCPU = requestedResourceImpact.getCpu();
+
+            // TODO needs to be ||
+            if (!isNull(currentCPU) && !isNull(requestedCPU)) {
+
+                if (currentCPU.ordinal() != requestedCPU.ordinal()) {
+                    UpdateAction action = new Migrate(currentService, newServiceSpec);
+                    actions.add(action);
+                }else {
+                    logger.debug("Same cpu impact");
+                }
+
+            } else {
+                logger.debug("None cpu impact specified: " + currentCPU + " " + requestedCPU);
             }
+
+        } else {
+            logger.debug("None resource impact specified");
         }
 
         logger.info("Detected changes: " + actions);
         return actions;
 
+    }
+
+    private boolean isNull(Object obj) {
+        return (obj == null) ? true : false;
     }
 
 }

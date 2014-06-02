@@ -1,15 +1,19 @@
 package org.ow2.choreos.ee.services.update;
 
+import org.apache.log4j.Logger;
+import org.ow2.choreos.ee.services.preparer.PrepareDeploymentFailedException;
+import org.ow2.choreos.ee.services.preparer.ServiceDeploymentPreparer;
+import org.ow2.choreos.ee.services.preparer.ServiceDeploymentPreparerFactory;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
 
 public class Migrate extends BaseAction {
-
+    
+    Logger logger = Logger.getLogger(Migrate.class);
+    
     private static final String NAME = "Migrate instance";
 
-    @SuppressWarnings("unused")
     private DeployableService currentService;
-    @SuppressWarnings("unused")
     private DeployableServiceSpec newSpec;
 
     public Migrate(DeployableService currentService, DeployableServiceSpec newSpec) {
@@ -18,18 +22,18 @@ public class Migrate extends BaseAction {
     }
 
     @Override
-    public void applyUpdate() {
-//        currentService.setSpec(newSpec);
-//        currentService.getServiceInstances().clear();
-//        migrateServiceInstances(currentService);
-//        ServiceDeploymentPreparer deploymentPreparer = ServiceDeploymentPreparerFactory.getNewInstance(newSpec,
-//                currentService.getUUID());
-//        try {
-//            deploymentPreparer.prepareDeployment();
-//        } catch (PrepareDeploymentFailedException e) {
-//            throw new UpdateActionFailedException();
-//        }
-        throw new UnsupportedOperationException();
+    public void applyUpdate() throws UpdateActionFailedException {
+        currentService.setSpec(newSpec);
+        currentService.getServiceInstances().clear();
+        currentService.getSelectedNodes().clear();
+        
+        ServiceDeploymentPreparer deploymentPreparer = ServiceDeploymentPreparerFactory.getNewInstance(currentService);
+        try {
+            logger.debug("preparing migration");
+            deploymentPreparer.prepareDeployment();
+        } catch (PrepareDeploymentFailedException e) {
+            throw new UpdateActionFailedException();
+        }
     }
 
     @Override

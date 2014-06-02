@@ -16,24 +16,24 @@ public class ResourceImpact implements Serializable {
 
     private static final long serialVersionUID = 3562796485617767731L;
 
-    private MemoryType memory;
-    private String cpu;
+    private RAMSize memory;
+    private CPUSize cpu;
     private String storage;
     private String network;
 
-    public MemoryType getMemory() {
+    public RAMSize getRAM() {
         return memory;
     }
 
-    public void setMemory(MemoryType memory) {
+    public void setRAM(RAMSize memory) {
         this.memory = memory;
     }
 
-    public String getCpu() {
+    public CPUSize getCpu() {
         return cpu;
     }
 
-    public void setCpu(String cpu) {
+    public void setCpu(CPUSize cpu) {
         this.cpu = cpu;
     }
 

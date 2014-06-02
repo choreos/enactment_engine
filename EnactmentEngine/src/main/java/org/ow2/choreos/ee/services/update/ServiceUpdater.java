@@ -43,6 +43,7 @@ public class ServiceUpdater {
     private void applyActions() {
         for (UpdateAction action : actions) {
             try {
+                logger.debug("Applyng update action " + action + "to service " + serviceUUID);
                 action.applyUpdate();
             } catch (UpdateActionFailedException e) {
                 logger.error("Action '" + action + "' was not applied for service " + serviceUUID);

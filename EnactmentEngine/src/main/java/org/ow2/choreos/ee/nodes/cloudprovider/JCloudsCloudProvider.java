@@ -41,7 +41,7 @@ public abstract class JCloudsCloudProvider implements CloudProvider {
 
 	protected abstract String getDefaultImageId();
 
-	protected abstract String getHardwareId();
+	protected abstract String getHardwareId(NodeSpec nodeSpec);
 
 	protected abstract String getUserName();
 
@@ -97,7 +97,7 @@ public abstract class JCloudsCloudProvider implements CloudProvider {
 		if (imageId == null || imageId.isEmpty()) {
 			imageId = getDefaultImageId();
 		}
-		String hardwareId = getHardwareId();
+		String hardwareId = getHardwareId(nodeSpec);
 		logger.info("Creating Template with image ID: " + imageId
 				+ "; hardware ID: " + hardwareId);
 
@@ -119,8 +119,8 @@ public abstract class JCloudsCloudProvider implements CloudProvider {
 
 		String defaultImage = InstanceType.M1_SMALL;
 
-		if (resourceImpact != null && resourceImpact.getMemory() != null) {
-			switch (resourceImpact.getMemory()) {
+		if (resourceImpact != null && resourceImpact.getRAM() != null) {
+			switch (resourceImpact.getRAM()) {
 			case SMALL:
 				return InstanceType.M1_SMALL;
 			case MEDIUM:
