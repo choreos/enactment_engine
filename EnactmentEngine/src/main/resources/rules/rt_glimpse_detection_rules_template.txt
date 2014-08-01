@@ -1,0 +1,31 @@
+
+		rule "DetectHighResponseTime@{instance}_@{class_version}"
+		no-loop true
+		salience 300
+		dialect "mvel"
+
+		when
+			$ev : ResponseTimeEvent@{class_version}(instance == "@{instance}");
+			
+			Number( $eventSum : doubleValue ) from accumulate(
+				$event : ResponseTimeEvent@{class_version}($ev.instance == instance),
+					count($event)
+			);
+			Number( intValue > $eventSum * @{acceptable_percentage} ) from accumulate(
+				$sEvent : ResponseTimeEvent@{class_version}(value > @{max_response_time}, 
+					$ev.instance == instance),
+						count($sEvent)
+			);
+			$depFc : DeployStatus@{class_version}(instance == $ev.instance);
+			not ReconfProcess@{class_version}(service == $depFc.service);
+		then
+			insert ( new HighReponseTime@{class_version}($ev.ip, $depFc.service) );
+ 
+			ResponseDispatcher.LogViolation(
+				"rule: " + drools.getRule().getName(),
+				" from: " + $depFc.service,
+				" meas: " + $ev.value
+			);
+			retract($ev);
+		end
+		

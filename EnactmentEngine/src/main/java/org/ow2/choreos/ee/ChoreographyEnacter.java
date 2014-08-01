@@ -63,6 +63,7 @@ public class ChoreographyEnacter {
     private void finish() {
 	ChoreographyContext ctx = reg.getContext(chor.getId());
 	ctx.enactmentFinished();
+	ctx.startMonitoring();
     }
     
     private void publish() {
@@ -72,6 +73,7 @@ public class ChoreographyEnacter {
         GlimpseProbe probe = GlimpseProbe.getInstance();
         for (DeployableService service : chor.getDeployableServices()) {
             for (ServiceInstance instance : service.getInstances()) {
+                logger.info("Monitoging: publishing " + service.getUUID() + " -> " + instance.getInstanceId());
                 probe.publishDeployStatus(metric, ch, service.getUUID(), instance.getInstanceId(), instance.getNode().getIp());
             }
         }

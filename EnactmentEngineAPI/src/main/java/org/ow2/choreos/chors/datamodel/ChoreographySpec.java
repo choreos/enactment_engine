@@ -7,6 +7,7 @@ package org.ow2.choreos.chors.datamodel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Properties;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -15,10 +16,11 @@ import org.ow2.choreos.services.datamodel.ServiceDependency;
 import org.ow2.choreos.services.datamodel.ServiceSpec;
 
 @XmlRootElement
-public class ChoreographySpec {
+public class ChoreographySpec implements Cloneable {
 
     private List<DeployableServiceSpec> deployableServiceSpecs = new ArrayList<DeployableServiceSpec>();
     private List<LegacyServiceSpec> legacyServiceSpecs = new ArrayList<LegacyServiceSpec>();
+    private Properties resourceParams;
 
     public ChoreographySpec() {
 
@@ -105,4 +107,11 @@ public class ChoreographySpec {
         }
     }
 
+    public void setResourceParams(Properties resourceParams) {
+        this.resourceParams = resourceParams;
+    }
+    
+    public Properties getResourceParams() {
+        return resourceParams;
+    }
 }

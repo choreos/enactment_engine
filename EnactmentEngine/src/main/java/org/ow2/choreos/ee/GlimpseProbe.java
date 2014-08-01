@@ -32,7 +32,24 @@ public class GlimpseProbe extends GlimpseAbstractProbe {
 
         GlimpseBaseEventChoreos<String> event = new GlimpseBaseEventChoreos<String>(instance, new Date().getTime(),
                 metric, isException, chor, service, ip);
-        
+
+        try {
+            sendEventMessage(event, false);
+        } catch (JMSException e) {
+            logger.error("JMS comm error");
+            return;
+        } catch (NamingException e) {
+            logger.error("Error with Jms naming");
+            return;
+        }
+    }
+    
+    public void sendUpdateEvent(String data, String metric, String chor, String service, String ip) {
+        boolean isException = false;
+
+        GlimpseBaseEventChoreos<String> event = new GlimpseBaseEventChoreos<String>(data, new Date().getTime(),
+                metric, isException, chor, service, ip);
+
         try {
             sendEventMessage(event, false);
         } catch (JMSException e) {

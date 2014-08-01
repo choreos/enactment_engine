@@ -17,7 +17,6 @@ import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.invoker.InvokerConfiguration;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.services.datamodel.DeployableService;
-import org.ow2.choreos.services.datamodel.ServiceInstance;
 import org.ow2.choreos.utils.Concurrency;
 
 public class NodesUpdater {
@@ -56,21 +55,25 @@ public class NodesUpdater {
                     nodesToUpdate.add(node);
                 }
             }
-        }else {
+        } else {
             for (DeployableService deployable : services) {
                 if (deployable.getServiceInstances() != null)
-                    logger.debug("# of Nodes vs. Instances: nodes = " + deployable.getSelectedNodes().size() + "; instances = "
-                            + deployable.getServiceInstances().size());
+                    logger.debug("# of Nodes vs. Instances: nodes = " + deployable.getSelectedNodes().size()
+                            + "; instances = " + deployable.getServiceInstances().size());
                 for (CloudNode node : deployable.getSelectedNodes()) {
                     if (deployable.isNewInstanceNode(node))
                         nodesToUpdate.add(node);
                 }
             }
         }
-        
+
     }
 
     private void submitUpdates() {
+        if (nodesToUpdate.size() < 1) {
+            logger.info("There are no nodes to update");
+            return;
+        }
         executor = Executors.newFixedThreadPool(nodesToUpdate.size());
         for (CloudNode node : nodesToUpdate) {
             UpdateNodeTask updater = new UpdateNodeTask(node);

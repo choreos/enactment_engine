@@ -1,0 +1,44 @@
+		
+		rule "DetectLowCpuUser@{class_version}"
+		no-loop true
+		salience 200
+		dialect "mvel"
+
+		when
+			$ev : CpuUserEvent@{class_version}();
+			Number(@{min_cpu_usage} > doubleValue) from accumulate(
+				CpuUserEvent@{class_version}( ip == $ev.ip, $val : value),
+					average($val)
+			);
+			$depFc : DeployStatus@{class_version}(ip == $ev.ip);
+		then
+			insert (new LowCpuUser@{class_version}($ev.ip, $depFc.service));
+
+			ResponseDispatcher.LogViolation(
+				"rule: " + drools.getRule().getName(),
+				" from: " + $ev.ip,
+				" meas: " + $ev.value
+			);
+		end
+
+		rule "DetectHighCpuUser@{class_version}"
+		no-loop true
+		salience 201
+		dialect "mvel"
+
+		when
+			$ev : CpuUserEvent@{class_version}();
+			Number( doubleValue > @{max_cpu_usage} ) from accumulate ( 
+				CpuUserEvent@{class_version}($ev.ip == ip, $val : value),
+					average($val)
+			);
+		then
+			insert (new HighCpuUser@{class_version}($ev.ip));
+
+			ResponseDispatcher.LogViolation(
+				"rule: " + drools.getRule().getName(),
+				" from: " + $ev.ip,
+				" meas: " + $ev.value
+			);
+		end
+		

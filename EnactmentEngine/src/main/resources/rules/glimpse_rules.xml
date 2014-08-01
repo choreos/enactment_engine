@@ -5,7 +5,7 @@
 
 <Insert RuleType="drools">
 
-	<RuleName>Glimpse Rules</RuleName>
+	<RuleName>Glimpse Rules @{consumer_id}</RuleName>
 
 	<RuleBody>
 
@@ -21,7 +21,7 @@
 
 		declare ResponseTimeEvent
 			@role ( event )
-			@expires ( 2m )
+			@expires ( 30s )
 			value : float
 			ip : String
 			instance: String
@@ -283,7 +283,7 @@
 				" service: " + (String) $lcpu.service
 			);
 			ResponseDispatcher.NotifyMeValue(drools.getRule().getName(),
-				"eeConsumer", 
+				"@{consumer_id}", 
 				(String) $depFc.chor, 
 				(String) $lcpu.service
 			);
@@ -308,7 +308,7 @@
 				" service: " + (String) $ev.service
 			);
 			ResponseDispatcher.NotifyMeValue(drools.getRule().getName(),
-				"eeConsumer", 
+				"@{consumer_id}", 
 				(String) $depFc.chor, 
 				(String) $ev.service
 			);

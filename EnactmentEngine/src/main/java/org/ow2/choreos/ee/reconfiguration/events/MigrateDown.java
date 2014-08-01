@@ -1,16 +1,20 @@
 package org.ow2.choreos.ee.reconfiguration.events;
 
+import javax.annotation.Resource;
+
 import org.apache.log4j.Logger;
 import org.ow2.choreos.chors.ChoreographyNotFoundException;
 import org.ow2.choreos.chors.DeploymentException;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 import org.ow2.choreos.ee.reconfiguration.ComplexEventHandler;
 import org.ow2.choreos.ee.reconfiguration.HandlingEvent;
+import org.ow2.choreos.nodes.datamodel.CPUSize;
+import org.ow2.choreos.nodes.datamodel.ResourceImpact;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
 import org.ow2.choreos.services.datamodel.ServiceInstance;
 
-public class AddReplica extends ComplexEventHandler {
+public class MigrateDown extends ComplexEventHandler {
 
     Logger logger = Logger.getLogger(this.getClass());
 
@@ -32,13 +36,33 @@ public class AddReplica extends ComplexEventHandler {
             logger.fatal(e1);
             return;
         }
-        //event.getChor().getChoreographySpec();
 
         for (DeployableServiceSpec spec : choreographySpec.getDeployableServiceSpecs()) {
             if (spec.getName().equals(serviceSpecName)) {
-                logger.debug("Found service spec. Going to increase number of instances");
-                spec.setNumberOfInstances(spec.getNumberOfInstances() + 1);
-                break;
+                logger.debug("Found service spec. Going to migrate down");
+                
+                ResourceImpact resourceImpact = spec.getResourceImpact();
+                ResourceImpact ri = resourceImpact;
+                if (ri == null) {                    
+                    logger.info("No previous resource impact. Not possible to migrate up");
+                    return;
+                } else {
+                    
+                    CPUSize cpu = resourceImpact.getCpu();
+                    switch (cpu) {
+                    case SMALL:
+                        logger.info("Current CPU size is small. Not possible to migrate down");                        
+                        break;
+                    case MEDIUM:
+                        resourceImpact.setCpu(CPUSize.SMALL);
+                        break;
+                    case LARGE:
+                        resourceImpact.setCpu(CPUSize.MEDIUM);
+                        break;
+
+                    }
+                    break;
+                }
             }
         }
 
@@ -72,9 +96,9 @@ public class AddReplica extends ComplexEventHandler {
     }
 
     private String getServiceHoldingInstance(HandlingEvent event) {
-        
+
         logger.debug(">>>" + event.getChor().getDeployableServices());
-        
+
         String serviceId = null;
         for (DeployableService s : event.getChor().getDeployableServices()) {
             boolean found = false;

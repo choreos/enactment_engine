@@ -6,11 +6,13 @@ import org.ow2.choreos.chors.DeploymentException;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 import org.ow2.choreos.ee.reconfiguration.ComplexEventHandler;
 import org.ow2.choreos.ee.reconfiguration.HandlingEvent;
+import org.ow2.choreos.nodes.datamodel.CPUSize;
+import org.ow2.choreos.nodes.datamodel.ResourceImpact;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
 import org.ow2.choreos.services.datamodel.ServiceInstance;
 
-public class AddReplica extends ComplexEventHandler {
+public class MigrateUp extends ComplexEventHandler {
 
     Logger logger = Logger.getLogger(this.getClass());
 
@@ -32,13 +34,32 @@ public class AddReplica extends ComplexEventHandler {
             logger.fatal(e1);
             return;
         }
-        //event.getChor().getChoreographySpec();
 
         for (DeployableServiceSpec spec : choreographySpec.getDeployableServiceSpecs()) {
             if (spec.getName().equals(serviceSpecName)) {
-                logger.debug("Found service spec. Going to increase number of instances");
-                spec.setNumberOfInstances(spec.getNumberOfInstances() + 1);
-                break;
+                logger.debug("Found service spec. Going to migrate up");
+                
+                ResourceImpact resourceImpact = spec.getResourceImpact();
+                ResourceImpact ri = resourceImpact;
+                if (ri == null) {                    
+                    logger.info("No previous resource impact. Not possible to migrate up");
+                    return;
+                } else {
+                    
+                    CPUSize cpu = resourceImpact.getCpu();
+                    switch (cpu) {
+                    case LARGE:
+                        logger.info("Current CPU size is large. Not possible to migrate up");                        
+                        break;
+                    case MEDIUM:
+                        resourceImpact.setCpu(CPUSize.LARGE);
+                        break;
+                    case SMALL:
+                        resourceImpact.setCpu(CPUSize.MEDIUM);
+                        break;
+                    }
+                    break;
+                }
             }
         }
 

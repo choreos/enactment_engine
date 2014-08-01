@@ -1,15 +1,17 @@
 package org.ow2.choreos.ee.reconfiguration;
 
+import org.ow2.choreos.chors.datamodel.Choreography;
+
 public class HandlingEvent {
 
 	String rule;
-	String chorId;
+	Choreography chor;
 	String serviceId;
 
-	public HandlingEvent(String rule, String chorId, String serviceId) {
+	public HandlingEvent(String rule, Choreography chor, String serviceId) {
 		super();
 		this.rule = rule;
-		this.chorId = chorId;
+		this.chor = chor;
 		this.serviceId = serviceId;
 	}
 
@@ -21,12 +23,12 @@ public class HandlingEvent {
 		this.rule = rule;
 	}
 
-	public String getChorId() {
-		return chorId;
+	public Choreography getChor() {
+		return chor;
 	}
 
-	public void setChorId(String chorId) {
-		this.chorId = chorId;
+	public void setChorId(Choreography chor) {
+		this.chor = chor;
 	}
 
 	public String getServiceId() {
@@ -41,7 +43,7 @@ public class HandlingEvent {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((chorId == null) ? 0 : chorId.hashCode());
+		result = prime * result + ((chor == null) ? 0 : chor.hashCode());
 		result = prime * result + ((rule == null) ? 0 : rule.hashCode());
 		result = prime * result
 				+ ((serviceId == null) ? 0 : serviceId.hashCode());
@@ -57,10 +59,10 @@ public class HandlingEvent {
 		if (getClass() != obj.getClass())
 			return false;
 		HandlingEvent other = (HandlingEvent) obj;
-		if (chorId == null) {
-			if (other.chorId != null)
+		if (chor == null) {
+			if (other.chor != null)
 				return false;
-		} else if (!chorId.equals(other.chorId))
+		} else if (!chor.equals(other.chor))
 			return false;
 		if (rule == null) {
 			if (other.rule != null)

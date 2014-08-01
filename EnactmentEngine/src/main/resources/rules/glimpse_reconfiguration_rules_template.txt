@@ -1,0 +1,48 @@
+		
+		rule "RemoveReplica@{class_version}"
+		no-loop true
+		salience 400
+		dialect "mvel"
+
+		when
+			$lcpu : LowCpuUser@{class_version}();
+			not ReconfProcess@{class_version}(service == $lcpu.service);
+			$depFc : DeployStatus@{class_version}(service == $lcpu.service);
+		then
+			insert (new ReconfProcess@{class_version}($lcpu.service));
+			ResponseDispatcher.LogViolation(
+				"rule: " + drools.getRule().getName(),
+				" chor: " + (String) $depFc.chor,
+				" service: " + (String) $lcpu.service
+			);
+			ResponseDispatcher.NotifyMeValue(drools.getRule().getName(),
+				"@{consumer_id}", 
+				(String) $depFc.chor, 
+				(String) $lcpu.service
+			);
+			retract($lcpu);
+		end
+
+
+		rule "AddReplica@{class_version}"
+		no-loop true
+		salience 405
+		dialect "mvel"
+
+		when
+			$ev : HighReponseTime@{class_version}();
+			$depFc : DeployStatus@{class_version}(service == $ev.service);
+		then
+			insert (new ReconfProcess@{class_version}($ev.service));
+			ResponseDispatcher.LogViolation(
+				"rule: " + drools.getRule().getName(),
+				" chor: " + (String) $depFc.chor,
+				" service: " + (String) $ev.service
+			);
+			ResponseDispatcher.NotifyMeValue(drools.getRule().getName(),
+				"@{consumer_id}", 
+				(String) $depFc.chor, 
+				(String) $ev.service
+			);
+			retract($ev);
+		end

@@ -2,11 +2,17 @@ package org.ow2.choreos.ee;
 
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
+import org.ow2.choreos.ee.config.QoSManagementConfiguration;
+import org.ow2.choreos.ee.reconfiguration.GlimpseConsumer;
 
 public class ChoreographyContext {
 
+    private static final boolean qosMgMt = Boolean.parseBoolean(QoSManagementConfiguration
+            .get(QoSManagementConfiguration.QOS_MGMT));
+
     private Choreography chor;
     private ChoreographySpec requestedChoreographySpec;
+    private GlimpseConsumer glimpseConsumer;
 
     public ChoreographyContext(Choreography chor) {
         this.chor = chor;
@@ -27,6 +33,35 @@ public class ChoreographyContext {
 
     public void enactmentFinished() {
         chor.setChoreographySpec(requestedChoreographySpec);
+    }
+
+    public void startMonitoring() {
+        if (qosMgMt) {
+            if (this.glimpseConsumer !=  null)
+                restartConsumer();
+            else {
+                startConsumer();
+            }
+        }
+    }
+
+    private void restartConsumer() {
+        this.glimpseConsumer.stop(new ConsumerShoutdownListener() {
+            @Override
+            public void onShutdown() throws InterruptedException {
+                Thread.sleep(10*1000);
+                startConsumer();
+            }
+        });
+    }
+    
+    public interface ConsumerShoutdownListener{
+        void onShutdown() throws InterruptedException;
+    }
+
+    private void startConsumer() {
+        this.glimpseConsumer = new GlimpseConsumer(this);
+        glimpseConsumer.start();
     }
 
     @Override

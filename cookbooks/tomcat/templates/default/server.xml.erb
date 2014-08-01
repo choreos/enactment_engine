@@ -75,6 +75,7 @@
     <Connector port="<%= node["tomcat"]["port"] %>" protocol="HTTP/1.1" 
                connectionTimeout="20000" 
                URIEncoding="UTF-8"
+               enableLookups="false"
                redirectPort="<%= node["tomcat"]["ssl_port"] %>" />
     <!-- A "Connector" using the shared thread pool-->
     <!--

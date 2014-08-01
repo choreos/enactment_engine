@@ -16,7 +16,7 @@ public class RemoveReplica extends ComplexEventHandler {
 
 	@Override
 	public void handleEvent(HandlingEvent event) {
-		logger.info("Trying to handle " + event.getChorId());
+		logger.info("Trying to handle " + event.getChor());
 		Choreography c = null;
 		try {
 			c = registryHelper.getChorClient().getChoreography("1");
@@ -39,13 +39,13 @@ public class RemoveReplica extends ComplexEventHandler {
 		
 		for (DeployableService s : c.getDeployableServices()) {
 			for (ServiceInstance i : s.getInstances()) {
-				if (i.getNode().getIp().equals(event.getChorId()))
+				if (i.getNode().getIp().equals(event.getChor()))
 					specName = s.getSpec().getName();
 			}
 		}
 
 		if (specName.isEmpty()) {
-			logger.debug("Not found service spec for services in " + event.getChorId());
+			logger.debug("Not found service spec for services in " + event.getChor());
 			return;
 		}
 
