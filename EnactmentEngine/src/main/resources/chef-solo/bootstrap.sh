@@ -54,8 +54,22 @@ function prepare_node() {
 	fi
 }
 
+function create_swap_storage() {
+    SWAPFILE=/swap_file
+    # Create file storage
+    sudo dd if=/dev/zero of=/swap_file bs=1024 count=1048576
+
+    # Set Up a linux swap file
+    sudo mkswap /swap_file
+    sudo chown root:root /swap_file
+    sudo chmod 0600 /swap_file
+    sudo echo "$SWAPFILE swap swap defaults 0 0" >> /etc/fstab
+    sudo swapon $SWAPFILE
+}
+
 install_chef_solo > /tmp/chef-solo-bootstrap.log 2>&1
 prepare_node >> /tmp/chef-solo-bootstrap.log 2>&1
+create_swap_storage >> /tmp/chef-solo-bootstrap.log 2>&1
 
 
 
