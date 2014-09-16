@@ -1,47 +1,49 @@
 		
-		rule "MigrateDown@{class_version}"
+		rule "MigrateDown"
 		no-loop true
 		salience 210
 		dialect "mvel"
 
 		when
-			$lcpu : LowCpuUser@{class_version}();
-			not ReconfProcess@{class_version}(service == $lcpu.service);
-			$depFc : DeployStatus@{class_version}(service == $lcpu.service);
+			$lcpu : LowCpuUser(policy == "vertical");
+			$depFc : DeployStatus(service == $lcpu.service);
+			
+			not ReconfProcess(service == $depFc.service);
 		then
-			insert (new ReconfProcess@{class_version}($lcpu.service));
+			insert (new ReconfProcess($depFc.service));
 			ResponseDispatcher.LogViolation(
 				"rule: " + drools.getRule().getName(),
 				" chor: " + (String) $depFc.chor,
-				" service: " + (String) $lcpu.service
+				" service: " + (String) $depFc.service
 			);
 			ResponseDispatcher.NotifyMeValue(drools.getRule().getName(),
 				"@{consumer_id}", 
 				(String) $depFc.chor, 
-				(String) $lcpu.service
+				(String) $depFc.service
 			);
 			retract($lcpu);
 		end
 
 
-		rule "MigrateUp@{class_version}"
+		rule "MigrateUp"
 		no-loop true
 		salience 310
 		dialect "mvel"
 
 		when
-			$ev : HighReponseTime@{class_version}();
-			not ReconfProcess@{class_version}(service == $ev.service);
-			$depFc : DeployStatus@{class_version}(service == $ev.service);
+			$ev : HighResponseTime(policy == "vertical");
+			$depFc : DeployStatus(service == $ev.service);
+			
+			not ReconfProcess(service == $depFc.service);
 		then
-			insert (new ReconfProcess@{class_version}($ev.service));
+			insert (new ReconfProcess($ev.service));
 			ResponseDispatcher.LogViolation(
 				"rule: " + drools.getRule().getName(),
 				" chor: " + (String) $depFc.chor,
 				" service: " + (String) $ev.service
 			);
 			ResponseDispatcher.NotifyMeValue(drools.getRule().getName(),
-				"@{consumer_id}", 
+				"@{consumer_id}",
 				(String) $depFc.chor, 
 				(String) $ev.service
 			);

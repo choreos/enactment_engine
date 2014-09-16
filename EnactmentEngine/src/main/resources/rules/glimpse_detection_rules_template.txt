@@ -1,39 +1,51 @@
 		
-		rule "DetectLowCpuUser@{class_version}"
+		rule "DetectLowCpuUser"
 		no-loop true
 		salience 200
 		dialect "mvel"
 
 		when
-			$ev : CpuUserEvent@{class_version}();
-			Number(@{min_cpu_usage} > doubleValue) from accumulate(
-				CpuUserEvent@{class_version}( ip == $ev.ip, $val : value),
-					average($val)
+			$ev : CpuUserEvent();
+			$depFc : DeployStatus(ip == $ev.ip);
+			$sla : SLA(metric == "min_cpu_user", service_or_ip == $ev.ip);
+			
+			$pol : Policy(ip == $ev.ip);
+			
+			// for all cpu running that service: six minutes of low CPU
+			forall ( $depSt : DeployStatus(service == $depFc.service)
+					Number(15 > doubleValue) from accumulate( CpuUserEvent( ip == $depSt.ip, $val : value) over window:time( 6m ),
+						average($val)
+				);
 			);
-			$depFc : DeployStatus@{class_version}(ip == $ev.ip);
+			
+			not ReconfProcess(service == $depFc.service);
+			not FinishedUpdate(service == $depFc.service);
+			not FinishedUpdate2(service == $depFc.service);
 		then
-			insert (new LowCpuUser@{class_version}($ev.ip, $depFc.service));
-
+			insert ( new LowCpuUser($depFc.ip, $depFc.service, $pol.policy) );
+			
 			ResponseDispatcher.LogViolation(
 				"rule: " + drools.getRule().getName(),
 				" from: " + $ev.ip,
-				" meas: " + $ev.value
+				" min: " + $sla.limit + ", meas: " + $ev.value
 			);
 		end
 
-		rule "DetectHighCpuUser@{class_version}"
+		rule "DetectHighCpuUser"
 		no-loop true
 		salience 201
 		dialect "mvel"
 
 		when
-			$ev : CpuUserEvent@{class_version}();
-			Number( doubleValue > @{max_cpu_usage} ) from accumulate ( 
-				CpuUserEvent@{class_version}($ev.ip == ip, $val : value),
+			$ev : CpuUserEvent();
+			$sla : SLA(metric == "max_cpu_user", service_or_ip == $ev.ip);
+			$pol : Policy(ip == $ev.ip);
+			Number( doubleValue > $sla.limit ) from accumulate ( 
+				CpuUserEvent($ev.ip == ip, $val : value),
 					average($val)
 			);
 		then
-			insert (new HighCpuUser@{class_version}($ev.ip));
+			insert (new HighCpuUser($ev.ip, $pol.policy));
 
 			ResponseDispatcher.LogViolation(
 				"rule: " + drools.getRule().getName(),

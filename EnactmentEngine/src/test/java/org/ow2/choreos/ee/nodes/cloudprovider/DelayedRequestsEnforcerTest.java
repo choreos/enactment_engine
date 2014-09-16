@@ -5,7 +5,6 @@ import static org.junit.Assert.fail;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
-import org.ow2.choreos.ee.nodes.cloudprovider.DelayedRequestEnforcer;
 
 public class DelayedRequestsEnforcerTest {
 

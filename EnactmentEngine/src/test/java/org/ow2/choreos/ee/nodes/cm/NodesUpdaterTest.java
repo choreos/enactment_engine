@@ -7,11 +7,7 @@ import static org.mockito.Mockito.verify;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Test;
 import org.ow2.choreos.chors.datamodel.Choreography;
-import org.ow2.choreos.ee.nodes.cm.NodeUpdater;
-import org.ow2.choreos.ee.nodes.cm.NodeUpdaters;
-import org.ow2.choreos.ee.nodes.cm.NodesUpdater;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.PackageType;
 import org.ow2.choreos.services.datamodel.ServiceType;

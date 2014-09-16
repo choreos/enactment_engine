@@ -39,17 +39,17 @@ public class NodesUpdater {
         this.totalTimeout += totalTimeout * 0.1;
     }
 
-    public void updateNodes() throws DeploymentException {
+    public void updateNodes(boolean isDecrease) throws DeploymentException {
         logger.info("Going to update nodes of choreography " + chorId);
-        setNodesToUpdate();
+        setNodesToUpdate(isDecrease);
         submitUpdates();
         waitUpdates();
     }
 
-    private void setNodesToUpdate() {
+    private void setNodesToUpdate(boolean isDecrease) {
         nodesToUpdate = new HashSet<CloudNode>();
 
-        if (Boolean.parseBoolean(EEConfiguration.get("IDEMPOTENCY_GUARANTEE"))) {
+        if (isDecrease || Boolean.parseBoolean(EEConfiguration.get("IDEMPOTENCY_GUARANTEE"))) {
             for (DeployableService deployable : services) {
                 for (CloudNode node : deployable.getSelectedNodes()) {
                     nodesToUpdate.add(node);
@@ -57,6 +57,7 @@ public class NodesUpdater {
             }
         } else {
             for (DeployableService deployable : services) {
+                // removing replica
                 if (deployable.getServiceInstances() != null)
                     logger.debug("# of Nodes vs. Instances: nodes = " + deployable.getSelectedNodes().size()
                             + "; instances = " + deployable.getServiceInstances().size());

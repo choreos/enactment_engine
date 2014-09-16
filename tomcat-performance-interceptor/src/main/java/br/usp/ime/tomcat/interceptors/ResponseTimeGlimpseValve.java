@@ -18,6 +18,7 @@
 package br.usp.ime.tomcat.interceptors;
 
 import java.io.IOException;
+import java.util.Timer;
 
 import javax.servlet.ServletException;
 
@@ -27,63 +28,42 @@ import org.apache.catalina.valves.ValveBase;
 
 public class ResponseTimeGlimpseValve extends ValveBase {
 
-	private static final int INTERVAL = 10000; // Nothing special. Value choosed
-												// because Platform Monitoring
-												// uses this interval
-
-	private long nextTime;
 	private long rtBuff = 0L;
 	private int rtCounter = 0;
-	private State state = State.INITIAL;
-
 	private String glimpseHost;
+	Timer uploadCheckerTimer = null;
 
-	public void invoke(Request request, Response response) throws IOException,
-			ServletException {
+	public void invoke(final Request request, Response response)
+			throws IOException, ServletException {
 
 		if (request == null)
 			return;
 
 		long t1 = System.currentTimeMillis();
-
 		getNext().invoke(request, response);
-
 		long t2 = System.currentTimeMillis();
-		long time = t2 - t1;
 
-		switch (state) {
-		case INITIAL:
-			state = State.WAITING_TIME;
-			incrementRtBuff(time);
-			return;
-
-		case WAITING_TIME:
-			if (System.currentTimeMillis() < nextTime) {
-				incrementRtBuff(time);
-			} else {
-				long meanTime = rtBuff / rtCounter;
-				String requestURI = request.getRequestURI();
-				GlimpseProbe.getInstance("tcp://" + this.glimpseHost + ":61616")
-				.reportQoSMetric("response_time", "" + meanTime,
-						Utils.getServiceInstanceId(requestURI),
-						request.getServerName());
-				resetRtBuff();
-			}
-			break;
-		}
-
-	}
-
-	private void incrementRtBuff(long time) {
-		nextTime = System.currentTimeMillis() + INTERVAL;
-		rtBuff += time;
+		rtBuff += t2 - t1;
 		rtCounter++;
-	}
-	
-	private void resetRtBuff() {
-		state = State.INITIAL;
-		rtBuff = 0L;
-		rtCounter = 0;
+
+		if ( rtCounter >= 4) {
+			// Have at least one?
+			long meanTime = 0;
+			if (rtCounter > 0)
+				meanTime = rtBuff / rtCounter;
+			else
+				return;
+
+			String requestURI = request.getRequestURI();
+
+			GlimpseProbe.getInstance("tcp://" + glimpseHost + ":61616")
+					.reportQoSMetric("response_time", "" + meanTime,
+							Utils.getServiceInstanceId(requestURI),
+							request.getServerName());
+			rtCounter = 0;
+			rtBuff = 0;
+		}
+			
 	}
 
 	public String getGlimpseHost() {

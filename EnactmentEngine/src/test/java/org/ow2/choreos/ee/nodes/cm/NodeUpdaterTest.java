@@ -8,8 +8,6 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.ow2.choreos.ee.nodes.cm.NodeUpdater;
-import org.ow2.choreos.ee.nodes.cm.UpdateHandler;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.utils.SshNotConnected;
 import org.ow2.choreos.utils.SshUtil;

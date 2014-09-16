@@ -6,11 +6,6 @@ package org.ow2.choreos.integration.ee;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -24,12 +19,10 @@ import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 import org.ow2.choreos.ee.EEImpl;
 import org.ow2.choreos.ee.config.EEConfiguration;
 import org.ow2.choreos.nodes.datamodel.CPUSize;
-import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.nodes.datamodel.RAMSize;
 import org.ow2.choreos.nodes.datamodel.ResourceImpact;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.PackageType;
-import org.ow2.choreos.services.datamodel.ServiceInstance;
 import org.ow2.choreos.services.datamodel.ServiceType;
 import org.ow2.choreos.tests.IntegrationTest;
 import org.ow2.choreos.tests.ModelsForTest;

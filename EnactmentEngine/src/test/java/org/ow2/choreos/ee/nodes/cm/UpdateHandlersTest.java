@@ -7,8 +7,6 @@ import static org.mockito.Mockito.mock;
 import java.util.List;
 
 import org.junit.Test;
-import org.ow2.choreos.ee.nodes.cm.UpdateHandler;
-import org.ow2.choreos.ee.nodes.cm.UpdateHandlers;
 
 public class UpdateHandlersTest {
 

@@ -11,8 +11,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.ow2.choreos.ee.config.EEConfiguration;
-import org.ow2.choreos.ee.nodes.cm.NodeBootstrapper;
-import org.ow2.choreos.ee.nodes.cm.NodeSetup;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.utils.Scp;
 

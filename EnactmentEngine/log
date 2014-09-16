@@ -1,0 +1,865 @@
+log4j:WARN No such property [maxFileSize] in org.apache.log4j.PatternLayout.
+log4j:WARN No such property [maxFileSize] in org.apache.log4j.FileAppender.
+log4j:WARN No such property [maxFileSize] in org.apache.log4j.FileAppender.
+log4j:WARN No such property [maxFileSize] in org.apache.log4j.PatternLayout.
+log4j:WARN No such property [maxFileSize] in org.apache.log4j.FileAppender.
+log4j:WARN No such property [maxFileSize] in org.apache.log4j.FileAppender.
+[INFO 17:09:59 RESTServer] Enactment Engine has started [http://0.0.0.0:9100/enactmentengine/]
+[INFO 17:10:40 EEImpl] Choreography 1 created.
+[INFO 17:10:40 ChoreographyEnacter] Starting enactment; chorId= 1
+[INFO 17:10:40 NewDeploymentPreparing] Request to configure nodes; creating services; setting up Chef; for chor 1
+[DEBUG 17:10:42 JCloudsCloudProvider] Creating node...
+[DEBUG 17:10:44 JCloudsCloudProvider] Creating node...
+[INFO 17:10:46 JCloudsCloudProvider] Creating Template with image ID: us-east-1/ami-3337675a; hardware ID: m1.small
+[INFO 17:10:46 JCloudsCloudProvider] Creating Template with image ID: us-east-1/ami-3337675a; hardware ID: m1.small
+[DEBUG 17:11:24 JCloudsCloudProvider$CreateNodeTask] Node [id=us-east-1/i-bad00d91, ip=54.89.103.144] created
+[DEBUG 17:11:24 JCloudsCloudProvider$CreateNodeTask] Node [id=us-east-1/i-a0d60b8b, ip=54.91.223.156] created
+[DEBUG 17:11:29 SshWaiter$SshWaiterCallable] Trying SSH into 54.89.103.144 again in 5 seconds
+[DEBUG 17:11:29 SshWaiter$SshWaiterCallable] Trying SSH into 54.91.223.156 again in 5 seconds
+[DEBUG 17:11:39 SshWaiter$SshWaiterCallable] Trying SSH into 54.89.103.144 again in 5 seconds
+[DEBUG 17:11:39 SshWaiter$SshWaiterCallable] Trying SSH into 54.91.223.156 again in 5 seconds
+[DEBUG 17:11:44 SshWaiter$SshWaiterCallable] Trying SSH into 54.91.223.156 again in 5 seconds
+[DEBUG 17:11:46 SshWaiter$SshWaiterCallable] Trying SSH into 54.89.103.144 again in 5 seconds
+[DEBUG 17:11:51 SshWaiter$SshWaiterCallable] Trying SSH into 54.89.103.144 again in 5 seconds
+[INFO 17:11:51 NodeBootstrapper] Bootstrapping 54.91.223.156
+[DEBUG 17:11:56 SshWaiter$SshWaiterCallable] Trying SSH into 54.89.103.144 again in 5 seconds
+[INFO 17:12:03 NodeBootstrapper] Bootstrapping 54.89.103.144
+[INFO 17:12:30 NodeBootstrapper] Bootstrap completed at Node [id=us-east-1/i-a0d60b8b, ip=54.91.223.156]
+[INFO 17:12:30 ServiceDeploymentPreparer] Selected nodes to travelagency: [Node [id=us-east-1/i-a0d60b8b, ip=54.91.223.156]]
+[INFO 17:12:54 NodeBootstrapper] Bootstrap completed at Node [id=us-east-1/i-bad00d91, ip=54.89.103.144]
+[INFO 17:12:54 ServiceDeploymentPreparer] Selected nodes to airline: [Node [id=us-east-1/i-bad00d91, ip=54.89.103.144]]
+[INFO 17:12:57 NewDeploymentPreparing] Nodes are configured to run chef-client on chor 1
+[INFO 17:12:57 NodesUpdater] Going to update nodes of choreography 1
+[DEBUG 17:12:57 NodeUpdater$ChefSoloTask] Updating node us-east-1/i-a0d60b8b
+[DEBUG 17:12:57 NodeUpdater$ChefSoloTask] Updating node us-east-1/i-bad00d91
+[INFO 17:14:45 NodeUpdater$ChefSoloTask] Node Node [id=us-east-1/i-a0d60b8b, ip=54.91.223.156] updated
+[INFO 17:15:21 NodeUpdater$ChefSoloTask] Node Node [id=us-east-1/i-bad00d91, ip=54.89.103.144] updated
+[INFO 17:15:21 ContextCaster] Passing context to deployed services on choreograghy 1
+GlimpseAbstractConsumer: Creating Properties object 				[ OK ]
+--------------------------------------------------------------------------------------
+[DEBUG 17:15:23 GlimpseConsumer] <?xml version="1.0" encoding="UTF-8"?>
+<ComplexEventRuleActionList xmlns="http://labse.isti.cnr.it/glimpse/xml/ComplexEventRule"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://labse.isti.cnr.it/glimpse/xml/ComplexEventRule ./ComplexEventRule.xsd">
+
+<Insert RuleType="drools">
+
+	<RuleName>Glimpse Rules consumer_e915ea90-39de-4ab7-9e72-141295e4368b</RuleName>
+
+	<RuleBody>
+
+		import it.cnr.isti.labsedc.glimpse.event.GlimpseBaseEventChoreos;
+		import it.cnr.isti.labsedc.glimpse.manager.ResponseDispatcher;
+		import java.util.regex.Matcher;
+		import java.util.regex.Pattern;
+
+		declare GlimpseBaseEventChoreos
+			@role ( event )
+			@timestamp ( timeStamp )
+		end
+
+		declare ResponseTimeEvent
+			@role ( event )
+			@expires ( 30s )
+			value : float
+			ip : String
+			instance: String
+		end
+
+		declare CpuUserEvent
+			@role ( event )
+			@expires ( 2m )
+			value : float
+			ip : String
+		end
+
+		declare DeployStatus
+			ip 		 : String
+			instance : String
+			service  : String
+			chor     : String
+		end
+
+		<!-- 
+			processed events
+		-->
+		declare HighReponseTime
+			@role 	 ( event )
+			@expires ( 5m )
+			ip       : String
+			service  : String
+		end
+
+		declare LowThroughput
+			@role    ( event )
+			@expires ( 5m)
+			ip       : String
+			service  : String
+		end
+
+		declare LowCpuUser
+			@role    ( event )
+			@expires ( 1m )
+			ip       : String
+			service  : String
+		end
+
+		declare HighCpuUser
+			@role    ( event )
+			@expires ( 1m )
+			ip       : String
+		end
+
+		declare AddReplica
+			@role    ( event )
+			@expires ( 6m )
+			service  : String
+		end
+
+		declare RemReplica
+			@role    ( event )
+			@expires ( 5m )
+			service       : String
+		end
+
+		declare ReconfProcess
+			@role ( event )
+			@expires ( 6m )
+			service : String
+		end
+
+
+		<!--===================================================================================-->
+
+		rule "CpuUser"
+		no-loop true
+		salience 10
+		dialect "mvel"
+
+		when
+			$aEvent : GlimpseBaseEventChoreos(
+				this.isConsumed == false,
+				this.isException == false,
+				this.getEventName == "cpu_user"
+			);
+		then
+			$aEvent.setConsumed(true);
+			update($aEvent);
+			
+			Pattern p = Pattern.compile("Measured: ([0-9.]+)");
+			Matcher m1 = p.matcher((String) $aEvent.getEventData());
+			float f = -1;
+			if (m1.find())
+				f = Float.parseFloat(m1.group(0).split(": ")[1]);
+			
+			insert (new CpuUserEvent(f,$aEvent.getMachineIP()));
+
+			ResponseDispatcher.LogViolation(
+				"rule: " + drools.getRule().getName(),
+				" from: " + (String) $aEvent.getMachineIP(),
+				" meas: " + f
+			);
+
+			retract ($aEvent);
+		end
+
+		rule "ResponseTime"
+		no-loop true
+		salience 20
+		dialect "mvel"
+
+		when
+			$aEvent : GlimpseBaseEventChoreos(
+				this.isConsumed == false,
+				this.isException == false,
+				this.getEventName == "response_time"
+			);
+		then
+			$aEvent.setConsumed(true);
+			update($aEvent);
+			float meas = Float.parseFloat((String) $aEvent.getEventData());
+			
+			insert (new ResponseTimeEvent(meas,
+				(String) $aEvent.getMachineIP(),
+				(String) $aEvent.getServiceSource())
+			);
+			
+			ResponseDispatcher.LogViolation(
+				"rule: " + drools.getRule().getName(),
+				" from: " + (String) $aEvent.getServiceSource(),
+				" meas: " + (String) $aEvent.getEventData()
+			);
+
+			retract ($aEvent);
+		end
+
+		rule "ChoreographyDeployStatus"
+		no-loop true
+		salience 500
+		dialect "mvel"
+
+		when
+			$aEvent : GlimpseBaseEventChoreos(
+				this.isConsumed == false,
+				this.isException == false,
+				this.getEventName == "deploy_status"
+			);
+		then
+			$aEvent.setConsumed(true);
+			update($aEvent);
+
+			insert ( new DeployStatus( (String) $aEvent.getMachineIP(),
+				(String) $aEvent.getEventData(),
+				(String) $aEvent.getServiceSource(),
+				(String) $aEvent.getChoreographySource())
+			);
+
+			ResponseDispatcher.LogViolation(
+				"rule: " + drools.getRule().getName(),
+				" from: " + (String) $aEvent.getServiceSource(),
+				" meas: " + (String) $aEvent.getEventData()
+			);
+
+			retract($aEvent);
+		end
+
+
+		<!--===================================================================================
+			Rules implementing relevant changes on choreographies deployment status
+		====================================================================================-->
+		rule "DetectLowCpuUser"
+		no-loop true
+		salience 200
+		dialect "mvel"
+
+		when
+			$ev : CpuUserEvent();
+			Number(25.0 > doubleValue) from accumulate(
+				CpuUserEvent( ip == $ev.ip, $val : value),
+					average($val)
+			);
+			$depFc : DeployStatus(ip == $ev.ip);
+		then
+			insert (new LowCpuUser ($ev.ip, $depFc.service));
+
+			ResponseDispatcher.LogViolation(
+				"rule: " + drools.getRule().getName(),
+				" from: " + $ev.ip,
+				" meas: " + $ev.value
+			);
+		end
+
+		rule "DetectHighCpuUser"
+		no-loop true
+		salience 201
+		dialect "mvel"
+
+		when
+			$ev : CpuUserEvent();
+			Number( doubleValue > 85.0 ) from accumulate ( 
+				CpuUserEvent($ev.ip == ip, $val : value),
+					average($val)
+			);
+		then
+			insert (new HighCpuUser ($ev.ip));
+
+			ResponseDispatcher.LogViolation(
+				"rule: " + drools.getRule().getName(),
+				" from: " + $ev.ip,
+				" meas: " + $ev.value
+			);
+		end
+
+		rule "DetectHighResponseTime"
+		no-loop true
+		salience 300
+		dialect "mvel"
+
+		when
+			$ev : ResponseTimeEvent();
+			Number( $eventSum : doubleValue ) from accumulate(
+				$event : ResponseTimeEvent($ev.instance == instance, $ev.ip == ip),
+					count($event)
+			);
+			Number( intValue > $eventSum * 0.15 ) from accumulate(
+				$sEvent : ResponseTimeEvent(value > 750, 
+					$ev.instance == instance, $ev.ip == ip),
+						count($sEvent)
+			);
+			$depFc : DeployStatus(instance == $ev.instance);
+		then
+			insert ( new HighReponseTime($ev.ip, $depFc.service) );
+ 
+			ResponseDispatcher.LogViolation(
+				"rule: " + drools.getRule().getName(),
+				" from: " + $depFc.service,
+				" meas: " + $ev.value
+			);
+		end
+
+
+		<!--===================================================================================
+			Rules implementing actions recognized by the Enactment Engine. The rule's names
+			match Classes responsible for the action:
+
+				RemoveReplica >>> DecreaseNumberOfInstances
+				AddReplica >>> IncreaseNumberOfInstances
+		====================================================================================-->
+		rule "RemoveReplica"
+		no-loop true
+		salience 210
+		dialect "mvel"
+
+		when
+			$lcpu : LowCpuUser();
+			not ReconfProcess(service == $lcpu.service);
+			$depFc : DeployStatus(service == $lcpu.service);
+		then
+			insert (new ReconfProcess($lcpu.service));
+			ResponseDispatcher.LogViolation(
+				"rule: " + drools.getRule().getName(),
+				" chor: " + (String) $depFc.chor,
+				" service: " + (String) $lcpu.service
+			);
+			ResponseDispatcher.NotifyMeValue(drools.getRule().getName(),
+				"consumer_e915ea90-39de-4ab7-9e72-141295e4368b", 
+				(String) $depFc.chor, 
+				(String) $lcpu.service
+			);
+			retract($lcpu);
+		end
+
+
+		rule "AddReplica"
+		no-loop true
+		salience 310
+		dialect "mvel"
+
+		when
+			$ev : HighReponseTime();
+			not ReconfProcess(service == $ev.service);
+			$depFc : DeployStatus(service == $ev.service);
+		then
+			insert (new ReconfProcess($ev.service));
+			ResponseDispatcher.LogViolation(
+				"rule: " + drools.getRule().getName(),
+				" chor: " + (String) $depFc.chor,
+				" service: " + (String) $ev.service
+			);
+			ResponseDispatcher.NotifyMeValue(drools.getRule().getName(),
+				"consumer_e915ea90-39de-4ab7-9e72-141295e4368b", 
+				(String) $depFc.chor, 
+				(String) $ev.service
+			);
+			retract($ev);
+		end
+
+	</RuleBody>
+
+</Insert>
+
+</ComplexEventRuleActionList>
+
+[INFO 17:15:23 GlimpseConsumer] Starting running glimpse consumer consumer_e915ea90-39de-4ab7-9e72-141295e4368b
+GlimpseProbe: Creating InitialContext with settings ChorGlimpseConsumer: Creating InitialContext with settings 			[ OK ]
+--------------------------------------------------------------------------------------
+GlimpseProbe: Creating ConnectionFactory with settings 				[ OK ]
+--------------------------------------------------------------------------------------
+ChorGlimpseConsumer: Creating ConnectionFactory with settings 				[ OK ]
+			[ OK ]
+ChorGlimpseConsumer: Creating TopicConnection GlimpseProbe: Creating TopicConnection 						[ OK ]
+--------------------------------------------------------------------------------------
+GlimpseProbe: Creating Session 						[ OK ]
+--------------------------------------------------------------------------------------
+ChorGlimpseConsumer: Creating Session 						[ OK ]
+ChorGlimpseConsumer: Connecting to channel 					[ OK ]
+ChorGlimpseConsumer: Create subscriber 						[ OK ]
+GlimpseProbe: Looking up for channel 						[ OK ]
+GlimpseProbe: Creating Publisher 						[ OK ]
+ChorGlimpseConsumer: Starting connection 					[ OK ]
+--------------------------------------------------------------------------------------
+ChorGlimpseConsumer: Creating Session 						[ OK ]
+ChorGlimpseConsumer: Looking up for channel 					[ OK ]
+ChorGlimpseConsumer: Creating Publisher 					[ OK ]
+ChorGlimpseConsumer: Creating Message 						[ OK ]
+ChorGlimpseConsumer: Publishing message  [INFO 17:15:25 ChoreographyEnacter] Enactment completed; chorId=1
+					[ OK ]
+--------------------------------------------------------------------------------------
+[INFO 17:15:25 ChorGlimpseConsumer] Glimpse Consumer for contex ChoreographyContext [1]
+[INFO 17:15:25 GlimpseConsumer] Glimpse consumer consumer_e915ea90-39de-4ab7-9e72-141295e4368b started!
+					[ OK ]
+ChorGlimpseConsumer: Creating Session 						[ OK ]
+ChorGlimpseConsumer: Connecting to channel 					[ OK ]
+ChorGlimpseConsumer: Create subscriber 						[ OK ]
+ChorGlimpseConsumer: Starting connection 					[ OK ]
+ChorGlimpseConsumer: Successfully connected to the responseChannel answerTopic#Thread-4#682437103464329
+--------------------------------------------------------------------------------------
+[DEBUG 17:21:27 ChorGlimpseConsumer] <xml-fragment xmlns:com="http://labse.isti.cnr.it/glimpse/xml/ComplexEventResponse">
+  <com:RuleName>AddReplica</com:RuleName>
+  <com:ResponseKey>1</com:ResponseKey>
+  <com:ResponseValue>3189fea9-1a95-4e64-96ce-499a773da35f</com:ResponseValue>
+</xml-fragment>
+[DEBUG 17:21:27 ChorGlimpseConsumer] isQoSComplexEvent() : Rule name = AddReplica
+[DEBUG 17:21:27 ChorGlimpseConsumer] isQoSComplexEvent() : return value = true
+[DEBUG 17:21:27 ComplexEventResponseHandler] Loading handler (AddReplica, Choreography [id=1, choreographySpec=ChoreographySpec [deployableServiceSpecs=[DeployableServiceSpec [name=airline, packageUri=http://www.ime.usp.br/~tfurtado/downloads/airline.war, packageType=TOMCAT, endpointName=airline, port=8080, cloudAccount=null, numberOfInstances=1, version=0.1, roles= [airline]], DeployableServiceSpec [name=travelagency, packageUri=http://www.ime.usp.br/~tfurtado/downloads/travelagency.war, packageType=TOMCAT, endpointName=travelagency, port=8080, cloudAccount=null, numberOfInstances=1, version=0.1, roles= [travelagency]]], legacyServiceSpecs=[]], deployableServices=[DeployableService [UUID=c3c3abd1-84c3-4017-a2e3-3755c924e338, specName=airline, serviceInstances=http://54.89.103.144:8080/569eb7ea-025b-4e28-a91d-1f67b69a0ee1/airline; ], DeployableService [UUID=3189fea9-1a95-4e64-96ce-499a773da35f, specName=travelagency, serviceInstances=http://54.91.223.156:8080/2b4b5d52-1ff2-4025-942f-34e96452fad4/travelagency; ]], legacyServices=[]], 3189fea9-1a95-4e64-96ce-499a773da35f)
+[DEBUG 17:21:27 ComplexEventResponseHandler] Handling event AddReplica for chor Choreography [id=1, choreographySpec=ChoreographySpec [deployableServiceSpecs=[DeployableServiceSpec [name=airline, packageUri=http://www.ime.usp.br/~tfurtado/downloads/airline.war, packageType=TOMCAT, endpointName=airline, port=8080, cloudAccount=null, numberOfInstances=1, version=0.1, roles= [airline]], DeployableServiceSpec [name=travelagency, packageUri=http://www.ime.usp.br/~tfurtado/downloads/travelagency.war, packageType=TOMCAT, endpointName=travelagency, port=8080, cloudAccount=null, numberOfInstances=1, version=0.1, roles= [travelagency]]], legacyServiceSpecs=[]], deployableServices=[DeployableService [UUID=c3c3abd1-84c3-4017-a2e3-3755c924e338, specName=airline, serviceInstances=http://54.89.103.144:8080/569eb7ea-025b-4e28-a91d-1f67b69a0ee1/airline; ], DeployableService [UUID=3189fea9-1a95-4e64-96ce-499a773da35f, specName=travelagency, serviceInstances=http://54.91.223.156:8080/2b4b5d52-1ff2-4025-942f-34e96452fad4/travelagency; ]], legacyServices=[]]; service is 3189fea9-1a95-4e64-96ce-499a773da35f
+[DEBUG 17:21:27 AddReplica] Found service spec. Going to increase number of instances
+[INFO 17:21:27 AddReplica] Going to update chor with spec: ChoreographySpec [deployableServiceSpecs=[DeployableServiceSpec [name=airline, packageUri=http://www.ime.usp.br/~tfurtado/downloads/airline.war, packageType=TOMCAT, endpointName=airline, port=8080, cloudAccount=null, numberOfInstances=1, version=0.1, roles= [airline]], DeployableServiceSpec [name=travelagency, packageUri=http://www.ime.usp.br/~tfurtado/downloads/travelagency.war, packageType=TOMCAT, endpointName=travelagency, port=8080, cloudAccount=null, numberOfInstances=2, version=0.1, roles= [travelagency]]], legacyServiceSpecs=[]]
+[INFO 17:21:27 EEImpl] Requested to update choreography 1
+[INFO 17:21:27 EEImpl] Requested to update choreography with the same spec that already have
+[INFO 17:21:27 AddReplica] Enacting choreography
+[INFO 17:21:27 ChoreographyEnacter] Starting enactment; chorId= 1
+[DEBUG 17:21:29 JCloudsCloudProvider] Creating node...
+[INFO 17:21:30 JCloudsCloudProvider] Creating Template with image ID: us-east-1/ami-3337675a; hardware ID: m1.small
+[DEBUG 17:22:03 JCloudsCloudProvider$CreateNodeTask] Node [id=us-east-1/i-fdcd10d6, ip=54.91.142.178] created
+[DEBUG 17:22:08 SshWaiter$SshWaiterCallable] Trying SSH into 54.91.142.178 again in 5 seconds
+[DEBUG 17:22:18 SshWaiter$SshWaiterCallable] Trying SSH into 54.91.142.178 again in 5 seconds
+[DEBUG 17:22:23 SshWaiter$SshWaiterCallable] Trying SSH into 54.91.142.178 again in 5 seconds
+[INFO 17:22:30 NodeBootstrapper] Bootstrapping 54.91.142.178
+[INFO 17:23:12 NodeBootstrapper] Bootstrap completed at Node [id=us-east-1/i-fdcd10d6, ip=54.91.142.178]
+[INFO 17:23:12 ServiceDeploymentPreparer] Selected nodes to travelagency: [Node [id=us-east-1/i-fdcd10d6, ip=54.91.142.178]]
+[INFO 17:23:15 NodesUpdater] Going to update nodes of choreography 1
+[WARN 17:23:15 LogUtils] Application {http://rest.ee.choreos.ow2.org/}ChorResource has thrown exception, unwinding now
+org.apache.cxf.interceptor.Fault
+	at org.apache.cxf.service.invoker.AbstractInvoker.createFault(AbstractInvoker.java:155)
+	at org.apache.cxf.service.invoker.AbstractInvoker.invoke(AbstractInvoker.java:121)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:167)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:94)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor$1.run(ServiceInvokerInterceptor.java:58)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor.handleMessage(ServiceInvokerInterceptor.java:94)
+	at org.apache.cxf.phase.PhaseInterceptorChain.doIntercept(PhaseInterceptorChain.java:263)
+	at org.apache.cxf.transport.ChainInitiationObserver.onMessage(ChainInitiationObserver.java:123)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPDestination.serviceRequest(JettyHTTPDestination.java:344)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPDestination.doService(JettyHTTPDestination.java:310)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPHandler.handle(JettyHTTPHandler.java:72)
+	at org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:943)
+	at org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:879)
+	at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:117)
+	at org.eclipse.jetty.server.handler.ContextHandlerCollection.handle(ContextHandlerCollection.java:250)
+	at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:110)
+	at org.eclipse.jetty.server.Server.handle(Server.java:349)
+	at org.eclipse.jetty.server.HttpConnection.handleRequest(HttpConnection.java:441)
+	at org.eclipse.jetty.server.HttpConnection$RequestHandler.headerComplete(HttpConnection.java:919)
+	at org.eclipse.jetty.http.HttpParser.parseNext(HttpParser.java:582)
+	at org.eclipse.jetty.http.HttpParser.parseAvailable(HttpParser.java:218)
+	at org.eclipse.jetty.server.AsyncHttpConnection.handle(AsyncHttpConnection.java:51)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint.handle(SelectChannelEndPoint.java:586)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint$1.run(SelectChannelEndPoint.java:44)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:598)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$3.run(QueuedThreadPool.java:533)
+	at java.lang.Thread.run(Thread.java:744)
+Caused by: java.lang.IllegalArgumentException
+	at java.util.concurrent.ThreadPoolExecutor.<init>(ThreadPoolExecutor.java:1310)
+	at java.util.concurrent.ThreadPoolExecutor.<init>(ThreadPoolExecutor.java:1198)
+	at java.util.concurrent.Executors.newFixedThreadPool(Executors.java:89)
+	at org.ow2.choreos.ee.nodes.cm.NodesUpdater.submitUpdates(NodesUpdater.java:74)
+	at org.ow2.choreos.ee.nodes.cm.NodesUpdater.updateNodes(NodesUpdater.java:46)
+	at org.ow2.choreos.ee.ServicesDeployer.updateNodes(ServicesDeployer.java:78)
+	at org.ow2.choreos.ee.ServicesDeployer.deployServices(ServicesDeployer.java:39)
+	at org.ow2.choreos.ee.ChoreographyEnacter.deploy(ChoreographyEnacter.java:48)
+	at org.ow2.choreos.ee.ChoreographyEnacter.enact(ChoreographyEnacter.java:28)
+	at org.ow2.choreos.ee.EEImpl.deployChoreography(EEImpl.java:40)
+	at org.ow2.choreos.ee.rest.ChorResource.deploy(ChorResource.java:139)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.cxf.service.invoker.AbstractInvoker.performInvocation(AbstractInvoker.java:173)
+	at org.apache.cxf.service.invoker.AbstractInvoker.invoke(AbstractInvoker.java:89)
+	... 25 more
+[WARN 17:23:15 PhaseInterceptorChain] Exception in handleFault on interceptor org.apache.cxf.binding.xml.interceptor.XMLFaultOutInterceptor@14374302
+org.apache.cxf.interceptor.Fault
+	at org.apache.cxf.service.invoker.AbstractInvoker.createFault(AbstractInvoker.java:155)
+	at org.apache.cxf.service.invoker.AbstractInvoker.invoke(AbstractInvoker.java:121)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:167)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:94)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor$1.run(ServiceInvokerInterceptor.java:58)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor.handleMessage(ServiceInvokerInterceptor.java:94)
+	at org.apache.cxf.phase.PhaseInterceptorChain.doIntercept(PhaseInterceptorChain.java:263)
+	at org.apache.cxf.transport.ChainInitiationObserver.onMessage(ChainInitiationObserver.java:123)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPDestination.serviceRequest(JettyHTTPDestination.java:344)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPDestination.doService(JettyHTTPDestination.java:310)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPHandler.handle(JettyHTTPHandler.java:72)
+	at org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:943)
+	at org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:879)
+	at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:117)
+	at org.eclipse.jetty.server.handler.ContextHandlerCollection.handle(ContextHandlerCollection.java:250)
+	at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:110)
+	at org.eclipse.jetty.server.Server.handle(Server.java:349)
+	at org.eclipse.jetty.server.HttpConnection.handleRequest(HttpConnection.java:441)
+	at org.eclipse.jetty.server.HttpConnection$RequestHandler.headerComplete(HttpConnection.java:919)
+	at org.eclipse.jetty.http.HttpParser.parseNext(HttpParser.java:582)
+	at org.eclipse.jetty.http.HttpParser.parseAvailable(HttpParser.java:218)
+	at org.eclipse.jetty.server.AsyncHttpConnection.handle(AsyncHttpConnection.java:51)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint.handle(SelectChannelEndPoint.java:586)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint$1.run(SelectChannelEndPoint.java:44)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:598)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$3.run(QueuedThreadPool.java:533)
+	at java.lang.Thread.run(Thread.java:744)
+Caused by: java.lang.IllegalArgumentException
+	at java.util.concurrent.ThreadPoolExecutor.<init>(ThreadPoolExecutor.java:1310)
+	at java.util.concurrent.ThreadPoolExecutor.<init>(ThreadPoolExecutor.java:1198)
+	at java.util.concurrent.Executors.newFixedThreadPool(Executors.java:89)
+	at org.ow2.choreos.ee.nodes.cm.NodesUpdater.submitUpdates(NodesUpdater.java:74)
+	at org.ow2.choreos.ee.nodes.cm.NodesUpdater.updateNodes(NodesUpdater.java:46)
+	at org.ow2.choreos.ee.ServicesDeployer.updateNodes(ServicesDeployer.java:78)
+	at org.ow2.choreos.ee.ServicesDeployer.deployServices(ServicesDeployer.java:39)
+	at org.ow2.choreos.ee.ChoreographyEnacter.deploy(ChoreographyEnacter.java:48)
+	at org.ow2.choreos.ee.ChoreographyEnacter.enact(ChoreographyEnacter.java:28)
+	at org.ow2.choreos.ee.EEImpl.deployChoreography(EEImpl.java:40)
+	at org.ow2.choreos.ee.rest.ChorResource.deploy(ChorResource.java:139)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.cxf.service.invoker.AbstractInvoker.performInvocation(AbstractInvoker.java:173)
+	at org.apache.cxf.service.invoker.AbstractInvoker.invoke(AbstractInvoker.java:89)
+	... 25 more
+[ERROR 17:23:15 AbstractFaultChainInitiatorObserver] Error occurred during error handling, give up!
+org.apache.cxf.interceptor.Fault
+	at org.apache.cxf.service.invoker.AbstractInvoker.createFault(AbstractInvoker.java:155)
+	at org.apache.cxf.service.invoker.AbstractInvoker.invoke(AbstractInvoker.java:121)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:167)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:94)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor$1.run(ServiceInvokerInterceptor.java:58)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor.handleMessage(ServiceInvokerInterceptor.java:94)
+	at org.apache.cxf.phase.PhaseInterceptorChain.doIntercept(PhaseInterceptorChain.java:263)
+	at org.apache.cxf.transport.ChainInitiationObserver.onMessage(ChainInitiationObserver.java:123)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPDestination.serviceRequest(JettyHTTPDestination.java:344)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPDestination.doService(JettyHTTPDestination.java:310)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPHandler.handle(JettyHTTPHandler.java:72)
+	at org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:943)
+	at org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:879)
+	at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:117)
+	at org.eclipse.jetty.server.handler.ContextHandlerCollection.handle(ContextHandlerCollection.java:250)
+	at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:110)
+	at org.eclipse.jetty.server.Server.handle(Server.java:349)
+	at org.eclipse.jetty.server.HttpConnection.handleRequest(HttpConnection.java:441)
+	at org.eclipse.jetty.server.HttpConnection$RequestHandler.headerComplete(HttpConnection.java:919)
+	at org.eclipse.jetty.http.HttpParser.parseNext(HttpParser.java:582)
+	at org.eclipse.jetty.http.HttpParser.parseAvailable(HttpParser.java:218)
+	at org.eclipse.jetty.server.AsyncHttpConnection.handle(AsyncHttpConnection.java:51)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint.handle(SelectChannelEndPoint.java:586)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint$1.run(SelectChannelEndPoint.java:44)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:598)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$3.run(QueuedThreadPool.java:533)
+	at java.lang.Thread.run(Thread.java:744)
+Caused by: java.lang.IllegalArgumentException
+	at java.util.concurrent.ThreadPoolExecutor.<init>(ThreadPoolExecutor.java:1310)
+	at java.util.concurrent.ThreadPoolExecutor.<init>(ThreadPoolExecutor.java:1198)
+	at java.util.concurrent.Executors.newFixedThreadPool(Executors.java:89)
+	at org.ow2.choreos.ee.nodes.cm.NodesUpdater.submitUpdates(NodesUpdater.java:74)
+	at org.ow2.choreos.ee.nodes.cm.NodesUpdater.updateNodes(NodesUpdater.java:46)
+	at org.ow2.choreos.ee.ServicesDeployer.updateNodes(ServicesDeployer.java:78)
+	at org.ow2.choreos.ee.ServicesDeployer.deployServices(ServicesDeployer.java:39)
+	at org.ow2.choreos.ee.ChoreographyEnacter.deploy(ChoreographyEnacter.java:48)
+	at org.ow2.choreos.ee.ChoreographyEnacter.enact(ChoreographyEnacter.java:28)
+	at org.ow2.choreos.ee.EEImpl.deployChoreography(EEImpl.java:40)
+	at org.ow2.choreos.ee.rest.ChorResource.deploy(ChorResource.java:139)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.cxf.service.invoker.AbstractInvoker.performInvocation(AbstractInvoker.java:173)
+	at org.apache.cxf.service.invoker.AbstractInvoker.invoke(AbstractInvoker.java:89)
+	... 25 more
+[WARN 17:23:15 HttpConnection] /enactmentengine/chors/1/deployment
+java.lang.RuntimeException: org.apache.cxf.interceptor.Fault
+	at org.apache.cxf.interceptor.AbstractFaultChainInitiatorObserver.onMessage(AbstractFaultChainInitiatorObserver.java:116)
+	at org.apache.cxf.phase.PhaseInterceptorChain.doIntercept(PhaseInterceptorChain.java:323)
+	at org.apache.cxf.transport.ChainInitiationObserver.onMessage(ChainInitiationObserver.java:123)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPDestination.serviceRequest(JettyHTTPDestination.java:344)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPDestination.doService(JettyHTTPDestination.java:310)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPHandler.handle(JettyHTTPHandler.java:72)
+	at org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:943)
+	at org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:879)
+	at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:117)
+	at org.eclipse.jetty.server.handler.ContextHandlerCollection.handle(ContextHandlerCollection.java:250)
+	at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:110)
+	at org.eclipse.jetty.server.Server.handle(Server.java:349)
+	at org.eclipse.jetty.server.HttpConnection.handleRequest(HttpConnection.java:441)
+	at org.eclipse.jetty.server.HttpConnection$RequestHandler.headerComplete(HttpConnection.java:919)
+	at org.eclipse.jetty.http.HttpParser.parseNext(HttpParser.java:582)
+	at org.eclipse.jetty.http.HttpParser.parseAvailable(HttpParser.java:218)
+	at org.eclipse.jetty.server.AsyncHttpConnection.handle(AsyncHttpConnection.java:51)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint.handle(SelectChannelEndPoint.java:586)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint$1.run(SelectChannelEndPoint.java:44)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:598)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$3.run(QueuedThreadPool.java:533)
+	at java.lang.Thread.run(Thread.java:744)
+Caused by: org.apache.cxf.interceptor.Fault
+	at org.apache.cxf.service.invoker.AbstractInvoker.createFault(AbstractInvoker.java:155)
+	at org.apache.cxf.service.invoker.AbstractInvoker.invoke(AbstractInvoker.java:121)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:167)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:94)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor$1.run(ServiceInvokerInterceptor.java:58)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor.handleMessage(ServiceInvokerInterceptor.java:94)
+	at org.apache.cxf.phase.PhaseInterceptorChain.doIntercept(PhaseInterceptorChain.java:263)
+	... 20 more
+Caused by: java.lang.IllegalArgumentException
+	at java.util.concurrent.ThreadPoolExecutor.<init>(ThreadPoolExecutor.java:1310)
+	at java.util.concurrent.ThreadPoolExecutor.<init>(ThreadPoolExecutor.java:1198)
+	at java.util.concurrent.Executors.newFixedThreadPool(Executors.java:89)
+	at org.ow2.choreos.ee.nodes.cm.NodesUpdater.submitUpdates(NodesUpdater.java:74)
+	at org.ow2.choreos.ee.nodes.cm.NodesUpdater.updateNodes(NodesUpdater.java:46)
+	at org.ow2.choreos.ee.ServicesDeployer.updateNodes(ServicesDeployer.java:78)
+	at org.ow2.choreos.ee.ServicesDeployer.deployServices(ServicesDeployer.java:39)
+	at org.ow2.choreos.ee.ChoreographyEnacter.deploy(ChoreographyEnacter.java:48)
+	at org.ow2.choreos.ee.ChoreographyEnacter.enact(ChoreographyEnacter.java:28)
+	at org.ow2.choreos.ee.EEImpl.deployChoreography(EEImpl.java:40)
+	at org.ow2.choreos.ee.rest.ChorResource.deploy(ChorResource.java:139)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.cxf.service.invoker.AbstractInvoker.performInvocation(AbstractInvoker.java:173)
+	at org.apache.cxf.service.invoker.AbstractInvoker.invoke(AbstractInvoker.java:89)
+	... 25 more
+[ERROR 17:23:15 AddReplica] POST /chors/1/deployment has failed (Error 500)
+[DEBUG 17:23:15 ComplexEventResponseHandler] Event handled!
+[DEBUG 17:23:15 ChorGlimpseConsumer] <xml-fragment xmlns:com="http://labse.isti.cnr.it/glimpse/xml/ComplexEventResponse">
+  <com:RuleName>AddReplica</com:RuleName>
+  <com:ResponseKey>1</com:ResponseKey>
+  <com:ResponseValue>c3c3abd1-84c3-4017-a2e3-3755c924e338</com:ResponseValue>
+</xml-fragment>
+[DEBUG 17:23:15 ChorGlimpseConsumer] isQoSComplexEvent() : Rule name = AddReplica
+[DEBUG 17:23:15 ChorGlimpseConsumer] isQoSComplexEvent() : return value = true
+[DEBUG 17:23:15 ComplexEventResponseHandler] Loading handler (AddReplica, Choreography [id=1, choreographySpec=ChoreographySpec [deployableServiceSpecs=[DeployableServiceSpec [name=airline, packageUri=http://www.ime.usp.br/~tfurtado/downloads/airline.war, packageType=TOMCAT, endpointName=airline, port=8080, cloudAccount=null, numberOfInstances=1, version=0.1, roles= [airline]], DeployableServiceSpec [name=travelagency, packageUri=http://www.ime.usp.br/~tfurtado/downloads/travelagency.war, packageType=TOMCAT, endpointName=travelagency, port=8080, cloudAccount=null, numberOfInstances=2, version=0.1, roles= [travelagency]]], legacyServiceSpecs=[]], deployableServices=[DeployableService [UUID=c3c3abd1-84c3-4017-a2e3-3755c924e338, specName=airline, serviceInstances=http://54.89.103.144:8080/569eb7ea-025b-4e28-a91d-1f67b69a0ee1/airline; ], DeployableService [UUID=3189fea9-1a95-4e64-96ce-499a773da35f, specName=travelagency, serviceInstances=http://54.91.223.156:8080/2b4b5d52-1ff2-4025-942f-34e96452fad4/travelagency; ]], legacyServices=[]], c3c3abd1-84c3-4017-a2e3-3755c924e338)
+[DEBUG 17:23:15 ComplexEventResponseHandler] Handling event AddReplica for chor Choreography [id=1, choreographySpec=ChoreographySpec [deployableServiceSpecs=[DeployableServiceSpec [name=airline, packageUri=http://www.ime.usp.br/~tfurtado/downloads/airline.war, packageType=TOMCAT, endpointName=airline, port=8080, cloudAccount=null, numberOfInstances=1, version=0.1, roles= [airline]], DeployableServiceSpec [name=travelagency, packageUri=http://www.ime.usp.br/~tfurtado/downloads/travelagency.war, packageType=TOMCAT, endpointName=travelagency, port=8080, cloudAccount=null, numberOfInstances=2, version=0.1, roles= [travelagency]]], legacyServiceSpecs=[]], deployableServices=[DeployableService [UUID=c3c3abd1-84c3-4017-a2e3-3755c924e338, specName=airline, serviceInstances=http://54.89.103.144:8080/569eb7ea-025b-4e28-a91d-1f67b69a0ee1/airline; ], DeployableService [UUID=3189fea9-1a95-4e64-96ce-499a773da35f, specName=travelagency, serviceInstances=http://54.91.223.156:8080/2b4b5d52-1ff2-4025-942f-34e96452fad4/travelagency; ]], legacyServices=[]]; service is c3c3abd1-84c3-4017-a2e3-3755c924e338
+[DEBUG 17:23:15 AddReplica] Found service spec. Going to increase number of instances
+[INFO 17:23:15 AddReplica] Going to update chor with spec: ChoreographySpec [deployableServiceSpecs=[DeployableServiceSpec [name=airline, packageUri=http://www.ime.usp.br/~tfurtado/downloads/airline.war, packageType=TOMCAT, endpointName=airline, port=8080, cloudAccount=null, numberOfInstances=2, version=0.1, roles= [airline]], DeployableServiceSpec [name=travelagency, packageUri=http://www.ime.usp.br/~tfurtado/downloads/travelagency.war, packageType=TOMCAT, endpointName=travelagency, port=8080, cloudAccount=null, numberOfInstances=2, version=0.1, roles= [travelagency]]], legacyServiceSpecs=[]]
+[INFO 17:23:15 EEImpl] Requested to update choreography 1
+[INFO 17:23:15 EEImpl] Requested to update choreography with the same spec that already have
+[INFO 17:23:15 AddReplica] Enacting choreography
+[INFO 17:23:15 ChoreographyEnacter] Starting enactment; chorId= 1
+[DEBUG 17:23:17 JCloudsCloudProvider] Creating node...
+[INFO 17:23:17 JCloudsCloudProvider] Creating Template with image ID: us-east-1/ami-3337675a; hardware ID: m1.small
+[DEBUG 17:23:53 JCloudsCloudProvider$CreateNodeTask] Node [id=us-east-1/i-04c9142f, ip=54.91.149.238] created
+[DEBUG 17:23:58 SshWaiter$SshWaiterCallable] Trying SSH into 54.91.149.238 again in 5 seconds
+[DEBUG 17:24:08 SshWaiter$SshWaiterCallable] Trying SSH into 54.91.149.238 again in 5 seconds
+[DEBUG 17:24:13 SshWaiter$SshWaiterCallable] Trying SSH into 54.91.149.238 again in 5 seconds
+[DEBUG 17:24:18 SshWaiter$SshWaiterCallable] Trying SSH into 54.91.149.238 again in 5 seconds
+[INFO 17:24:25 NodeBootstrapper] Bootstrapping 54.91.149.238
+[INFO 17:25:08 NodeBootstrapper] Bootstrap completed at Node [id=us-east-1/i-04c9142f, ip=54.91.149.238]
+[INFO 17:25:08 ServiceDeploymentPreparer] Selected nodes to airline: [Node [id=us-east-1/i-04c9142f, ip=54.91.149.238]]
+[INFO 17:25:11 NodesUpdater] Going to update nodes of choreography 1
+[WARN 17:25:11 LogUtils] Application {http://rest.ee.choreos.ow2.org/}ChorResource has thrown exception, unwinding now
+org.apache.cxf.interceptor.Fault
+	at org.apache.cxf.service.invoker.AbstractInvoker.createFault(AbstractInvoker.java:155)
+	at org.apache.cxf.service.invoker.AbstractInvoker.invoke(AbstractInvoker.java:121)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:167)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:94)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor$1.run(ServiceInvokerInterceptor.java:58)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor.handleMessage(ServiceInvokerInterceptor.java:94)
+	at org.apache.cxf.phase.PhaseInterceptorChain.doIntercept(PhaseInterceptorChain.java:263)
+	at org.apache.cxf.transport.ChainInitiationObserver.onMessage(ChainInitiationObserver.java:123)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPDestination.serviceRequest(JettyHTTPDestination.java:344)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPDestination.doService(JettyHTTPDestination.java:310)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPHandler.handle(JettyHTTPHandler.java:72)
+	at org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:943)
+	at org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:879)
+	at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:117)
+	at org.eclipse.jetty.server.handler.ContextHandlerCollection.handle(ContextHandlerCollection.java:250)
+	at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:110)
+	at org.eclipse.jetty.server.Server.handle(Server.java:349)
+	at org.eclipse.jetty.server.HttpConnection.handleRequest(HttpConnection.java:441)
+	at org.eclipse.jetty.server.HttpConnection$RequestHandler.headerComplete(HttpConnection.java:919)
+	at org.eclipse.jetty.http.HttpParser.parseNext(HttpParser.java:582)
+	at org.eclipse.jetty.http.HttpParser.parseAvailable(HttpParser.java:218)
+	at org.eclipse.jetty.server.AsyncHttpConnection.handle(AsyncHttpConnection.java:51)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint.handle(SelectChannelEndPoint.java:586)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint$1.run(SelectChannelEndPoint.java:44)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:598)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$3.run(QueuedThreadPool.java:533)
+	at java.lang.Thread.run(Thread.java:744)
+Caused by: java.lang.IllegalArgumentException
+	at java.util.concurrent.ThreadPoolExecutor.<init>(ThreadPoolExecutor.java:1310)
+	at java.util.concurrent.ThreadPoolExecutor.<init>(ThreadPoolExecutor.java:1198)
+	at java.util.concurrent.Executors.newFixedThreadPool(Executors.java:89)
+	at org.ow2.choreos.ee.nodes.cm.NodesUpdater.submitUpdates(NodesUpdater.java:74)
+	at org.ow2.choreos.ee.nodes.cm.NodesUpdater.updateNodes(NodesUpdater.java:46)
+	at org.ow2.choreos.ee.ServicesDeployer.updateNodes(ServicesDeployer.java:78)
+	at org.ow2.choreos.ee.ServicesDeployer.deployServices(ServicesDeployer.java:39)
+	at org.ow2.choreos.ee.ChoreographyEnacter.deploy(ChoreographyEnacter.java:48)
+	at org.ow2.choreos.ee.ChoreographyEnacter.enact(ChoreographyEnacter.java:28)
+	at org.ow2.choreos.ee.EEImpl.deployChoreography(EEImpl.java:40)
+	at org.ow2.choreos.ee.rest.ChorResource.deploy(ChorResource.java:139)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.cxf.service.invoker.AbstractInvoker.performInvocation(AbstractInvoker.java:173)
+	at org.apache.cxf.service.invoker.AbstractInvoker.invoke(AbstractInvoker.java:89)
+	... 25 more
+[WARN 17:25:11 PhaseInterceptorChain] Exception in handleFault on interceptor org.apache.cxf.binding.xml.interceptor.XMLFaultOutInterceptor@14374302
+org.apache.cxf.interceptor.Fault
+	at org.apache.cxf.service.invoker.AbstractInvoker.createFault(AbstractInvoker.java:155)
+	at org.apache.cxf.service.invoker.AbstractInvoker.invoke(AbstractInvoker.java:121)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:167)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:94)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor$1.run(ServiceInvokerInterceptor.java:58)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor.handleMessage(ServiceInvokerInterceptor.java:94)
+	at org.apache.cxf.phase.PhaseInterceptorChain.doIntercept(PhaseInterceptorChain.java:263)
+	at org.apache.cxf.transport.ChainInitiationObserver.onMessage(ChainInitiationObserver.java:123)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPDestination.serviceRequest(JettyHTTPDestination.java:344)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPDestination.doService(JettyHTTPDestination.java:310)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPHandler.handle(JettyHTTPHandler.java:72)
+	at org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:943)
+	at org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:879)
+	at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:117)
+	at org.eclipse.jetty.server.handler.ContextHandlerCollection.handle(ContextHandlerCollection.java:250)
+	at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:110)
+	at org.eclipse.jetty.server.Server.handle(Server.java:349)
+	at org.eclipse.jetty.server.HttpConnection.handleRequest(HttpConnection.java:441)
+	at org.eclipse.jetty.server.HttpConnection$RequestHandler.headerComplete(HttpConnection.java:919)
+	at org.eclipse.jetty.http.HttpParser.parseNext(HttpParser.java:582)
+	at org.eclipse.jetty.http.HttpParser.parseAvailable(HttpParser.java:218)
+	at org.eclipse.jetty.server.AsyncHttpConnection.handle(AsyncHttpConnection.java:51)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint.handle(SelectChannelEndPoint.java:586)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint$1.run(SelectChannelEndPoint.java:44)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:598)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$3.run(QueuedThreadPool.java:533)
+	at java.lang.Thread.run(Thread.java:744)
+Caused by: java.lang.IllegalArgumentException
+	at java.util.concurrent.ThreadPoolExecutor.<init>(ThreadPoolExecutor.java:1310)
+	at java.util.concurrent.ThreadPoolExecutor.<init>(ThreadPoolExecutor.java:1198)
+	at java.util.concurrent.Executors.newFixedThreadPool(Executors.java:89)
+	at org.ow2.choreos.ee.nodes.cm.NodesUpdater.submitUpdates(NodesUpdater.java:74)
+	at org.ow2.choreos.ee.nodes.cm.NodesUpdater.updateNodes(NodesUpdater.java:46)
+	at org.ow2.choreos.ee.ServicesDeployer.updateNodes(ServicesDeployer.java:78)
+	at org.ow2.choreos.ee.ServicesDeployer.deployServices(ServicesDeployer.java:39)
+	at org.ow2.choreos.ee.ChoreographyEnacter.deploy(ChoreographyEnacter.java:48)
+	at org.ow2.choreos.ee.ChoreographyEnacter.enact(ChoreographyEnacter.java:28)
+	at org.ow2.choreos.ee.EEImpl.deployChoreography(EEImpl.java:40)
+	at org.ow2.choreos.ee.rest.ChorResource.deploy(ChorResource.java:139)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.cxf.service.invoker.AbstractInvoker.performInvocation(AbstractInvoker.java:173)
+	at org.apache.cxf.service.invoker.AbstractInvoker.invoke(AbstractInvoker.java:89)
+	... 25 more
+[ERROR 17:25:11 AbstractFaultChainInitiatorObserver] Error occurred during error handling, give up!
+org.apache.cxf.interceptor.Fault
+	at org.apache.cxf.service.invoker.AbstractInvoker.createFault(AbstractInvoker.java:155)
+	at org.apache.cxf.service.invoker.AbstractInvoker.invoke(AbstractInvoker.java:121)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:167)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:94)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor$1.run(ServiceInvokerInterceptor.java:58)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor.handleMessage(ServiceInvokerInterceptor.java:94)
+	at org.apache.cxf.phase.PhaseInterceptorChain.doIntercept(PhaseInterceptorChain.java:263)
+	at org.apache.cxf.transport.ChainInitiationObserver.onMessage(ChainInitiationObserver.java:123)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPDestination.serviceRequest(JettyHTTPDestination.java:344)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPDestination.doService(JettyHTTPDestination.java:310)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPHandler.handle(JettyHTTPHandler.java:72)
+	at org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:943)
+	at org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:879)
+	at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:117)
+	at org.eclipse.jetty.server.handler.ContextHandlerCollection.handle(ContextHandlerCollection.java:250)
+	at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:110)
+	at org.eclipse.jetty.server.Server.handle(Server.java:349)
+	at org.eclipse.jetty.server.HttpConnection.handleRequest(HttpConnection.java:441)
+	at org.eclipse.jetty.server.HttpConnection$RequestHandler.headerComplete(HttpConnection.java:919)
+	at org.eclipse.jetty.http.HttpParser.parseNext(HttpParser.java:582)
+	at org.eclipse.jetty.http.HttpParser.parseAvailable(HttpParser.java:218)
+	at org.eclipse.jetty.server.AsyncHttpConnection.handle(AsyncHttpConnection.java:51)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint.handle(SelectChannelEndPoint.java:586)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint$1.run(SelectChannelEndPoint.java:44)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:598)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$3.run(QueuedThreadPool.java:533)
+	at java.lang.Thread.run(Thread.java:744)
+Caused by: java.lang.IllegalArgumentException
+	at java.util.concurrent.ThreadPoolExecutor.<init>(ThreadPoolExecutor.java:1310)
+	at java.util.concurrent.ThreadPoolExecutor.<init>(ThreadPoolExecutor.java:1198)
+	at java.util.concurrent.Executors.newFixedThreadPool(Executors.java:89)
+	at org.ow2.choreos.ee.nodes.cm.NodesUpdater.submitUpdates(NodesUpdater.java:74)
+	at org.ow2.choreos.ee.nodes.cm.NodesUpdater.updateNodes(NodesUpdater.java:46)
+	at org.ow2.choreos.ee.ServicesDeployer.updateNodes(ServicesDeployer.java:78)
+	at org.ow2.choreos.ee.ServicesDeployer.deployServices(ServicesDeployer.java:39)
+	at org.ow2.choreos.ee.ChoreographyEnacter.deploy(ChoreographyEnacter.java:48)
+	at org.ow2.choreos.ee.ChoreographyEnacter.enact(ChoreographyEnacter.java:28)
+	at org.ow2.choreos.ee.EEImpl.deployChoreography(EEImpl.java:40)
+	at org.ow2.choreos.ee.rest.ChorResource.deploy(ChorResource.java:139)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.cxf.service.invoker.AbstractInvoker.performInvocation(AbstractInvoker.java:173)
+	at org.apache.cxf.service.invoker.AbstractInvoker.invoke(AbstractInvoker.java:89)
+	... 25 more
+[WARN 17:25:11 HttpConnection] /enactmentengine/chors/1/deployment
+java.lang.RuntimeException: org.apache.cxf.interceptor.Fault
+	at org.apache.cxf.interceptor.AbstractFaultChainInitiatorObserver.onMessage(AbstractFaultChainInitiatorObserver.java:116)
+	at org.apache.cxf.phase.PhaseInterceptorChain.doIntercept(PhaseInterceptorChain.java:323)
+	at org.apache.cxf.transport.ChainInitiationObserver.onMessage(ChainInitiationObserver.java:123)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPDestination.serviceRequest(JettyHTTPDestination.java:344)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPDestination.doService(JettyHTTPDestination.java:310)
+	at org.apache.cxf.transport.http_jetty.JettyHTTPHandler.handle(JettyHTTPHandler.java:72)
+	at org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:943)
+	at org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:879)
+	at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:117)
+	at org.eclipse.jetty.server.handler.ContextHandlerCollection.handle(ContextHandlerCollection.java:250)
+	at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:110)
+	at org.eclipse.jetty.server.Server.handle(Server.java:349)
+	at org.eclipse.jetty.server.HttpConnection.handleRequest(HttpConnection.java:441)
+	at org.eclipse.jetty.server.HttpConnection$RequestHandler.headerComplete(HttpConnection.java:919)
+	at org.eclipse.jetty.http.HttpParser.parseNext(HttpParser.java:582)
+	at org.eclipse.jetty.http.HttpParser.parseAvailable(HttpParser.java:218)
+	at org.eclipse.jetty.server.AsyncHttpConnection.handle(AsyncHttpConnection.java:51)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint.handle(SelectChannelEndPoint.java:586)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint$1.run(SelectChannelEndPoint.java:44)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:598)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$3.run(QueuedThreadPool.java:533)
+	at java.lang.Thread.run(Thread.java:744)
+Caused by: org.apache.cxf.interceptor.Fault
+	at org.apache.cxf.service.invoker.AbstractInvoker.createFault(AbstractInvoker.java:155)
+	at org.apache.cxf.service.invoker.AbstractInvoker.invoke(AbstractInvoker.java:121)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:167)
+	at org.apache.cxf.jaxrs.JAXRSInvoker.invoke(JAXRSInvoker.java:94)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor$1.run(ServiceInvokerInterceptor.java:58)
+	at org.apache.cxf.interceptor.ServiceInvokerInterceptor.handleMessage(ServiceInvokerInterceptor.java:94)
+	at org.apache.cxf.phase.PhaseInterceptorChain.doIntercept(PhaseInterceptorChain.java:263)
+	... 20 more
+Caused by: java.lang.IllegalArgumentException
+	at java.util.concurrent.ThreadPoolExecutor.<init>(ThreadPoolExecutor.java:1310)
+	at java.util.concurrent.ThreadPoolExecutor.<init>(ThreadPoolExecutor.java:1198)
+	at java.util.concurrent.Executors.newFixedThreadPool(Executors.java:89)
+	at org.ow2.choreos.ee.nodes.cm.NodesUpdater.submitUpdates(NodesUpdater.java:74)
+	at org.ow2.choreos.ee.nodes.cm.NodesUpdater.updateNodes(NodesUpdater.java:46)
+	at org.ow2.choreos.ee.ServicesDeployer.updateNodes(ServicesDeployer.java:78)
+	at org.ow2.choreos.ee.ServicesDeployer.deployServices(ServicesDeployer.java:39)
+	at org.ow2.choreos.ee.ChoreographyEnacter.deploy(ChoreographyEnacter.java:48)
+	at org.ow2.choreos.ee.ChoreographyEnacter.enact(ChoreographyEnacter.java:28)
+	at org.ow2.choreos.ee.EEImpl.deployChoreography(EEImpl.java:40)
+	at org.ow2.choreos.ee.rest.ChorResource.deploy(ChorResource.java:139)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.apache.cxf.service.invoker.AbstractInvoker.performInvocation(AbstractInvoker.java:173)
+	at org.apache.cxf.service.invoker.AbstractInvoker.invoke(AbstractInvoker.java:89)
+	... 25 more
+[ERROR 17:25:11 AddReplica] POST /chors/1/deployment has failed (Error 500)
+[DEBUG 17:25:11 ComplexEventResponseHandler] Event handled!
+[DEBUG 17:27:27 ChorGlimpseConsumer] <xml-fragment xmlns:com="http://labse.isti.cnr.it/glimpse/xml/ComplexEventResponse">
+  <com:RuleName>AddReplica</com:RuleName>
+  <com:ResponseKey>1</com:ResponseKey>
+  <com:ResponseValue>3189fea9-1a95-4e64-96ce-499a773da35f</com:ResponseValue>
+</xml-fragment>
+[DEBUG 17:27:27 ChorGlimpseConsumer] isQoSComplexEvent() : Rule name = AddReplica
+[DEBUG 17:27:27 ChorGlimpseConsumer] isQoSComplexEvent() : return value = true
+[DEBUG 17:27:27 ComplexEventResponseHandler] Loading handler (AddReplica, Choreography [id=1, choreographySpec=ChoreographySpec [deployableServiceSpecs=[DeployableServiceSpec [name=airline, packageUri=http://www.ime.usp.br/~tfurtado/downloads/airline.war, packageType=TOMCAT, endpointName=airline, port=8080, cloudAccount=null, numberOfInstances=2, version=0.1, roles= [airline]], DeployableServiceSpec [name=travelagency, packageUri=http://www.ime.usp.br/~tfurtado/downloads/travelagency.war, packageType=TOMCAT, endpointName=travelagency, port=8080, cloudAccount=null, numberOfInstances=2, version=0.1, roles= [travelagency]]], legacyServiceSpecs=[]], deployableServices=[DeployableService [UUID=c3c3abd1-84c3-4017-a2e3-3755c924e338, specName=airline, serviceInstances=http://54.89.103.144:8080/569eb7ea-025b-4e28-a91d-1f67b69a0ee1/airline; ], DeployableService [UUID=3189fea9-1a95-4e64-96ce-499a773da35f, specName=travelagency, serviceInstances=http://54.91.223.156:8080/2b4b5d52-1ff2-4025-942f-34e96452fad4/travelagency; ]], legacyServices=[]], 3189fea9-1a95-4e64-96ce-499a773da35f)
+[DEBUG 17:27:27 ComplexEventResponseHandler] Handling event AddReplica for chor Choreography [id=1, choreographySpec=ChoreographySpec [deployableServiceSpecs=[DeployableServiceSpec [name=airline, packageUri=http://www.ime.usp.br/~tfurtado/downloads/airline.war, packageType=TOMCAT, endpointName=airline, port=8080, cloudAccount=null, numberOfInstances=2, version=0.1, roles= [airline]], DeployableServiceSpec [name=travelagency, packageUri=http://www.ime.usp.br/~tfurtado/downloads/travelagency.war, packageType=TOMCAT, endpointName=travelagency, port=8080, cloudAccount=null, numberOfInstances=2, version=0.1, roles= [travelagency]]], legacyServiceSpecs=[]], deployableServices=[DeployableService [UUID=c3c3abd1-84c3-4017-a2e3-3755c924e338, specName=airline, serviceInstances=http://54.89.103.144:8080/569eb7ea-025b-4e28-a91d-1f67b69a0ee1/airline; ], DeployableService [UUID=3189fea9-1a95-4e64-96ce-499a773da35f, specName=travelagency, serviceInstances=http://54.91.223.156:8080/2b4b5d52-1ff2-4025-942f-34e96452fad4/travelagency; ]], legacyServices=[]]; service is 3189fea9-1a95-4e64-96ce-499a773da35f
+[DEBUG 17:27:27 AddReplica] Found service spec. Going to increase number of instances
+[INFO 17:27:27 AddReplica] Going to update chor with spec: ChoreographySpec [deployableServiceSpecs=[DeployableServiceSpec [name=airline, packageUri=http://www.ime.usp.br/~tfurtado/downloads/airline.war, packageType=TOMCAT, endpointName=airline, port=8080, cloudAccount=null, numberOfInstances=2, version=0.1, roles= [airline]], DeployableServiceSpec [name=travelagency, packageUri=http://www.ime.usp.br/~tfurtado/downloads/travelagency.war, packageType=TOMCAT, endpointName=travelagency, port=8080, cloudAccount=null, numberOfInstances=3, version=0.1, roles= [travelagency]]], legacyServiceSpecs=[]]
+[INFO 17:27:27 EEImpl] Requested to update choreography 1
+[INFO 17:27:27 EEImpl] Requested to update choreography with the same spec that already have
+[INFO 17:27:27 AddReplica] Enacting choreography
+[INFO 17:27:27 ChoreographyEnacter] Starting enactment; chorId= 1
+[DEBUG 17:27:29 JCloudsCloudProvider] Creating node...
+[INFO 17:27:30 JCloudsCloudProvider] Creating Template with image ID: us-east-1/ami-3337675a; hardware ID: m1.small
+[DEBUG 17:28:07 JCloudsCloudProvider$CreateNodeTask] Node [id=us-east-1/i-86c71aad, ip=54.91.144.233] created
+[DEBUG 17:28:12 SshWaiter$SshWaiterCallable] Trying SSH into 54.91.144.233 again in 5 seconds
+[DEBUG 17:28:22 SshWaiter$SshWaiterCallable] Trying SSH into 54.91.144.233 again in 5 seconds
+[DEBUG 17:28:27 SshWaiter$SshWaiterCallable] Trying SSH into 54.91.144.233 again in 5 seconds
+[DEBUG 17:28:32 SshWaiter$SshWaiterCallable] Trying SSH into 54.91.144.233 again in 5 seconds

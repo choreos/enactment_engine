@@ -19,60 +19,84 @@
 			@timestamp ( timeStamp )
 		end
 
-		declare ResponseTimeEvent@{class_version}
+		declare ResponseTimeEvent
 			@role ( event )
-			@expires ( 30s )
+			@expires ( 2m )
 			value : float
 			ip : String
 			instance: String
 		end
 
-		declare CpuUserEvent@{class_version}
+		declare CpuUserEvent
 			@role ( event )
-			@expires ( 30s )
 			value : float
 			ip : String
 		end
 
-		declare DeployStatus@{class_version}
+		declare DeployStatus
 			ip 		 : String
 			instance : String
 			service  : String
 			chor     : String
 		end
+		
+		declare SLA
+			metric 		  : String 
+			service_or_ip : String
+			limit         : float
+			acc_perc      : float
+		end
+		
+		declare Policy
+			service : String
+			ip      : String
+			policy  : String
+		end
 
 		<!-- 
 			processed events
 		-->
-		declare HighReponseTime@{class_version}
+		declare HighResponseTime
 			@role 	 ( event )
-			@expires ( 7m )
+			@expires ( 2m )
 			ip       : String
 			service  : String
+			policy   : String
 		end
 
-		declare LowCpuUser@{class_version}
+		declare LowCpuUser
 			@role    ( event )
-			@expires ( 1m )
 			ip       : String
 			service  : String
+			policy   : String
 		end
 
-		declare HighCpuUser@{class_version}
+		declare HighCpuUser
 			@role    ( event )
-			@expires ( 1m )
 			ip       : String
+			policy   : String
 		end
 
-		declare ReconfProcess@{class_version}
+		declare ReconfProcess
 			@role ( event )
-			@expires( 8m )
+			@expires( 7m )
 			service : String
 		end
 		
-		declare FinishedUpdate@{class_version}
-			@role(event)
-			@expires( 2m )
+		declare FinishedUpdate
+			@role ( event )
+			@expires ( 2m )
+			service : String
+		end
+		
+		declare FinishedUpdate2
+			@role ( event )
+			@expires ( 10s )
+			service : String
+		end
+		
+		declare AvoidInstantRemoval
+			@expires ( 5m )
 			service : String
 		end
 
@@ -93,6 +117,8 @@
 		@{glimpse_reconfiguration_rules}
 		
 		<!-- ==================================================================== -->
+		
+		@{glimpse_vertical_reconfiguration_rules}
 
 	</RuleBody>
 

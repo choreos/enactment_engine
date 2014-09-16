@@ -57,13 +57,13 @@ function prepare_node() {
 function create_swap_storage() {
     SWAPFILE=/swap_file
     # Create file storage
-    sudo dd if=/dev/zero of=/swap_file bs=1024 count=1048576
+    sudo dd if=/dev/zero of=$SWAPFILE bs=1024 count=1048576
 
     # Set Up a linux swap file
-    sudo mkswap /swap_file
-    sudo chown root:root /swap_file
-    sudo chmod 0600 /swap_file
-    sudo echo "$SWAPFILE swap swap defaults 0 0" >> /etc/fstab
+    sudo mkswap $SWAPFILE
+    sudo chown root:root $SWAPFILE
+    sudo chmod 0600 $SWAPFILE
+    sudo echo "$SWAPFILE swap swap defaults 0 0" >> $SWAPFILE
     sudo swapon $SWAPFILE
 }
 

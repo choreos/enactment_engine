@@ -5,8 +5,8 @@ import it.cnr.isti.labse.glimpse.xml.complexEventResponse.ComplexEventResponse;
 import javax.jms.JMSException;
 
 import org.apache.log4j.Logger;
-import org.ow2.choreos.ee.ChoreographyContext;
-import org.ow2.choreos.ee.GlimpseProbe;
+import org.ow2.choreos.chors.ChoreographyNotFoundException;
+import org.ow2.choreos.chors.datamodel.Choreography;
 
 public class ComplexEventResponseHandler {
 
@@ -15,17 +15,15 @@ public class ComplexEventResponseHandler {
     private Logger logger = Logger.getLogger("reconfLogger");
     private ComplexEventResponse response;
     private HandlingEvent event;
-    private ChoreographyContext choreographyContext;
 
-    public ComplexEventResponseHandler(ChoreographyContext choreographyContext) {
-        this.choreographyContext = choreographyContext;
+    public ComplexEventResponseHandler() {
+
     }
 
-    public void handle(ComplexEventResponse responseFromMonitoring) throws JMSException {
+    public void handle(ComplexEventResponse responseFromMonitoring) throws JMSException, ChoreographyNotFoundException {
         setUp(responseFromMonitoring);
         loadHandler();
         handles();
-        GlimpseProbe.getInstance().sendUpdateEvent("", "finished_update", choreographyContext.getChoreography().getId(), response.getResponseValue(), "all");
     }
 
     private void handles() {
@@ -35,14 +33,16 @@ public class ComplexEventResponseHandler {
         logger.debug("Event handled!");
     }
 
-    private void setUp(ComplexEventResponse responseFromMonitoring) throws JMSException {
+    private void setUp(ComplexEventResponse responseFromMonitoring) throws JMSException, ChoreographyNotFoundException {
         response = responseFromMonitoring;
         String ruleMatched = response.getRuleName();
         String serviceId = response.getResponseValue();
+        String chorId = response.getResponseKey();
         
-        //GlimpseProbe.getInstance().sendUpdateEvent("", "updating", choreographyContext.getChoreography().getId(), serviceId, "all");
+        // get chor
+        Choreography chor = (new  ChoreographyRegistryHelper()).getChorClient().getChoreography(chorId);
         
-        event = new HandlingEvent(ruleMatched, choreographyContext.getChoreography(), serviceId);
+        event = new HandlingEvent(ruleMatched, chor, serviceId);
     }
 
     @SuppressWarnings("unchecked")

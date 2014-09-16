@@ -4,6 +4,8 @@
 
 package org.ow2.choreos.chors;
 
+import java.util.List;
+
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
 
@@ -28,6 +30,13 @@ public interface EnactmentEngine {
      *             if <code>chorId</code> does not exist
      */
     public Choreography getChoreography(String chorId) throws ChoreographyNotFoundException;
+    
+    /**
+     * Retrieve a list of enacted choreographies
+     * 
+     * @return a {@link List} of {@link Choreography} objects
+     */
+    //public ChoreographyList getChoreographies();
 
     /**
      * Deploys a choreography

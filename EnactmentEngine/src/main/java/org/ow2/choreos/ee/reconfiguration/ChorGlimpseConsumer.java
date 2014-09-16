@@ -13,10 +13,9 @@ import java.util.Properties;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
-import javax.jms.TextMessage;
 
 import org.apache.log4j.Logger;
-import org.ow2.choreos.ee.ChoreographyContext;
+import org.ow2.choreos.chors.ChoreographyNotFoundException;
 
 class ChorGlimpseConsumer extends GlimpseAbstractConsumer {
 
@@ -24,17 +23,11 @@ class ChorGlimpseConsumer extends GlimpseAbstractConsumer {
 
     private ComplexEventExceptionHandler complexEventExceptionHandler;
     private ComplexEventResponseHandler complexEventResponseHandler;
-    private ChoreographyContext choreographyContext;
 
-    public ChorGlimpseConsumer(Properties settings, String plainTextRule, ChoreographyContext choreographyContext) {
+    public ChorGlimpseConsumer(Properties settings, String plainTextRule) {
         super(settings, plainTextRule);
-
-        this.choreographyContext = choreographyContext;
-        
-        logger.info("Glimpse Consumer for contex " + this.choreographyContext);
-        
         complexEventExceptionHandler = new ComplexEventExceptionHandler();
-        complexEventResponseHandler = new ComplexEventResponseHandler(choreographyContext);
+        complexEventResponseHandler = new ComplexEventResponseHandler();
     }
 
     @Override
@@ -52,6 +45,8 @@ class ChorGlimpseConsumer extends GlimpseAbstractConsumer {
             logger.error("Error while casting message received. It is not a ObjectMessage instance");
             logger.error("Message is : " + arg0);
             logger.fatal(asd);
+        } catch (ChoreographyNotFoundException e) {
+            logger.error("Choreography not found");
         }
     }
 

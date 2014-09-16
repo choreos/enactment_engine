@@ -19,7 +19,7 @@
 default["tomcat"]["port"] = 8080
 default["tomcat"]["ssl_port"] = 8443
 default["tomcat"]["ajp_port"] = 8009
-default["tomcat"]["java_options"] = "-Xmx512M -XX:MaxPermSize=256m -Djava.awt.headless=true"
+default["tomcat"]["java_options"] = "-server -Xms256M -Xmx1024M -XX:PermSize=128M -XX:MaxPermSize=512m -Djava.awt.headless=true"
 default["tomcat"]["use_security_manager"] = false
 default["tomcat"]["authbind"] = "no"
 default["tomcat"]["libs_url"] = "http://valinhos.ime.usp.br:54080/tomcat_choreos_libs/tomcat_libs.tar.gz"

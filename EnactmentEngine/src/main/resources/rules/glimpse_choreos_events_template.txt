@@ -1,5 +1,4 @@
-
-		rule "CpuUser@{class_version}"
+		rule "CpuUser"
 		no-loop true
 		salience 100
 		dialect "mvel"
@@ -17,7 +16,7 @@
 			if (m1.find())
 				f = Float.parseFloat(m1.group(0).split(": ")[1]);
 			
-			insert (new CpuUserEvent@{class_version}(f,$aEvent.getMachineIP()));
+			insert (new CpuUserEvent(f,$aEvent.getMachineIP()));
 
 			ResponseDispatcher.LogViolation( "rule: " + drools.getRule().getName(),
 				" from: " + (String) $aEvent.getMachineIP(), " meas: " + f );
@@ -25,7 +24,7 @@
 			retract ($aEvent);
 		end
 
-		rule "ResponseTime@{class_version}"
+		rule "ResponseTime"
 		no-loop true
 		salience 104
 		dialect "mvel"
@@ -38,7 +37,7 @@
 			update($aEvent);
 			float meas = Float.parseFloat((String) $aEvent.getEventData());
 			
-			insert (new ResponseTimeEvent@{class_version}(meas,
+			insert (new ResponseTimeEvent(meas,
 				(String) $aEvent.getMachineIP(),
 				(String) $aEvent.getServiceSource())
 			);
@@ -48,8 +47,44 @@
 
 			retract ($aEvent);
 		end
+		
+		rule "ChoreographyUndeployedService"
+		no-loop true
+		salience 98
+		dialect "mvel"
 
-		rule "ChoreographyDeployStatus@{class_version}"
+		when
+			$aEvent : GlimpseBaseEventChoreos( this.isConsumed == false,this.isException == false, this.getEventName == "unpublish_service" );
+			$dStatus : DeployStatus(service == $aEvent.getEventData());
+		then
+			ResponseDispatcher.LogViolation( "rule: " + drools.getRule().getName(),
+				" from: " + (String) $aEvent.getServiceSource(), " meas: " + (String) $aEvent.getEventData() );
+				
+			$aEvent.setConsumed(true);
+			update($aEvent);
+			retract($aEvent);
+			retract($dStatus);
+		end
+		
+		rule "ChoreographyUndeployedInstance"
+		no-loop true
+		salience 99
+		dialect "mvel"
+
+		when
+			$aEvent : GlimpseBaseEventChoreos( this.isConsumed == false,this.isException == false, this.getEventName == "unpublish" );
+			$dStatus : DeployStatus(instance == $aEvent.getEventData());
+		then
+			ResponseDispatcher.LogViolation( "rule: " + drools.getRule().getName(),
+				" from: " + (String) $aEvent.getServiceSource(), " meas: " + (String) $aEvent.getEventData() );
+				
+			$aEvent.setConsumed(true);
+			update($aEvent);
+			retract($aEvent);
+			retract($dStatus);
+		end
+
+		rule "ChoreographyDeployStatus"
 		no-loop true
 		salience 102
 		dialect "mvel"
@@ -61,7 +96,7 @@
 			$aEvent.setConsumed(true);
 			update($aEvent);
 
-			insert ( new DeployStatus@{class_version}( (String) $aEvent.getMachineIP(),
+			insert ( new DeployStatus( (String) $aEvent.getMachineIP(),
 				(String) $aEvent.getEventData(), (String) $aEvent.getServiceSource(),
 				(String) $aEvent.getChoreographySource()) );
 
@@ -71,22 +106,159 @@
 			retract($aEvent);
 		end
 		
-		rule "ChoreographyFinishedUpdate@{class_version}"
+		rule "ChoreographyFinishedUpdate"
 		no-loop true
 		salience 103
 		dialect "mvel"
 
 		when
 			$aEvent : GlimpseBaseEventChoreos( this.isConsumed == false,
-				this.isException == false, this.getEventName == "finished_update" );
+				this.isException == false, this.getEventName == "finished_update", this.getEventData() == "" );
 			
-			$bEvent : ReconfProcess@{class_version}(service == $aEvent.getServiceSource());
+			$bEvent : ReconfProcess(service == $aEvent.getServiceSource());
 		then
 			$aEvent.setConsumed(true);
 			update($aEvent);
+			
+			insert ( new FinishedUpdate2((String) $aEvent.getServiceSource()) );
 
 			ResponseDispatcher.LogViolation( "rule: " + drools.getRule().getName(),
 				" from: " + (String) $aEvent.getServiceSource(), " meas: " + (String) $aEvent.getEventData() );
+				
+			retract ($aEvent);
+			retract ($bEvent);
 
+		end
+		
+		rule "ChoreographyFinishedUpdateAndWait"
+		no-loop true
+		salience 113
+		dialect "mvel"
+
+		when
+			$aEvent : GlimpseBaseEventChoreos( this.isConsumed == false,
+				this.isException == false, this.getEventName == "finished_update", this.getEventData() == "wait" );
+			
+			$bEvent : ReconfProcess(service == $aEvent.getServiceSource());
+		then
+			$aEvent.setConsumed(true);
+			update($aEvent);
+	
+			insert ( new FinishedUpdate((String) $aEvent.getServiceSource()) );
+			//insert ( new AvoidInstantRemoval((String) $aEvent.getServiceSource()) );
+
+			ResponseDispatcher.LogViolation( "rule: " + drools.getRule().getName(),
+				" from: " + (String) $aEvent.getServiceSource(), " meas: " + (String) $aEvent.getEventData() );
+				
+			retract ($aEvent);
+			retract ($bEvent);
+
+		end
+		
+		rule "SLAMaxResponseTime"
+		no-loop true
+		salience 110
+		dialect "mvel"
+
+		when
+			$aEvent : GlimpseBaseEventChoreos( this.isConsumed == false,
+				this.isException == false, this.getEventName == "max_response_time" );
+		then
+			$aEvent.setConsumed(true);
+			update($aEvent);
+			float lim = Float.parseFloat( (String) $aEvent.getEventData() );
+			float acc = Float.parseFloat( (String) $aEvent.getChoreographySource() );
+			
+			insert (
+				new SLA("max_response_time",
+						(String) $aEvent.getServiceSource(),
+						lim,
+						acc)
+			);
+			
+			ResponseDispatcher.LogViolation( "rule: " + drools.getRule().getName(),
+				" from: " + (String) $aEvent.getServiceSource(), " lim: " + 
+								(String) $aEvent.getEventData() + "acc:" + (String) $aEvent.getChoreographySource());
+
+			retract ($aEvent);
+		end
+		
+		rule "SLAMinCPU"
+		no-loop true
+		salience 111
+		dialect "mvel"
+
+		when
+			$aEvent : GlimpseBaseEventChoreos( this.isConsumed == false,
+				this.isException == false, this.getEventName == "min_cpu_user" );
+		then
+			$aEvent.setConsumed(true);
+			update($aEvent);
+			float lim = Float.parseFloat( (String) $aEvent.getEventData() );
+			float acc = Float.parseFloat( (String) $aEvent.getChoreographySource() );
+			
+			insert (
+				new SLA("min_cpu_user",
+						(String) $aEvent.getServiceSource(),
+						lim,
+						acc)
+			);
+			
+			ResponseDispatcher.LogViolation( "rule: " + drools.getRule().getName(),
+				" from: " + (String) $aEvent.getServiceSource(), " lim: " + (String) $aEvent.getEventData() );
+
+			retract ($aEvent);
+		end
+		
+		rule "SLAMaxCPU"
+		no-loop true
+		salience 112
+		dialect "mvel"
+
+		when
+			$aEvent : GlimpseBaseEventChoreos( this.isConsumed == false,
+				this.isException == false, this.getEventName == "max_cpu_user" );
+		then
+			$aEvent.setConsumed(true);
+			update($aEvent);
+			float lim = Float.parseFloat( (String) $aEvent.getEventData() );
+			float acc = Float.parseFloat( (String) $aEvent.getChoreographySource() );
+			
+			insert (
+				new SLA("max_cpu_user",
+					(String) $aEvent.getServiceSource(),
+					lim,
+					acc)
+			);
+			
+			ResponseDispatcher.LogViolation( "rule: " + drools.getRule().getName(),
+				" from: " + (String) $aEvent.getServiceSource(), " limit: " + (String) $aEvent.getEventData() );
+
+			retract ($aEvent);
+		end
+		
+		rule "SLAReconfPolicy"
+		no-loop true
+		salience 110
+		dialect "mvel"
+
+		when
+			$aEvent : GlimpseBaseEventChoreos( this.isConsumed == false,
+				this.isException == false, this.getEventName == "policy" );
+		then
+			$aEvent.setConsumed(true);
+			update($aEvent);
+			
+			insert (
+				new Policy((String) $aEvent.getServiceSource(),
+						(String) $aEvent.getMachineIP(),
+						(String) $aEvent.getEventData())
+			);
+			
+			ResponseDispatcher.LogViolation( "rule: " + drools.getRule().getName(),
+				" from: " + (String) $aEvent.getServiceSource(), " policy: " + 
+								(String) $aEvent.getEventData());
+
+			retract ($aEvent);
 		end
 		

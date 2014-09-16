@@ -8,8 +8,6 @@ import org.junit.Test;
 import org.ow2.choreos.ee.services.preparer.PrepareDeploymentFailedException;
 import org.ow2.choreos.ee.services.preparer.ServiceUndeploymentPreparer;
 import org.ow2.choreos.ee.services.preparer.ServiceUndeploymentPreparerFactory;
-import org.ow2.choreos.ee.services.update.DecreaseNumberOfReplicas;
-import org.ow2.choreos.ee.services.update.UpdateActionFailedException;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;

@@ -35,7 +35,7 @@ template "/etc/tomcat6/server.xml" do
   group "root"
   mode "0644"
   variables({
-     :glimpseHost => "81.200.35.154"
+     :glimpseHost => "54.90.231.107"
   })
   notifies :restart, resources(:service => "tomcat")
 end

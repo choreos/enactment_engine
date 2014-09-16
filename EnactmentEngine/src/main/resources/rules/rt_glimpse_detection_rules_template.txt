@@ -1,31 +1,34 @@
 
-		rule "DetectHighResponseTime@{instance}_@{class_version}"
+		rule "DetectHighResponseTime"
 		no-loop true
 		salience 300
-		dialect "mvel"
 
 		when
-			$ev : ResponseTimeEvent@{class_version}(instance == "@{instance}");
+			$ev : ResponseTimeEvent();
+			
+			$depFc : DeployStatus(instance == $ev.instance);
+	
+			ResponseTimeEvent(instance == $ev.instance, this before[45s,1m] $ev);
+
+			$sla : SLA(metric == "max_response_time", service_or_ip == $depFc.service);
+			
+			$pol : Policy(service == $depFc.service);
 			
 			Number( $eventSum : doubleValue ) from accumulate(
-				$event : ResponseTimeEvent@{class_version}($ev.instance == instance),
+				$event : ResponseTimeEvent($ev.instance == instance) over window:time( 30s ),
 					count($event)
 			);
-			Number( intValue > $eventSum * @{acceptable_percentage} ) from accumulate(
-				$sEvent : ResponseTimeEvent@{class_version}(value > @{max_response_time}, 
-					$ev.instance == instance),
+			
+			Number( intValue > $eventSum * 0.05 ) from accumulate(
+				$sEvent : ResponseTimeEvent(value > 1000, $ev.instance == instance) over window:time( 30s ),
 						count($sEvent)
 			);
-			$depFc : DeployStatus@{class_version}(instance == $ev.instance);
-			not ReconfProcess@{class_version}(service == $depFc.service);
+			
+			not ReconfProcess(service == $depFc.service);
+			not FinishedUpdate(service == $depFc.service);
+
 		then
-			insert ( new HighReponseTime@{class_version}($ev.ip, $depFc.service) );
- 
-			ResponseDispatcher.LogViolation(
-				"rule: " + drools.getRule().getName(),
-				" from: " + $depFc.service,
-				" meas: " + $ev.value
-			);
-			retract($ev);
+			HighResponseTime $hrt = new HighResponseTime($depFc.getIp(), $depFc.getService(), $pol.getPolicy());
+			insert ( $hrt );
 		end
 		

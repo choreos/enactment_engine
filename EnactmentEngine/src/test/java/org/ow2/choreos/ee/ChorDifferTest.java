@@ -1,6 +1,6 @@
 package org.ow2.choreos.ee;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 import java.util.Map;
@@ -10,8 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.ow2.choreos.chors.datamodel.Choreography;
 import org.ow2.choreos.chors.datamodel.ChoreographySpec;
-import org.ow2.choreos.ee.ChorDiffer;
-import org.ow2.choreos.ee.ChorRegistry;
 import org.ow2.choreos.services.datamodel.DeployableService;
 import org.ow2.choreos.services.datamodel.DeployableServiceSpec;
 import org.ow2.choreos.services.datamodel.PackageType;

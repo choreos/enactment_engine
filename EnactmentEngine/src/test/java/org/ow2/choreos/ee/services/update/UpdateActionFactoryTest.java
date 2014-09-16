@@ -6,11 +6,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.ow2.choreos.ee.services.update.DecreaseNumberOfReplicas;
-import org.ow2.choreos.ee.services.update.IncreaseNumberOfReplicas;
-import org.ow2.choreos.ee.services.update.Migrate;
-import org.ow2.choreos.ee.services.update.UpdateAction;
-import org.ow2.choreos.ee.services.update.UpdateActionFactory;
 import org.ow2.choreos.nodes.datamodel.CPUSize;
 import org.ow2.choreos.nodes.datamodel.RAMSize;
 import org.ow2.choreos.nodes.datamodel.ResourceImpact;

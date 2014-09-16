@@ -4,8 +4,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.ow2.choreos.ee.nodes.cm.NodeUpdater;
-import org.ow2.choreos.ee.nodes.cm.NodeUpdaters;
 import org.ow2.choreos.nodes.datamodel.CloudNode;
 
 public class NodeUpdatersTest {

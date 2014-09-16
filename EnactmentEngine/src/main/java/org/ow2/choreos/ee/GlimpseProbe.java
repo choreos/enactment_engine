@@ -60,6 +60,23 @@ public class GlimpseProbe extends GlimpseAbstractProbe {
             return;
         }
     }
+    
+    public void publishSLA(String limit, String metric, String accept, String serviceOrIP, String ip) {
+        boolean isException = false;
+
+        GlimpseBaseEventChoreos<String> event = new GlimpseBaseEventChoreos<String>(limit, new Date().getTime(),
+                metric, isException, accept, serviceOrIP, ip);
+
+        try {
+            sendEventMessage(event, false);
+        } catch (JMSException e) {
+            logger.error("JMS comm error");
+            return;
+        } catch (NamingException e) {
+            logger.error("Error with Jms naming");
+            return;
+        }
+    }
 
     @Override
     public void sendMessage(GlimpseBaseEvent<?> message, boolean debug) {
