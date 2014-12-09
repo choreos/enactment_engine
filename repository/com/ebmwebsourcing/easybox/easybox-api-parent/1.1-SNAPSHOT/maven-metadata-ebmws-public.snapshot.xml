@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.ebmwebsourcing.easybox</groupId>
+  <artifactId>easybox-api-parent</artifactId>
+  <version>1.1-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20131029070656</lastUpdated>
+  </versioning>
+</metadata>

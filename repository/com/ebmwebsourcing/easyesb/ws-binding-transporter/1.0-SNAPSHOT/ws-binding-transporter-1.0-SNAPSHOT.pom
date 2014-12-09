@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>experimental-parent</artifactId>
+    <groupId>com.ebmwebsourcing.experimental.experimental-parents</groupId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../../experimental-parents/experimental-parent/pom.xml</relativePath>
+  </parent>
+  <name>ws-binding-transporter</name>
+  <artifactId>ws-binding-transporter</artifactId>
+  <groupId>com.ebmwebsourcing.easyesb</groupId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <properties>
+    <eclipse.shortGroupId>easyesb</eclipse.shortGroupId>
+  </properties>
+  <!-- ========== -->
+  <!-- Developers -->
+  <!-- ========== -->
+  <developers>
+    <developer>
+      <name>Nicolas Salatge</name>
+      <id>nsalatge</id>
+      <email>nicolas.salatge@ebmwebsourcing.com</email>
+      <organization>EBM WebSourcing</organization>
+      <roles>
+        <role>Project manager</role>
+        <role>Architect</role>
+        <role>Developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
+  <dependencies>
+    <dependency>
+      <artifactId>exchange10-impl</artifactId>
+      <groupId>com.ebmwebsourcing.easyesb</groupId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <!-- Uncomment this plugin if you want to rebuild the whole skeleton.
+If you do that, you will loose any modifications on java files -->
+      <plugin>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-codegen-plugin</artifactId>
+        <version>${cxf-easy.version}</version>
+        <executions>
+          <execution>
+            <id>generate-sources</id>
+            <phase>generate-sources</phase>
+            <configuration>
+              <wsdlOptions>
+                <wsdlOption>
+                  <wsdl>${basedir}/src/main/resources/wsdl/transporter10.wsdl</wsdl>
+                  <catalog>${basedir}/src/main/resources/catalog.cat</catalog>
+                  <!-- <catalogResolver>org.jvnet.jaxb2.maven2.resolver.tools.ClasspathCatalogResolver</catalogResolver> -->
+                  <!-- <namespaceExcludes> -->
+                  <!-- <namespaceExclude>http://com.petalslink.easyesb/exchange/1.0=easybox.easyesb.ebmwebsourcing.com.exchange._1</namespaceExclude> -->
+                  <!-- </namespaceExcludes> -->
+                  <extraargs>
+                    <!-- <extraarg>-xjc-catalog,${basedir}/src/main/resources/catalog.cat</extraarg> -->
+                    <extraarg>-xjc-b,${basedir}/src/main/resources/schema/exchange10/exchange10.xjb</extraarg>
+                    <!-- <extraarg>-nexclude http://com.petalslink.easyesb/exchange/1.0=easybox.easyesb.ebmwebsourcing.com.exchange._1</extraarg> -->
+                  </extraargs>
+                </wsdlOption>
+              </wsdlOptions>
+            </configuration>
+            <goals>
+              <goal>wsdl2java</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- FIXME: Add cxf catalog to avoid to duplicate class -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>delete-duplicate-classes</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <echo message="delete duplicate classes"/>
+                <delete dir="./target/generated-sources/cxf/easybox/easyesb/ebmwebsourcing/com/exchange/_1"/>
+                <delete dir="./target/classes/easyesb/petalslink/com/exchange/_1"/>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <scm>
+    <connection>scm:svn:https://svn.petalslink.org/svnroot/trunk/research/dev/experimental/easyesb/ws-binding-transporter</connection>
+    <developerConnection>${project.scm.connection}</developerConnection>
+  </scm>
+  <repositories>
+    <repository>
+      <id>ebmws-public</id>
+      <url>http://maven.petalslink.com/public</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>ebmws-public.others</id>
+      <url>http://maven.petalslink.com/others</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>ebmws-public.snapshot</id>
+      <url>http://maven.petalslink.com/public-snapshot</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>ebmws-public.research</id>
+      <url>http://maven.petalslink.com/public-research</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>ebmws-public</id>
+      <url>http://maven.petalslink.com/public</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>ebmws-public.snapshot</id>
+      <url>http://maven.petalslink.com/public-snapshot</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>ebmws-public.research</id>
+      <url>http://maven.petalslink.com/public-research</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>ebmws-public.others</id>
+      <url>http://maven.petalslink.com/others</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+</project>

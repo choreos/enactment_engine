@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.ebmwebsourcing.easysoalayer</groupId>
+  <artifactId>service-description-layer</artifactId>
+  <version>1.1-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20140102070714</lastUpdated>
+  </versioning>
+</metadata>

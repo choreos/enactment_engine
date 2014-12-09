@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.ebmwebsourcing.easyschema</groupId>
+  <artifactId>xsd2xml</artifactId>
+  <version>3.2-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20140102070635</lastUpdated>
+  </versioning>
+</metadata>
