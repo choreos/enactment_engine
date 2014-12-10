@@ -13,7 +13,6 @@ public class URIContextRetrieverFactory {
         classMap = new HashMap<String, Class<? extends URIContextRetriever>>();
         classMap.put(PackageType.COMMAND_LINE.toString(), JarURIContextRetriever.class);
         classMap.put(PackageType.TOMCAT.toString(), WarURIContextRetriever.class);
-        classMap.put(PackageType.EASY_ESB.toString(), CDURIContextRetriever.class);
     }
 
     public static URIContextRetriever getNewInstance(PackageType packageType) {

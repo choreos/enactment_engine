@@ -23,7 +23,6 @@ public class PackageType implements Serializable {
 
     public static PackageType COMMAND_LINE;
     public static PackageType TOMCAT;
-    public static PackageType EASY_ESB;
 
     private static final long serialVersionUID = -2622225615133550982L;
     private static Map<String, PackageType> packageTypes;
@@ -31,11 +30,9 @@ public class PackageType implements Serializable {
     static {
         COMMAND_LINE = new PackageType("COMMAND_LINE");
         TOMCAT = new PackageType("TOMCAT");
-        EASY_ESB = new PackageType("EASY_ESB");
         packageTypes = new HashMap<String, PackageType>();
         packageTypes.put(COMMAND_LINE.toString(), COMMAND_LINE);
         packageTypes.put(TOMCAT.toString(), TOMCAT);
-        packageTypes.put(EASY_ESB.toString(), EASY_ESB);
     }
 
     private String type;

@@ -18,18 +18,15 @@ public class ServiceType implements Serializable {
     
     public static ServiceType SOAP;    
     public static ServiceType REST;
-    public static ServiceType COORDEL;
     
     private static Map<String, ServiceType> serviceTypes;
     
     static {
         SOAP = new ServiceType("SOAP");
         REST = new ServiceType("REST");
-        COORDEL = new ServiceType("COORDEL");
         serviceTypes = new HashMap<String, ServiceType>();
         serviceTypes.put(SOAP.toString(), SOAP);
         serviceTypes.put(REST.toString(), REST);
-        serviceTypes.put(COORDEL.toString(), COORDEL);
     }
     
     private String type;
