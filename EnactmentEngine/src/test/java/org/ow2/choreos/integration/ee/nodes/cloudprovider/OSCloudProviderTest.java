@@ -28,20 +28,20 @@ public class OSCloudProviderTest {
 
     @Before
     public void SetUp() {
-	LogConfigurator.configLog();
+        LogConfigurator.configLog();
     }
 
     @Test
     public void shouldCreateAndDeleteNode() throws NodeNotCreatedException, NodeNotDestroyed, NodeNotFoundException,
-	    CommandLineException, InterruptedException {
+            CommandLineException, InterruptedException {
 
-	CloudNode created = infra.createNode(nodeSpec);
-	System.out.println("created " + created);
-	assertTrue(created != null);
+        CloudNode created = infra.createNode(nodeSpec);
+        System.out.println("created " + created);
+        assertTrue(created != null);
 
-	Thread.sleep(1000);
+        Thread.sleep(1000);
 
-	infra.destroyNode(created.getId());
+        infra.destroyNode(created.getId());
     }
 
 }

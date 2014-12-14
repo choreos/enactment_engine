@@ -9,9 +9,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.ow2.choreos.ee.config.EEConfiguration;
-import org.ow2.choreos.ee.nodes.cloudprovider.AWSCloudProvider;
+import org.ow2.choreos.ee.config.CloudConfiguration;
 import org.ow2.choreos.ee.nodes.cloudprovider.CloudProvider;
+import org.ow2.choreos.ee.nodes.cloudprovider.CloudProviderFactory;
 import org.ow2.choreos.nodes.NodeNotCreatedException;
 import org.ow2.choreos.nodes.NodeNotDestroyed;
 import org.ow2.choreos.nodes.NodeNotFoundException;
@@ -24,27 +24,29 @@ import org.ow2.choreos.utils.LogConfigurator;
 @Category(IntegrationTest.class)
 public class AWSCloudProviderTest {
 
-    private final CloudProvider infra = new AWSCloudProvider();
+    private static final String CLOUD_ACCOUNT = "MY_AWS_ACCOUNT";
+    private CloudProvider cp;
     private NodeSpec nodeSpec = new NodeSpec();
 
     @Before
     public void SetUp() {
         LogConfigurator.configLog();
-        nodeSpec.setImage("us-east-1/ami-ccf405a5");
-        EEConfiguration.set("DEFAULT_PROVIDER", "");
+        CloudConfiguration cloudConfiguration = CloudConfiguration.getCloudConfigurationInstance(CLOUD_ACCOUNT);
+        CloudProviderFactory factory = CloudProviderFactory.getFactoryInstance();
+        this.cp = factory.getCloudProviderInstance(cloudConfiguration);
     }
 
     @Test
     public void shouldCreateAndDeleteNode() throws NodeNotCreatedException, NodeNotDestroyed, NodeNotFoundException,
             CommandLineException, InterruptedException {
 
-        CloudNode created = infra.createNode(nodeSpec);
+        CloudNode created = cp.createNode(nodeSpec);
         System.out.println("created " + created);
         assertTrue(created != null);
 
         Thread.sleep(1000);
 
-        infra.destroyNode(created.getId());
+        cp.destroyNode(created.getId());
     }
 
 }

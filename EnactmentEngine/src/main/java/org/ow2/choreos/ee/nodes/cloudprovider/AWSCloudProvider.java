@@ -23,7 +23,7 @@ public class AWSCloudProvider extends JCloudsCloudProvider {
     private static final Properties PROPERTIES = new Properties();
     private static final String DEFAULT_USER = "ubuntu";
     private static final String PROVIDER = "aws-ec2";
-    private static final String DEFAULT_IMAGE = "us-east-1/ami-3b4ff252"; // Ubuntu
+    private static final String DEFAULT_IMAGE =  "us-east-1/ami-cc5be9a4"; // Ubuntu
                                                                           // 12.04
     private static final String DEFAULT_INSTANCE_TYPE = InstanceType.M1_SMALL;
 
@@ -52,7 +52,7 @@ public class AWSCloudProvider extends JCloudsCloudProvider {
     @Override
     protected String getDefaultImageId() {
         String imageId = cloudConfiguration.getOptional("AMAZON_IMAGE_ID");
-        if (imageId == null | imageId.isEmpty())
+        if (imageId == null || imageId.isEmpty())
             imageId = DEFAULT_IMAGE;
         return imageId;
     }
