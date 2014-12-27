@@ -23,8 +23,8 @@ public class AWSCloudProvider extends JCloudsCloudProvider {
     private static final Properties PROPERTIES = new Properties();
     private static final String DEFAULT_USER = "ubuntu";
     private static final String PROVIDER = "aws-ec2";
-    private static final String DEFAULT_IMAGE =  "us-east-1/ami-cc5be9a4"; // Ubuntu
-                                                                          // 12.04
+    private static final String DEFAULT_IMAGE =  "us-east-1/ami-98aa1cf0"; // Ubuntu
+                                                                          // 14.04LTS
     private static final String DEFAULT_INSTANCE_TYPE = InstanceType.M1_SMALL;
 
     private static final int TIME_BETWEEN_REQUESTS_MILLIS = 2000;

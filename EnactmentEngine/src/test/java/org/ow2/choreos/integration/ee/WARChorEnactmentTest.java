@@ -18,8 +18,6 @@ import org.ow2.choreos.utils.LogConfigurator;
  * This test will enact a choreography with two services, with a service
  * depending on the other.
  * 
- * Before the test, start the DeploymentManager server
- * 
  * @author leonardo
  * 
  */

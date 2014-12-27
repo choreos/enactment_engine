@@ -1,8 +1,7 @@
 {
         "run_list" : [
         		"recipe[ntp]",
-        		"recipe[sysstat]",
-                "recipe[apt]"
+        		"recipe[sysstat]"
         ],
         "ganglia": {
         	"cluster_name": "CHOReOS",

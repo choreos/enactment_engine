@@ -1,0 +1,3 @@
+ssh -p 54022 danicuki@valinhos.ime.usp.br
+scp -P 54022 file danicuki@valinhos.ime.usp.br:/var/www/choreos/
+http://valinhos.ime.usp.br:54080
