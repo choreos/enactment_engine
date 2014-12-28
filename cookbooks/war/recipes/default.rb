@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/. 
 
 include_recipe "apt" # java recipe is failing without recipe apt (and tomcat depends on java)
-include_recipe "tomcat::choreos"
+include_recipe "tomcat::default"
 
 remote_file "war_file" do
 	source "#{node['CHOReOSData']['serviceData']['$NAME']['PackageURL']}"

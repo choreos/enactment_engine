@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.ow2.choreos</groupId>
 	<artifactId>Airline</artifactId>
-	<version>3.1.0</version>
+	<version>3.2.0</version>
 	<packaging>war</packaging>
 
 	<dependencies>
@@ -27,7 +27,7 @@
 		<dependency>
 			<groupId>com.sun.xml.ws</groupId>
 			<artifactId>jaxws-rt</artifactId>
-			<version>2.1.4</version>
+			<version>2.2.7</version>
 		</dependency>
 	</dependencies>
 
