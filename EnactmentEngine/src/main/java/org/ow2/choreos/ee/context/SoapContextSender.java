@@ -4,9 +4,6 @@
 
 package org.ow2.choreos.ee.context;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
 
@@ -21,11 +18,6 @@ import javax.xml.soap.SOAPEnvelope;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPMessage;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.StartElement;
-import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -35,48 +27,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
 public class SoapContextSender implements ContextSender {
-
-    private String parseNamespace(final String endpoint) throws XMLStreamException, IOException {
-
-        final String wsdl = getWsdl(endpoint);
-        final URL url = new URL(wsdl);
-        final InputStreamReader streamReader = new InputStreamReader(url.openStream());
-        final BufferedReader wsdlInputStream = new BufferedReader(streamReader);
-        final XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-        final XMLEventReader reader = xmlInputFactory.createXMLEventReader(wsdlInputStream);
-
-        String elementName, namespace = "";
-        XMLEvent event;
-        StartElement element;
-
-        while (reader.hasNext()) {
-            event = reader.nextEvent();
-            if (event.isStartElement()) {
-                element = event.asStartElement();
-                elementName = element.getName().getLocalPart();
-                if ("definitions".equals(elementName)) {
-                    final QName qname = new QName("targetNamespace"); // NOPMD
-                    namespace = element.getAttributeByName(qname).getValue();
-                    break;
-                }
-            }
-        }
-
-        reader.close();
-
-        return namespace;
-    }
-
-    private String getWsdl(final String endpoint) {
-        String slashLess;
-        if (endpoint.endsWith("/")) {
-            slashLess = endpoint.substring(0, endpoint.length() - 1);
-        } else {
-            slashLess = endpoint;
-        }
-
-        return slashLess + "?wsdl";
-    }
 
     @Override
     public void sendContext(String serviceEndpoint, String partnerRole, String partnerName,
@@ -91,7 +41,8 @@ public class SoapContextSender implements ContextSender {
             SOAPMessage sm = mf.createMessage();
 
             SOAPEnvelope envelope = sm.getSOAPPart().getEnvelope();
-            String namespace = parseNamespace(serviceEndpoint);
+            NamespaceParser parser = new NamespaceParser();
+            String namespace = parser.getNamespaceFrom(serviceEndpoint);
             envelope.addNamespaceDeclaration("pre", namespace);
 
             SOAPHeader sh = sm.getSOAPHeader();
@@ -118,12 +69,10 @@ public class SoapContextSender implements ContextSender {
                 serviceEndpoint = serviceEndpoint.substring(0, serviceEndpoint.length() - 1);
 
             URL endpoint = new URL(serviceEndpoint);
-            // @SuppressWarnings("unused")
-            // this.printSOAPMessage(sm);
+//             this.printSOAPMessage(sm);
 
             connection.call(sm, endpoint);
 
-            // this.printSOAPMessage(msg);
 
         } catch (Exception e) {
             throw new ContextNotSentException(serviceEndpoint, partnerRole, partnerName, partnerEndpoints);
@@ -153,5 +102,5 @@ public class SoapContextSender implements ContextSender {
             e.printStackTrace();
         }
     }
-
+    
 }

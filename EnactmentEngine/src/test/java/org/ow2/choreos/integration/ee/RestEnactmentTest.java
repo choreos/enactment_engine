@@ -26,6 +26,7 @@ import org.ow2.choreos.services.datamodel.ServiceSpec;
 import org.ow2.choreos.services.datamodel.ServiceType;
 import org.ow2.choreos.tests.IntegrationTest;
 import org.ow2.choreos.tests.ModelsForTest;
+import org.ow2.choreos.utils.Alarm;
 import org.ow2.choreos.utils.LogConfigurator;
 
 /**
@@ -69,13 +70,12 @@ public class RestEnactmentTest {
     }
 
     @Test
-    public void shouldConfigureAChoreography() throws Exception {
+    public void shouldCreateAChoreography() throws Exception {
 
         String host = EnactmentEngineServer.URL;
         EnactmentEngine ee = new EEClient(host);
-        String chorId = ee.createChoreography(chorSpec);
-
-        assertEquals("1", chorId);
+        int chorId = Integer.parseInt(ee.createChoreography(chorSpec));
+        assertTrue(chorId > 0 && chorId < 4);
     }
 
     @Test
@@ -110,6 +110,9 @@ public class RestEnactmentTest {
         String codes = client.buyTrip();
 
         assertTrue(codes.startsWith("33") && codes.endsWith("--22"));
+        
+        Alarm alarm = new Alarm();
+        alarm.play();
     }
 
 }

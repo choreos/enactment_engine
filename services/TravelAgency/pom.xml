@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>org.ow2.choreos</groupId>
 			<artifactId>Airline</artifactId>
-			<version>3.1.0</version>
+			<version>3.2.0</version>
 			<classifier>classes</classifier>
 		</dependency>
 	</dependencies>

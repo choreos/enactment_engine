@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>org.ow2.choreos</groupId>
 			<artifactId>TravelAgency</artifactId>
-			<version>3.0.0</version>
+			<version>3.2.0</version>
 			<classifier>classes</classifier>
 		</dependency>			
 		<dependency>
